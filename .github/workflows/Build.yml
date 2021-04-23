@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php_versions: ['8.0']
+        php_versions: ['7.4']
         os: [ubuntu-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
