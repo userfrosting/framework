@@ -1,0 +1,717 @@
+<?php
+
+/*
+ * UserFrosting Uniform Resource Locator (http://www.userfrosting.com)
+ *
+ * @link      https://github.com/userfrosting/UniformResourceLocator
+ * @copyright Copyright (c) 2013-2019 Alexander Weissman, Louis Charette
+ * @license   https://github.com/userfrosting/UniformResourceLocator/blob/master/LICENSE.md (MIT License)
+ */
+
+namespace UserFrosting\UniformResourceLocator\Tests;
+
+use PHPUnit\Framework\TestCase;
+use UserFrosting\UniformResourceLocator\Normalizer;
+use UserFrosting\UniformResourceLocator\Resource;
+use UserFrosting\UniformResourceLocator\ResourceInterface;
+use UserFrosting\UniformResourceLocator\ResourceLocator;
+use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
+use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
+
+/**
+ * Tests for ResourceLocator.
+ */
+class BuildingLocatorTest extends TestCase
+{
+    /** @var string */
+    protected $basePath = __DIR__.'/Building/';
+
+    /** @var ResourceLocatorInterface */
+    protected static $locator;
+
+    /**
+     * Setup shared locator for resources tests.
+     *
+     * This will setup the following streams:
+     *      cars://     -> A Shared stream, loading from Building/Garage/cars, not subject to locations
+     *      files://    -> Returning all files from `Building/Floors/{floorX}/files` as well as `Building/upload/data/files/`
+     *      conf://     -> Returning all files from `Building/Floors/{floorX}/config` only
+     *
+     * Locations are : Floor1, Floor2 & Floor3
+     * This means Floor 3 as top priority, and will be searched first
+     *
+     * Test file structure :
+     *  Floor1  ->  files/test/blah.json
+     *          ->  files/test.json
+     *  Floor2  ->  config/test.json
+     *          ->  files/data/foo.json
+     *          ->  files/foo.json
+     *          ->  files/test.json
+     *  Floor3  ->  cars/cars.json
+     *          ->  files/test.json
+     *  Garage  ->  cars/cars.json
+     *          ->  files/blah.json
+     *  upload  ->  data/files/foo.json
+     *
+     * So, files found for each stream should be, when looking only at the top most :
+     *      cars://
+     *          - Garage/cars/cars.json
+     *      files://
+     *          - Floors/Floor3/files/test.json
+     *          - Floors/Floor2/files/foo.json
+     *          - upload/data/files/foo.json (as data/foo.json using prefix)
+     *          - Floors/Floor/files/test/blah.json
+     *      conf://
+     *          - Floors/Floor2/config/test.json
+     *
+     * The following files are purely as placeholder, and should never be found :
+     *  - Floors/Floor3/cars/cars.json : Should never be returned when listing cars, because the floors are not part of the cars:// search path
+     *  - Floors/Floor2/test.json : Overwritten by Floor3 version
+     *  - Floors/Floor1/test.json : Overwritten by Floor3 version
+     *  - Garage/files/blah.json : Should never be found, because the Garage is not part of the file:// search path
+     */
+    public function setUp(): void
+    {
+        parent::setup();
+
+        self::$locator = new ResourceLocator($this->basePath);
+
+        // Register the floors.
+        // Note the missing `/` at the end for Floor 3. This shound't make any difference.
+        // At the beginning, it means the locator use an absolute path, bypassing Locator base path for that locator
+        // Floor2 simulate an absolute path for that location. Note it won't make any sense (and fail) if both
+        // the location and the stream uses absolute paths
+        self::$locator->registerLocation('Floor1', 'Floors/Floor/');
+        self::$locator->registerLocation('Floor2', $this->getBasePath().'Floors/Floor2/');
+        self::$locator->registerLocation('Floor3', 'Floors/Floor3');
+
+        // Register the streams
+        self::$locator->registerStream('files');                                               // Search path -> Building/Floors/{floorX}/file (normal stream)
+        self::$locator->registerStream('files', 'data', 'upload/data/files', true);            // Search path -> Building/upload/data/files/ (Stream with prefix + shared)
+        self::$locator->registerStream('conf', '', 'config');                                  // Search path -> Building/Floors/{floorX}/config (stream where scheme != path)
+        self::$locator->registerStream('cars', '', 'Garage/cars/', true);                      // Search path -> Building/Garage/cars (Stream shared, no prefix)
+        self::$locator->registerSharedStream('absCars', '', $this->getBasePath().'Garage/cars/'); // Search path -> Building/Garage/cars (Stream shared, no prefix, using absolute path)
+    }
+
+    /**
+     * @dataProvider resourceProvider
+     * @dataProvider sharedResourceProvider
+     *
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
+     */
+    public function testFind($scheme, $file, $location, $expectedPaths): void
+    {
+        // find($scheme, $file, $array, $all)
+        $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, false, false]);
+
+        $this->assertInstanceOf(ResourceInterface::class, $resource);
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $resource->getAbsolutePath());
+    }
+
+    /**
+     * @dataProvider resourceProvider
+     * @dataProvider sharedResourceProvider
+     * @depends testFind
+     *
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
+     */
+    public function testFindWithArray($scheme, $file, $location, $expectedPaths): void
+    {
+        // find($scheme, $file, $array, $all)
+        $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, true, false]);
+
+        $this->assertIsArray($resource);
+        $this->assertEquals($this->relativeToAbsolutePaths($expectedPaths), $resource);
+    }
+
+    /**
+     * @dataProvider resourceProvider
+     * @dataProvider sharedResourceProvider
+     * @depends testFind
+     *
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
+     * @param array|string $expectedAllPaths
+     */
+    public function testFindWithAll($scheme, $file, $location, $expectedPaths, $expectedAllPaths): void
+    {
+        // find($scheme, $file, $array, $all)
+        $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, false, true]);
+
+        $this->assertInstanceOf(ResourceInterface::class, $resource);
+        $this->assertEquals($this->getBasePath().$expectedAllPaths[0], $resource->getAbsolutePath());
+    }
+
+    /**
+     * @dataProvider resourceProvider
+     * @dataProvider sharedResourceProvider
+     * @depends testFind
+     *
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
+     * @param array|string $expectedAllPaths
+     */
+    public function testFindWithArrayAndAll($scheme, $file, $location, $expectedPaths, $expectedAllPaths): void
+    {
+        // find($scheme, $file, $array, $all)
+        $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, true, true]);
+
+        $this->assertIsArray($resource);
+        $this->assertEquals($this->relativeToAbsolutePaths($expectedAllPaths), $resource);
+    }
+
+    /**
+     * @depends testFind
+     */
+    public function testFindThrowExceptionWhenSchemaDontExist(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->invokeMethod(self::$locator, 'find', ['foo', 'foo', false, false]);
+    }
+
+    public function testGetResourceThrowExceptionIfShemeNotExist(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        self::$locator->getResource('foo://');
+    }
+
+    public function testGetResourceThrowExceptionOnInvalidParameterUri(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        self::$locator->getResource(123);
+    }
+
+    /**
+     * @dataProvider sharedResourceProvider
+     *
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
+     */
+    public function testGetResourceForSharedStream($scheme, $file, $location, $expectedPaths): void
+    {
+        $locator = self::$locator;
+        $uri = $scheme.'://'.$file;
+
+        $resource = $locator->getResource($uri);
+        $this->assertInstanceOf(ResourceInterface::class, $resource);
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $resource);
+        $this->assertEquals($expectedPaths[0], $resource->getPath());
+        $this->assertNull($resource->getLocation());
+        $this->assertEquals($uri, $resource->getUri());
+        $this->assertInstanceOf(ResourceStreamInterface::class, $resource->getStream());
+    }
+
+    /**
+     * @depends testGetResourceForSharedStream
+     */
+    public function testGetResourceForSharedStreamReturnFalseIfNoResourceFalse(): void
+    {
+        $locator = self::$locator;
+
+        $resource = $locator->getResource('cars://idontExist.txt');
+        $this->assertNotInstanceOf(Resource::class, $resource);
+        $this->assertFalse(false, $resource);
+    }
+
+    /**
+     * @dataProvider sharedResourceProvider
+     * @depends testGetResourceForSharedStream
+     *
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
+     */
+    public function testGetResourcesForSharedStream($scheme, $file, $location, $expectedPaths): void
+    {
+        $locator = self::$locator;
+        $uri = $scheme.'://'.$file;
+
+        $resources = $locator->getResources($uri);
+        $this->assertIsArray($resources);
+        $this->assertCount(count($expectedPaths), $resources);
+        $this->assertInstanceOf(ResourceInterface::class, $resources[0]);
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $resources[0]);
+        $this->assertEquals($uri, $resources[0]->getUri());
+    }
+
+    /**
+     * @depends testGetResourcesForSharedStream
+     */
+    public function testGetResourcesForSharedStreamReturnFalseIfNoResourceFalse(): void
+    {
+        $locator = self::$locator;
+
+        $resources = $locator->getResources('cars://idontExist.txt');
+        $this->assertIsArray($resources);
+        $this->assertCount(0, $resources);
+    }
+
+    /**
+     * @dataProvider sharedResourceProvider
+     * @depends testGetResourceForSharedStream
+     * @depends testGetResourcesForSharedStream
+     *
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
+     */
+    public function testFindResourceForSharedStream($scheme, $file, $location, $expectedPaths): void
+    {
+        $locator = self::$locator;
+        $uri = $scheme.'://'.$file;
+
+        // Same tests, for `__invoke`, findResource` & `findResources`
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $locator($uri));
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $locator->findResource($uri));
+        $this->assertEquals([$this->getBasePath().$expectedPaths[0]], $locator->findResources($uri));
+
+        // Expect same result with relative paths
+        $this->assertEquals($expectedPaths[0], $locator->findResource($uri, false));
+        $this->assertEquals($expectedPaths, $locator->findResources($uri, false));
+    }
+
+    public function testFindResourceThrowExceptionOnBadUri(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        self::$locator->findResource(123);
+    }
+
+    public function testFindResourcesThrowExceptionOnBadUri(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        self::$locator->findResources(123);
+    }
+
+    public function testInvokeThrowExceptionOnBadUri(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $locator = self::$locator;
+        $locator(123);
+    }
+
+    public function testFindResourceForSharedStreamReturnFalseIfNoResourceFalse(): void
+    {
+        $locator = self::$locator;
+        $uri = 'cars://idontExist.txt';
+
+        // Same tests, for `__invoke`, `findResource` & `findResources`
+        $this->assertEquals(false, $locator($uri));
+        $this->assertEquals(false, $locator->findResource($uri));
+        $this->assertEquals([], $locator->findResources($uri));
+
+        // Expect same result with relative paths
+        $this->assertEquals(false, $locator->findResource($uri, false));
+        $this->assertEquals([], $locator->findResources($uri, false));
+    }
+
+    /**
+     * @dataProvider resourceProvider
+     *
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
+     */
+    public function testGetResource($scheme, $file, $location, $expectedPaths): void
+    {
+        $locator = self::$locator;
+        $uri = $scheme.'://'.$file;
+
+        $resource = $locator->getResource($uri);
+        $this->assertInstanceOf(ResourceInterface::class, $resource);
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $resource);
+        $this->assertEquals($expectedPaths[0], $resource->getPath());
+        $this->assertEquals($uri, $resource->getUri());
+        $this->assertInstanceOf(ResourceStreamInterface::class, $resource->getStream());
+
+        if (is_null($location)) {
+            $this->assertNull($resource->getLocation());
+        } else {
+            $this->assertEquals($location, $resource->getLocation()->getName());
+        }
+    }
+
+    /**
+     * @dataProvider resourceProvider
+     * @depends testGetResource
+     *
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
+     */
+    public function testGetResources($scheme, $file, $location, $expectedPaths): void
+    {
+        $locator = self::$locator;
+        $uri = $scheme.'://'.$file;
+
+        $resources = $locator->getResources($uri);
+        $this->assertIsArray($resources);
+        $this->assertCount(count($expectedPaths), $resources);
+        $this->assertEquals($this->relativeToAbsolutePaths($expectedPaths), $resources);
+        $this->assertInstanceOf(ResourceInterface::class, $resources[0]);
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $resources[0]);
+        $this->assertEquals($uri, $resources[0]->getUri());
+    }
+
+    /**
+     * @dataProvider resourceProvider
+     * @depends testGetResource
+     * @depends testGetResources
+     *
+     * @param string       $scheme
+     * @param string       $file
+     * @param string|null  $location
+     * @param array|string $expectedPaths
+     */
+    public function testFindResource($scheme, $file, $location, $expectedPaths): void
+    {
+        $locator = self::$locator;
+        $uri = $scheme.'://'.$file;
+
+        // Same tests, for `__invoke`, findResource` & `findResources`
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $locator($uri));
+        $this->assertEquals($this->getBasePath().$expectedPaths[0], $locator->findResource($uri));
+        $this->assertEquals($this->relativeToAbsolutePaths($expectedPaths), $locator->findResources($uri));
+
+        // Expect same result with relative paths
+        $this->assertEquals($expectedPaths[0], $locator->findResource($uri, false));
+        $this->assertEquals($expectedPaths, $locator->findResources($uri, false));
+    }
+
+    public function testListResourcesForSharedStream(): void
+    {
+        $list = self::$locator->listResources('cars://');
+        $this->assertCount(1, $list);
+        $this->assertEquals([
+            $this->getBasePath().'Garage/cars/cars.json',
+        ], array_map('strval', $list));
+    }
+
+    /**
+     * @depends testListResourcesForSharedStream
+     */
+    public function testListResourcesForSharedStreamWithAllArgument(): void
+    {
+        $list = self::$locator->listResources('cars://', true);
+        $this->assertCount(1, $list);
+        $this->assertEquals([
+            $this->getBasePath().'Garage/cars/cars.json',
+        ], array_map('strval', $list));
+    }
+
+    /**
+     * In this test, `Floors/Floor2/files/data/foo.json` is not returned,
+     * because we don't list recursively.
+     */
+    public function testListResourcesForFiles(): void
+    {
+        $list = self::$locator->listResources('files://');
+        $this->assertCount(4, $list);
+        $this->assertEquals([
+            $this->getBasePath().'Floors/Floor/files/test/blah.json',
+            $this->getBasePath().'Floors/Floor2/files/data/foo.json',
+            $this->getBasePath().'Floors/Floor2/files/foo.json',
+            $this->getBasePath().'Floors/Floor3/files/test.json',
+        ], array_map('strval', $list));
+    }
+
+    /**
+     * List all ressources under listResources.
+     *
+     * @depends testListResourcesForFiles
+     */
+    public function testListResourcesForFilesWithAllArgument(): void
+    {
+        $list = self::$locator->listResources('files://', true);
+        $this->assertCount(6, $list);
+        $this->assertEquals([
+            $this->getBasePath().'Floors/Floor/files/test.json',
+            $this->getBasePath().'Floors/Floor/files/test/blah.json',
+            $this->getBasePath().'Floors/Floor2/files/data/foo.json',
+            $this->getBasePath().'Floors/Floor2/files/foo.json',
+            $this->getBasePath().'Floors/Floor2/files/test.json',
+            $this->getBasePath().'Floors/Floor3/files/test.json',
+        ], array_map('strval', $list));
+    }
+
+    /**
+     * List all ressources under listResources and apply global sorting.
+     *
+     * @depends testListResourcesForFilesWithAllArgument
+     */
+    public function testListResourcesForFilesWithAllArgumentAndSort(): void
+    {
+        $list = self::$locator->listResources('files://', true, false);
+        $this->assertCount(6, $list);
+        $this->assertEquals([
+            $this->getBasePath().'Floors/Floor3/files/test.json',
+            $this->getBasePath().'Floors/Floor2/files/data/foo.json',
+            $this->getBasePath().'Floors/Floor2/files/foo.json',
+            $this->getBasePath().'Floors/Floor2/files/test.json',
+            $this->getBasePath().'Floors/Floor/files/test.json',
+            $this->getBasePath().'Floors/Floor/files/test/blah.json',
+        ], array_map('strval', $list));
+    }
+
+    /**
+     * upload file will be showed here, as we're in the data prefix.
+     *
+     * @depends testListResourcesForFilesWithAllArgument
+     */
+    public function testListResourcesForDataFilesWithAllArgument(): void
+    {
+        $list = self::$locator->listResources('files://data', true);
+        $this->assertCount(2, $list);
+        $this->assertEquals([
+            $this->getBasePath().'Floors/Floor2/files/data/foo.json',
+            $this->getBasePath().'upload/data/files/foo.json',
+        ], array_map('strval', $list));
+    }
+
+    /**
+     * upload will be listed first, as that stream is registered after the normal file stream.
+     *
+     * @depends testListResourcesForDataFilesWithAllArgument
+     */
+    public function testListResourcesForDataFilesWithAllArgumentAndSort(): void
+    {
+        $list = self::$locator->listResources('files://data', true, false);
+        $this->assertCount(2, $list);
+        $this->assertEquals([
+            $this->getBasePath().'upload/data/files/foo.json',
+            $this->getBasePath().'Floors/Floor2/files/data/foo.json',
+        ], array_map('strval', $list));
+    }
+
+    public function testFindCachedReturnFalseOnBadUriPart(): void
+    {
+        $locator = new ResourceLocator();
+        $resource = $locator->getResource('path/to/../../../file.txt');
+        $this->assertFalse($resource);
+    }
+
+    public function testFindCachedReturnFalseOnBadUriPartWithArray(): void
+    {
+        $locator = new ResourceLocator();
+        $resources = $locator->getResources('path/to/../../../file.txt');
+        $this->assertSame([], $resources);
+    }
+
+    /**
+     * Test streamWrapper setup making sure a file that don't exist doesn't
+     * return false positive.
+     */
+    public function testStreamWrapper(): void
+    {
+        $filename = 'test://cars.json';
+        $this->assertFalse(@file_exists($filename));
+
+        // Register
+        self::$locator->registerStream('test', '', 'Garage/cars/', true);
+        $this->assertTrue(file_exists($filename));
+
+        // Unregister
+        self::$locator->removeStream('test');
+        $this->assertFalse(@file_exists($filename));
+    }
+
+    /**
+     * Test streamWrapper setup by reading a file using it's uri.
+     *
+     * @depends testStreamWrapper
+     */
+    public function testStreamWrapperReadFile(): void
+    {
+        $filename = 'cars://cars.json';
+
+        $this->assertTrue(file_exists($filename));
+
+        $handle = fopen($filename, 'r');
+        $contents = fread($handle, filesize($filename));
+
+        $this->assertNotEquals('', $contents);
+        $this->assertEquals('Tesla', json_decode($contents, true)['cars'][1]['make']);
+
+        fclose($handle);
+    }
+
+    /**
+     * Test streamWrapper setup making sure a file that don't exist doesn't
+     * return false positive.
+     */
+    public function testStreamWrapperNotExist(): void
+    {
+        $this->assertFalse(file_exists('cars://idontExist.txt'));
+    }
+
+    /**
+     * DataProvider for testFind
+     * Return all files available from our test case.
+     */
+    public function resourceProvider(): array
+    {
+        return [
+            //[$scheme, $file, $location, $expectedPaths, $expectedAllPaths],
+            // #0
+            ['files', 'test.json', 'Floor3', [
+                'Floors/Floor3/files/test.json',
+                'Floors/Floor2/files/test.json',
+                'Floors/Floor/files/test.json',
+            ], [
+                'Floors/Floor3/files/test.json',
+                'Floors/Floor2/files/test.json',
+                'Floors/Floor/files/test.json',
+            ]],
+
+            // #1
+            ['files', 'foo.json', 'Floor2', [
+                'Floors/Floor2/files/foo.json',
+            ], [
+                'Floors/Floor3/files/foo.json',
+                'Floors/Floor2/files/foo.json',
+                'Floors/Floor/files/foo.json',
+            ]],
+
+            // #2
+            ['files', 'data/foo.json', null, [
+                'upload/data/files/foo.json',
+                'Floors/Floor2/files/data/foo.json',
+            ], [
+                'upload/data/files/foo.json',
+                'Floors/Floor3/files/data/foo.json',
+                'Floors/Floor2/files/data/foo.json',
+                'Floors/Floor/files/data/foo.json',
+            ]],
+
+            // #3
+            ['files', 'test/blah.json', 'Floor1', [
+                'Floors/Floor/files/test/blah.json',
+            ], [
+                'Floors/Floor3/files/test/blah.json',
+                'Floors/Floor2/files/test/blah.json',
+                'Floors/Floor/files/test/blah.json',
+            ]],
+
+            // #4
+            // N.B.: upload/data/files is not returned here as the `data` prefix is not used
+            ['files', '', 'Floor3', [
+                'Floors/Floor3/files',
+                'Floors/Floor2/files',
+                'Floors/Floor/files',
+            ], [
+                'Floors/Floor3/files',
+                'Floors/Floor2/files',
+                'Floors/Floor/files',
+            ]],
+
+            // #5
+            // Test the data prefix here
+            ['files', 'data', null, [
+                'upload/data/files',
+                'Floors/Floor2/files/data',
+            ], [
+                'upload/data/files',
+                'Floors/Floor3/files/data',
+                'Floors/Floor2/files/data',
+                'Floors/Floor/files/data',
+            ]],
+
+            // #6
+            ['conf', 'test.json', 'Floor2', [
+                'Floors/Floor2/config/test.json',
+            ], [
+                'Floors/Floor3/config/test.json',
+                'Floors/Floor2/config/test.json',
+                'Floors/Floor/config/test.json',
+            ]],
+        ];
+    }
+
+    /**
+     * Data provider for shared stream tests.
+     */
+    public function sharedResourceProvider(): array
+    {
+        return [
+            //[$scheme, $file, $lcoation, $expectedPaths, $expectedAllPaths],
+            // #0
+            ['cars', 'cars.json', null, [
+                'Garage/cars/cars.json',
+            ], [
+                'Garage/cars/cars.json',
+            ]],
+
+            // #1
+            ['cars', '', null, [
+                'Garage/cars',
+            ], [
+                'Garage/cars',
+            ]],
+
+            // #2
+            ['absCars', 'cars.json', null, [
+                'Garage/cars/cars.json',
+            ], [
+                'Garage/cars/cars.json',
+            ]],
+        ];
+    }
+
+    /**
+     * Convert an array of relative paths to absolute paths.
+     *
+     * @param array $paths relative paths
+     *
+     * @return array absolute paths
+     */
+    protected function relativeToAbsolutePaths(array $paths): array
+    {
+        $pathsWithAbsolute = [];
+        foreach ($paths as $p) {
+            $pathsWithAbsolute[] = $this->getBasePath().$p;
+        }
+
+        return $pathsWithAbsolute;
+    }
+
+    /**
+     * Call protected/private method of a class.
+     *
+     * @param object &$object    Instantiated object that we will run method on.
+     * @param string $methodName Method name to call
+     * @param array  $parameters Array of parameters to pass into method.
+     *
+     * @return mixed Method return.
+     */
+    protected function invokeMethod(&$object, $methodName, array $parameters = [])
+    {
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($object, $parameters);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getBasePath(): string
+    {
+        return Normalizer::normalizePath($this->basePath);
+    }
+}
