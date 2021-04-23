@@ -1,0 +1,10 @@
+vendor
+composer.lock
+.DS_Store
+*.komodoproject
+.php_cs.cache
+_meta
+.phpunit.result.cache
+
+tests/DotenvEditor/data/.env-backups/*
+!tests/DotenvEditor/data/.env-backups/.gitkeep
