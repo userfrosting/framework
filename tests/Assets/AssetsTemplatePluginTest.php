@@ -1,11 +1,11 @@
 <?php
 
 /*
- * UserFrosting Assets (http://www.userfrosting.com)
+ * UserFrosting Framework (http://www.userfrosting.com)
  *
- * @link      https://github.com/userfrosting/assets
- * @copyright Copyright (c) 2013-2019 Alexander Weissman, Jordan Mele
- * @license   https://github.com/userfrosting/assets/blob/master/LICENSE.md (MIT License)
+ * @link      https://github.com/userfrosting/framework
+ * @copyright Copyright (c) 2013-2021 Alexander Weissman, Louis Charette, Jordan Mele
+ * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
 namespace UserFrosting\Tests\Assets;
