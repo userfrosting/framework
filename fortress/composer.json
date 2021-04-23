@@ -1,0 +1,34 @@
+{
+    "name": "userfrosting/fortress",
+    "type": "library",
+    "description": "A PHP library for whitelisting, validating, and canonicalizing HTTP request data against a JSON Schema",
+    "keywords": ["userfrosting", "transformation", "validation", "whitelisting"],
+    "homepage": "https://github.com/userfrosting/fortress",
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name": "Alexander Weissman",
+            "homepage": "https://alexanderweissman.com"
+        }
+    ],
+    "require": {
+        "ezyang/htmlpurifier": "^4.7.0",
+        "php": ">=7.1",
+        "userfrosting/i18n": "~4.5.0",
+        "vlucas/valitron": "^1.2.3"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.13",
+        "phpunit/phpunit": "^7.5 | ^8.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "UserFrosting\\Fortress\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "UserFrosting\\Fortress\\Tests\\": "tests"
+        }
+    }
+}

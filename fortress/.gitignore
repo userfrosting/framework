@@ -1,0 +1,7 @@
+vendor
+composer.lock
+.DS_Store
+*.komodoproject
+.php_cs.cache
+_meta
+.phpunit.result.cache
