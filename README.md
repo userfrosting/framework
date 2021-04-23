@@ -22,6 +22,6 @@
 [framework-releases]: https://github.com/userfrosting/framework/releases
 [framework-travis]: https://github.com/userfrosting/framework/actions
 [framework-codecov]: https://codecov.io/gh/userfrosting/framework
-[framework-style-master]: https://github.styleci.io/repos/60137523/shield?branch=master&style=flat
-[framework-style-develop]: https://github.styleci.io/repos/60137523/shield?branch=develop&style=flat
-[framework-style]: https://github.styleci.io/repos/60137523
+[framework-style-master]: https://github.styleci.io/repos/360994768/shield?branch=master&style=flat
+[framework-style-develop]: https://github.styleci.io/repos/360994768/shield?branch=develop&style=flat
+[framework-style]: https://github.styleci.io/repos/360994768
