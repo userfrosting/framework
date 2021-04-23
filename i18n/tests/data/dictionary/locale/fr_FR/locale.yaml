@@ -1,0 +1,8 @@
+name: French
+regional: Français
+authors:
+  - Foo Bar
+  - Bar Foo
+plural_rule: 2
+parents:
+  - en_US
