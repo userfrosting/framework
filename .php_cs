@@ -1,10 +1,10 @@
 <?php
 
-$header = 'UserFrosting Fortress (http://www.userfrosting.com)
+$header = 'UserFrosting Framework (http://www.userfrosting.com)
 
-@link      https://github.com/userfrosting/fortress
-@copyright Copyright (c) 2013-2019 Alexander Weissman
-@license   https://github.com/userfrosting/fortress/blob/master/LICENSE.md (MIT License)';
+@link      https://github.com/userfrosting/framework
+@copyright Copyright (c) 2013-2021 Alexander Weissman, Louis Charette, Jordan Mele
+@license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)';
 
 $rules = [
     '@PSR2'                                       => true,
