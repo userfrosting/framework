@@ -1,0 +1,27 @@
+{
+    "name": "userfrosting/config",
+    "type": "library",
+    "description": "Configuration module for UserFrosting",
+    "keywords": ["userfrosting", "config", "configuration"],
+    "homepage": "https://github.com/userfrosting/config",
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name": "Alexander Weissman",
+            "homepage": "https://alexanderweissman.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "userfrosting/support": "~4.5.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.13",
+        "phpunit/phpunit": "^7.5 | ^8.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "UserFrosting\\Config\\": "src"
+        }
+    }
+}
