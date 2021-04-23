@@ -43,6 +43,9 @@ jobs:
       if: ${{ matrix.os == 'ubuntu-latest' }}
       uses: niden/actions-memcached@v7
 
+    - name: Configure matchers for PHPUnit
+      run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
     - name: Execute tests via PHPUnit
       run: vendor/bin/phpunit
 
