@@ -29,7 +29,7 @@ class TaggableFileDriverTest extends TestCase
     public function setup(): void
     {
         $this->file = new Filesystem();
-        $this->path = './tests/cache';
+        $this->path = __DIR__ . '/store';
     }
 
     public function testTagKeyGeneratesPrefixedKey()

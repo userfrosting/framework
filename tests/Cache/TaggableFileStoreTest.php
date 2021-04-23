@@ -18,7 +18,7 @@ class TaggableFileStoreTest extends StoreTestCase
 
     public function setup(): void
     {
-        $this->storage = './tests/cache/TaggableFileStore';
+        $this->storage = __DIR__ . '/store/TaggableFileStore';
     }
 
     /** {@inheritdoc} */

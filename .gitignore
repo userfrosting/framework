@@ -1,8 +1,14 @@
+# Code stuff
 vendor
 composer.lock
-.DS_Store
-*.komodoproject
 .php_cs.cache
 _meta
 .phpunit.result.cache
+
+# OS & Editors
+.DS_Store
+*.komodoproject
 .vscode
+
+# Testing artifacts
+tests/Cache/store
