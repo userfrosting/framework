@@ -8,7 +8,7 @@
  * @license   https://github.com/userfrosting/fortress/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Fortress\Tests;
+namespace UserFrosting\Tests\Fortress;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;

@@ -8,7 +8,7 @@
  * @license   https://github.com/userfrosting/support/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Support\Tests\DotenvEditor;
+namespace UserFrosting\Tests\Support\DotenvEditor;
 
 use Jackiedo\DotenvEditor\Exceptions\FileNotFoundException;
 use PHPUnit\Framework\TestCase;

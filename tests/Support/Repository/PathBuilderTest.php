@@ -8,7 +8,7 @@
  * @license   https://github.com/userfrosting/support/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Support\Tests\Repository;
+namespace UserFrosting\Tests\Support\Repository;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Support\Repository\PathBuilder\SimpleGlobBuilder;

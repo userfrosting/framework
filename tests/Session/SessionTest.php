@@ -8,7 +8,7 @@
  * @license   https://github.com/userfrosting/session/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Session\Tests;
+namespace UserFrosting\Tests\Session;
 
 use Illuminate\Session\ExistenceAwareInterface;
 use PHPUnit\Framework\TestCase;

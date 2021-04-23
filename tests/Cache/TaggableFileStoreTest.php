@@ -8,7 +8,7 @@
  * @license   https://github.com/userfrosting/cache/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Cache\Tests;
+namespace UserFrosting\Tests\Cache;
 
 use UserFrosting\Cache\TaggableFileStore;
 

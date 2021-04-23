@@ -8,7 +8,7 @@
  * @license   https://github.com/userfrosting/UniformResourceLocator/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\UniformResourceLocator\Tests;
+namespace UserFrosting\Tests\UniformResourceLocator;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\Normalizer;

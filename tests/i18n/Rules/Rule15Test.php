@@ -8,7 +8,7 @@
  * @license   https://github.com/userfrosting/i18n/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\I18n\Tests\Rules;
+namespace UserFrosting\Tests\I18n\Rules;
 
 class Rule15Test extends RuleBase
 {

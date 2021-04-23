@@ -8,7 +8,7 @@
  * @license   https://github.com/userfrosting/support/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Support\Tests\Exception;
+namespace UserFrosting\Tests\Support\Exception;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Support\Exception\HttpException;

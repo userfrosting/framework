@@ -8,7 +8,7 @@
  * @license   https://github.com/userfrosting/fortress/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Fortress\Tests;
+namespace UserFrosting\Tests\Fortress;
 
 use UserFrosting\I18n\DictionaryInterface;
 use UserFrosting\I18n\LocaleInterface;
