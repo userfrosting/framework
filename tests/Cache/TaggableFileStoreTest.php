@@ -11,6 +11,7 @@
 namespace UserFrosting\Tests\Cache;
 
 use UserFrosting\Cache\TaggableFileStore;
+use UserFrosting\UniformResourceLocator\Normalizer;
 
 class TaggableFileStoreTest extends StoreTestCase
 {
@@ -18,7 +19,7 @@ class TaggableFileStoreTest extends StoreTestCase
 
     public function setup(): void
     {
-        $this->storage = __DIR__.'/store';
+        $this->storage = Normalizer::normalizePath(__DIR__.'/store');
     }
 
     /** {@inheritdoc} */
