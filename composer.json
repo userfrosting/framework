@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "php": ">=7.4",
+        "php": "^7.3 | ^8.0",
         "rockettheme/toolbox": "^1.5",
         "illuminate/support": "^8.5",
         "illuminate/filesystem": "^8.5",
