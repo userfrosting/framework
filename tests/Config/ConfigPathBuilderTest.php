@@ -10,6 +10,7 @@
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Config\ConfigPathBuilder;
+use UserFrosting\UniformResourceLocator\Normalizer;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
 
 class ConfigPathBuilderTest extends TestCase
@@ -20,7 +21,7 @@ class ConfigPathBuilderTest extends TestCase
 
     public function setUp(): void
     {
-        $this->basePath = __DIR__.'/data';
+        $this->basePath = Normalizer::normalizePath(__DIR__.'/data');
         $this->locator = new ResourceLocator($this->basePath);
 
         // Add them as locations to simulate how they are added in SprinkleManager
@@ -39,9 +40,9 @@ class ConfigPathBuilderTest extends TestCase
         $paths = $builder->buildPaths();
 
         $this->assertEquals([
-            $this->basePath.'/core/config/default.php',
-            $this->basePath.'/account/config/default.php',
-            $this->basePath.'/admin/config/default.php',
+            $this->basePath.'core/config/default.php',
+            $this->basePath.'account/config/default.php',
+            $this->basePath.'admin/config/default.php',
         ], $paths);
     }
 
@@ -54,12 +55,12 @@ class ConfigPathBuilderTest extends TestCase
         $paths = $builder->buildPaths('production');
 
         $this->assertEquals([
-            $this->basePath.'/core/config/default.php',
-            $this->basePath.'/core/config/production.php',
-            $this->basePath.'/account/config/default.php',
-            $this->basePath.'/account/config/production.php',
-            $this->basePath.'/admin/config/default.php',
-            $this->basePath.'/admin/config/production.php',
+            $this->basePath.'core/config/default.php',
+            $this->basePath.'core/config/production.php',
+            $this->basePath.'account/config/default.php',
+            $this->basePath.'account/config/production.php',
+            $this->basePath.'admin/config/default.php',
+            $this->basePath.'admin/config/production.php',
         ], $paths);
     }
 }
