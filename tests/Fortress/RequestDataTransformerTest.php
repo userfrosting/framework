@@ -247,4 +247,25 @@ class RequestDataTransformerTest extends TestCase
 
         $this->assertEquals($transformedData, $result);
     }
+
+    /**
+     * default transformer.
+     */
+    public function testUnsuportedTransformation()
+    {
+        // Act
+        $rawInput = [
+            'kitties' => '<b>My Super-Important Test</b>',
+        ];
+
+        $result = $this->transformer->transform($rawInput, 'skip');
+
+        // Assert
+        $transformedData = [
+            'email'   => 'david@owlfancy.com',
+            'kitties' => '<b>My Super-Important Test</b>',
+        ];
+
+        $this->assertEquals($transformedData, $result);
+    }
 }

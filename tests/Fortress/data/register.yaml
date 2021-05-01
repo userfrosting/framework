@@ -58,6 +58,10 @@ puppies:
     transformations:
         - purify
 
+kitties: 
+    transformations:
+        - kitty
+
 phone: 
     validators: 
         telephone: 
