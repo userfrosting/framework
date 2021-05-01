@@ -148,4 +148,15 @@ class GulpBundleAssetsRawBundlesTest extends TestCase
         $this->expectException(\OutOfRangeException::class);
         $bundles->getJsBundleAssets('owls');
     }
+
+    /**
+     * Tests that an `InvalidBundlesFileException` is trown if bundle is not an array of string.
+     * Note that the exception won't be `InvalidArgumentException`, as that exception in `standardiseBundle`
+     * is catched in `__construct` and retrown.
+     */
+    public function testNonStringAssets()
+    {
+        $this->expectException(InvalidBundlesFileException::class);
+        $bundles = new GulpBundleAssetsRawBundles(__DIR__.'/../data/bundle.config.not-array.json');
+    }
 }
