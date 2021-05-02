@@ -60,4 +60,16 @@ class FileTagSet extends TagSet
 
         return parent::resetTag($name);
     }
+
+    /**
+     * Get a unique namespace that changes when any of the tags are flushed.
+     * N.B.: Default Laravel separator is `|`, but it will result in 
+     * "no such file or directory" on Windows. So we use our own.
+     *
+     * @return string
+     */
+    public function getNamespace()
+    {
+        return implode('+', $this->tagIds());
+    }
 }
