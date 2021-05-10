@@ -9,10 +9,10 @@ $header = 'UserFrosting Framework (http://www.userfrosting.com)
 $rules = [
     '@PSR2'                                       => true,
     'array_syntax'                                => ['syntax' => 'short'],
-    'binary_operator_spaces'                      => ['align_double_arrow' => true, 'align_equals' => false],
+    'binary_operator_spaces'                      => ['operators' => ['=>' => 'align', '=' => 'single_space']],
     'blank_line_after_namespace'                  => true,
     'blank_line_after_opening_tag'                => true,
-    'blank_line_before_return'                    => true,
+    'blank_line_before_statement'                 => ['statements' => ['return']],
     'braces'                                      => true,
     'cast_spaces'                                 => true,
     'class_definition'                            => true,
@@ -22,16 +22,15 @@ $rules = [
     'full_opening_tag'                            => true,
     'function_declaration'                        => true,
     'function_typehint_space'                     => true,
-    'hash_to_slash_comment'                       => true,
+    'single_line_comment_style'                   => ['comment_types' => ['hash']],
     'heredoc_to_nowdoc'                           => true,
     'include'                                     => true,
     'indentation_type'                            => true,
     'line_ending'                                 => true,
     'lowercase_cast'                              => true,
-    'lowercase_constants'                         => true,
+    'constant_case'                               => ['case' => 'lower'],
     'lowercase_keywords'                          => true,
     'method_argument_space'                       => true,
-    'method_separation'                           => true,
     'multiline_whitespace_before_semicolons'      => true,
     'native_function_casing'                      => true,
     'new_with_braces'                             => true,
@@ -65,17 +64,18 @@ $rules = [
     'object_operator_without_whitespace'          => true,
     'phpdoc_align'                                => true,
     'phpdoc_indent'                               => true,
-    'phpdoc_inline_tag'                           => true,
+    'general_phpdoc_tag_rename'                   => true,
+    'phpdoc_inline_tag_normalizer'                => true,
+    'phpdoc_tag_type'                             => ['tags' => ['inheritdoc' => 'inline']],
     'phpdoc_no_empty_return'                      => true,
     'phpdoc_no_access'                            => true,
-    'phpdoc_no_alias_tag'                         => ['type' => 'var'],
     'phpdoc_no_package'                           => true,
     'phpdoc_order'                                => true,
     'phpdoc_scalar'                               => true,
     'phpdoc_single_line_var_spacing'              => true,
     'phpdoc_trim'                                 => true,
     'phpdoc_types'                                => true,
-    'psr4'                                        => true,
+    'psr_autoloading'                             => true,
     'short_scalar_cast'                           => true,
     'simplified_null_return'                      => true,
     'single_blank_line_at_eof'                    => true,
@@ -102,9 +102,8 @@ $rules = [
 $finder = PhpCsFixer\Finder::create()
     ->in([__DIR__ . '/src', __DIR__ . '/tests']);
 
-return PhpCsFixer\Config::create()
-    ->setRules($rules)
+$config = new PhpCsFixer\Config();
+return $config->setRules($rules)
     ->setFinder($finder)
     ->setUsingCache(true)
-    ->setCacheFile(__DIR__.'/.php_cs.cache')
     ->setRiskyAllowed(true);
