@@ -45,9 +45,6 @@
         "mockery/mockery": "^1.2",
         "victorjonsson/markdowndocs": "^1.3"
     },
-    "suggest": {
-        "slim/slim": "Required if using class UserFrosting\\Assets\\ServeAsset\\SlimServeAsset to serve development stage frontend assets."
-    },
     "autoload": {
         "files" : [
             "src/defines.php"
