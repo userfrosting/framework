@@ -17,7 +17,7 @@ class TestSprinkle implements SprinkleReceipe
     /**
      * {@inheritDoc}
      */
-    public function getName(): string
+    public static function getName(): string
     {
         return 'Test Sprinkle';
     }
@@ -25,7 +25,7 @@ class TestSprinkle implements SprinkleReceipe
     /**
      * {@inheritDoc}
      */
-    public function getPath(): string
+    public static function getPath(): string
     {
         return __DIR__ . '/data';
     }
@@ -33,7 +33,7 @@ class TestSprinkle implements SprinkleReceipe
     /**
      * {@inheritDoc}
      */
-    public function getBakeryCommands(): array
+    public static function getBakeryCommands(): array
     {
         return [];
     }
@@ -41,7 +41,7 @@ class TestSprinkle implements SprinkleReceipe
     /**
      * {@inheritDoc}
      */
-    public function getSprinkles(): array
+    public static function getSprinkles(): array
     {
         return [];
     }

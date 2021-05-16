@@ -11,6 +11,7 @@
 namespace UserFrosting\Exceptions;
 
 use LogicException;
+use UserFrosting\Sprinkle\SprinkleReceipe;
 
 /**
  * SprinkleClassException.
@@ -19,4 +20,5 @@ use LogicException;
  */
 class SprinkleClassException extends LogicException
 {
+    protected $message = 'Sprinkle class must implement ' . SprinkleReceipe::class;
 }

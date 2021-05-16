@@ -22,8 +22,7 @@ class UserFrostingTest extends TestCase
 {
     public function testConstructor(): UserFrosting
     {
-        $userfrosting = new UserFrosting(new TestSprinkle());
-        $userfrosting->init();
+        $userfrosting = new UserFrosting(TestSprinkle::class);
         $this->assertInstanceOf(UserFrosting::class, $userfrosting);
 
         return $userfrosting;

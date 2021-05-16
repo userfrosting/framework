@@ -10,6 +10,9 @@
 
 namespace UserFrosting\Sprinkle;
 
+use ReflectionClass;
+use UserFrosting\Exceptions\SprinkleClassException;
+
 /**
  * Sprinkle manager class.
  *
@@ -26,11 +29,12 @@ class SprinkleManager
     /**
      * Constructor.
      *
-     * @param SprinkleReceipe $mainSprinkle
+     * @param string $mainSprinkle
      */
     public function __construct(
-        protected SprinkleReceipe $mainSprinkle
+        protected string $mainSprinkle
     ) {
+        $this->loadSprinkles();
     }
 
     /**
@@ -39,7 +43,7 @@ class SprinkleManager
      *
      * @return static
      */
-    public function loadSprinkles(): static
+    public function loadSprinkles(): void
     {
         // Get Sprinkles
         $this->sprinkles = $this->getDependentSprinkles($this->mainSprinkle);
@@ -54,8 +58,6 @@ class SprinkleManager
             //     $this->ci->eventDispatcher->addSubscriber($sprinkle);
             // }
         }
-
-        return $this;
     }
 
     /**
@@ -68,7 +70,7 @@ class SprinkleManager
         $commands = [];
 
         foreach ($this->sprinkles as $sprinkle) {
-            $commands = array_merge($commands, $sprinkle->getBakeryCommands());
+            $commands = array_merge($commands, $sprinkle::getBakeryCommands());
         }
 
         return $commands;
@@ -87,19 +89,45 @@ class SprinkleManager
     /**
      * Return a list for the specified sprinkle and it's dependent, recursilvey.
      *
-     * @param SprinkleReceipe $sprinkle
+     * @param string $sprinkle
      *
      * @return SprinkleReceipe[]
      */
-    protected function getDependentSprinkles(SprinkleReceipe $sprinkle): array
+    protected function getDependentSprinkles(string $sprinkle): array
     {
+        // Validate class
+        if (!$this->validateClassIsSprinkleReceipe($sprinkle)) {
+            $e = new SprinkleClassException();
+            throw $e;
+        }
+
+        // Add top sprinkle to return
         $sprinkles = [$sprinkle];
 
-        foreach ($sprinkle->getSprinkles() as $dependent) {
+        // Merge dependent sprinkles
+        foreach ($sprinkle::getSprinkles() as $dependent) {
             $sprinkles = array_merge($sprinkles, $this->getDependentSprinkles($dependent));
         }
 
-        return $sprinkles;
+        // Remove duplicate and return
+        return array_unique($sprinkles);
+    }
+
+    /**
+     * Validate the class implements SprinkleReceipe.
+     *
+     * @param string $class
+     * 
+     * @return boolean True/False if class implements SprinkleReceipe
+     */
+    protected function validateClassIsSprinkleReceipe(string $class): bool
+    {
+        $class = new ReflectionClass($class);
+        if ($class->implementsInterface(SprinkleReceipe::class)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

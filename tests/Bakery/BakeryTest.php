@@ -10,15 +10,12 @@
 
 namespace UserFrosting\Tests\Bakery;
 
-use Mockery as m;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Application;
 use UserFrosting\Bakery\Bakery;
 use UserFrosting\Bakery\CommandReceipe;
 use UserFrosting\Exceptions\BakeryClassException;
-use UserFrosting\Sprinkle\SprinkleReceipe;
 use UserFrosting\Tests\TestSprinkle;
 
 /**
@@ -26,12 +23,9 @@ use UserFrosting\Tests\TestSprinkle;
  */
 class BakeryTest extends TestCase
 {
-    use MockeryPHPUnitIntegration;
-
     public function testConstructor(): Bakery
     {
-        $bakery = new Bakery(new TestSprinkle());
-        $bakery->init();
+        $bakery = new Bakery(TestSprinkle::class);
         $this->assertInstanceOf(Bakery::class, $bakery);
 
         return $bakery;
@@ -51,13 +45,8 @@ class BakeryTest extends TestCase
      */
     public function testCommandRegistration(): void
     {
-        $mockCommand = new CommandStub();
-        $mainSprinkle = m::mock(SprinkleReceipe::class);
-        $mainSprinkle->shouldReceive('getSprinkles')->once()->andReturn([]);
-        $mainSprinkle->shouldReceive('getBakeryCommands')->once()->andReturn([$mockCommand]);
-
-        $bakery = new Bakery($mainSprinkle);
-        $bakery->init();
+        $bakery = new Bakery(SprinkleStub::class);
+        $this->assertInstanceOf(Bakery::class, $bakery);
 
         // TODO : Test commmand has been registered.
     }
@@ -67,14 +56,28 @@ class BakeryTest extends TestCase
      */
     public function testBadCommandException(): void
     {
-        $badCommand = new \stdClass();
-        $mainSprinkle = m::mock(SprinkleReceipe::class);
-        $mainSprinkle->shouldReceive('getSprinkles')->once()->andReturn([]);
-        $mainSprinkle->shouldReceive('getBakeryCommands')->once()->andReturn([$badCommand]);
-
-        $bakery = new Bakery($mainSprinkle);
         $this->expectException(BakeryClassException::class);
-        $bakery->init();
+        $bakery = new Bakery(BadCommandSprinkleStub::class);
+    }
+}
+
+class SprinkleStub extends TestSprinkle
+{
+    public static function getBakeryCommands(): array
+    {
+        return [
+            CommandStub::class,
+        ];
+    }
+}
+
+class BadCommandSprinkleStub extends TestSprinkle
+{
+    public static function getBakeryCommands(): array
+    {
+        return [
+            \stdClass::class,
+        ];
     }
 }
 

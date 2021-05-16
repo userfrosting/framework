@@ -20,25 +20,25 @@ interface SprinkleReceipe
      *
      * @return string
      */
-    public function getName(): string;
+    public static function getName(): string;
 
     /**
      * Return the Sprinkle dir path.
      *
      * @return string
      */
-    public function getPath(): string;
+    public static function getPath(): string;
     /**
      * Undocumented function.
      *
      * @return array[string]SprinkleReceipe
      */
-    public function getBakeryCommands(): array;
+    public static function getBakeryCommands(): array;
 
     /**
      * Return dependent sprinkles.
      *
      * @return array[string]SprinkleReceipe
      */
-    public function getSprinkles(): array;
+    public static function getSprinkles(): array;
 }

@@ -10,29 +10,27 @@
 
 namespace UserFrosting\Tests\Unit;
 
-use Mockery as m;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Command\Command;
+use UserFrosting\Bakery\CommandReceipe;
+use UserFrosting\Exceptions\SprinkleClassException;
 use UserFrosting\Sprinkle\SprinkleManager;
-use UserFrosting\Sprinkle\SprinkleReceipe;
 use UserFrosting\Tests\TestSprinkle;
 
 class SprinkleManagerTest extends TestCase
 {
-    use MockeryPHPUnitIntegration;
-
     public function testGetSprinklesWithNoDependent(): void
     {
-        $mockSprinkle = m::mock(SprinkleReceipe::class);
-        $mockSprinkle->shouldReceive('getSprinkles')->once()->andReturn([]);
+        $manager = new SprinkleManager(CoreStub::class);
+        $this->assertSame([CoreStub::class], $manager->getSprinkles());
+    }
 
-        $manager = new SprinkleManager($mockSprinkle);
-        $manager->loadSprinkles();
-
-        // Assertions
-        $this->assertInstanceOf(SprinkleManager::class, $manager);
-        $this->assertSame([$mockSprinkle], $manager->getSprinkles());
+    /**
+     * @depends testGetSprinklesWithNoDependent
+     */
+    public function testBadClassSprinkle(): void
+    {
+        $this->expectException(SprinkleClassException::class);
+        $manager = new SprinkleManager(\stdClass::class);
     }
 
     /**
@@ -40,9 +38,8 @@ class SprinkleManagerTest extends TestCase
      */
     public function testBadClassSprinkleAsDependent(): void
     {
-        $manager = new SprinkleManager(new NotSprinkleStub());
-        $this->expectException(\TypeError::class);
-        $manager->loadSprinkles();
+        $this->expectException(SprinkleClassException::class);
+        $manager = new SprinkleManager(NotSprinkleStub::class);
     }
 
     /**
@@ -50,41 +47,14 @@ class SprinkleManagerTest extends TestCase
      */
     public function testGetSprinklesWithManyDependent(): void
     {
-        $manager = new SprinkleManager(new MainStub());
-        $manager->loadSprinkles();
-
-        // Assert getSprinkles
+        $manager = new SprinkleManager(MainStub::class);
         $this->assertCount(4, $manager->getSprinkles());
-    }
-
-    /**
-     * @depends testGetSprinklesWithManyDependent
-     */
-    public function testGetSprinklesWithManyMockedDependent(): void
-    {
-        // Create 4 mock sprinkles
-        $mainSprinkle = m::mock(SprinkleReceipe::class);
-        $coreSprinkle = m::mock(SprinkleReceipe::class);
-        $accountSprinkle = m::mock(SprinkleReceipe::class);
-        $adminSprinkle = m::mock(SprinkleReceipe::class);
-
-        // Add dependencies to sprinkles
-        $mainSprinkle->shouldReceive('getSprinkles')->once()->andReturn([
-            $coreSprinkle,
-            $adminSprinkle,
-            $accountSprinkle,
-        ]);
-        $coreSprinkle->shouldReceive('getSprinkles')->andReturn([]);
-        $accountSprinkle->shouldReceive('getSprinkles')->andReturn([]);
-        $adminSprinkle->shouldReceive('getSprinkles')->andReturn([]);
-
-        $manager = new SprinkleManager($mainSprinkle);
-        $manager->loadSprinkles();
-
-        // Assert getSprinkles
-        $sprinkles = $manager->getSprinkles();
-        $this->assertCount(4, $sprinkles);
-        $this->assertSame([$mainSprinkle, $coreSprinkle, $adminSprinkle, $accountSprinkle], $sprinkles);
+        $this->assertSame([
+            MainStub::class,
+            CoreStub::class,
+            AdminStub::class,
+            AccountStub::class,
+        ], $manager->getSprinkles());
     }
 
     /**
@@ -92,51 +62,37 @@ class SprinkleManagerTest extends TestCase
      */
     public function testGetSprinklesWithNestedDependent(): void
     {
-        $manager = new SprinkleManager(new MainNestedStub());
-        $manager->loadSprinkles();
-
-        // Assert getSprinkles
+        $manager = new SprinkleManager(MainNestedStub::class);
         $this->assertCount(4, $manager->getSprinkles());
+        $this->assertSame([
+            MainNestedStub::class,
+            CoreStub::class,
+            AdminNestedStub::class,
+            AccountStub::class,
+        ], $manager->getSprinkles());
     }
 
-    public function testGetSprinklesWithNestedMockDependent(): void
+    /**
+     * @depends testGetSprinklesWithNestedDependent
+     */
+    public function testGetSprinklesWithDuplicateSprinkles(): void
     {
-        // Create 4 mock sprinkles
-        $mainSprinkle = m::mock(SprinkleReceipe::class);
-        $coreSprinkle = m::mock(SprinkleReceipe::class);
-        $accountSprinkle = m::mock(SprinkleReceipe::class);
-        $adminSprinkle = m::mock(SprinkleReceipe::class);
-
-        // Add dependencies to sprinkles
-        $adminSprinkle->shouldReceive('getSprinkles')->once()->andReturn([
-            $accountSprinkle,
-        ]);
-        $mainSprinkle->shouldReceive('getSprinkles')->once()->andReturn([
-            $coreSprinkle,
-            $adminSprinkle,
-        ]);
-        $coreSprinkle->shouldReceive('getSprinkles')->andReturn([]);
-        $accountSprinkle->shouldReceive('getSprinkles')->andReturn([]);
-
-        $manager = new SprinkleManager($mainSprinkle);
-        $manager->loadSprinkles();
-
-        // Assert getSprinkles
-        $sprinkles = $manager->getSprinkles();
-        $this->assertCount(4, $sprinkles);
-        $this->assertSame([$mainSprinkle, $coreSprinkle, $adminSprinkle, $accountSprinkle], $sprinkles);
+        $manager = new SprinkleManager(MainDuplicateStub::class);
+        $this->assertCount(4, $manager->getSprinkles());
+        $this->assertSame([
+            MainDuplicateStub::class,
+            CoreStub::class,
+            AdminNestedStub::class,
+            AccountStub::class,
+        ], $manager->getSprinkles());
     }
 
+    /**
+     * @depends testGetSprinklesWithNoDependent
+     */
     public function testGetBakeryCommandsWhenEmpty(): void
     {
-        $mockSprinkle = m::mock(SprinkleReceipe::class);
-        $mockSprinkle->shouldReceive('getSprinkles')->once()->andReturn([]);
-        $mockSprinkle->shouldReceive('getBakeryCommands')->once()->andReturn([]);
-
-        $manager = new SprinkleManager($mockSprinkle);
-        $manager->loadSprinkles();
-
-        // Assertions
+        $manager = new SprinkleManager(CoreStub::class);
         $this->assertSame([], $manager->getBakeryCommands());
     }
 
@@ -145,23 +101,8 @@ class SprinkleManagerTest extends TestCase
      */
     public function testGetBakeryCommands(): void
     {
-        $mockCommand = m::mock(Command::class);
-
-        $mainSprinkle = m::mock(SprinkleReceipe::class);
-        $coreSprinkle = m::mock(SprinkleReceipe::class);
-
-        $coreSprinkle->shouldReceive('getSprinkles')->andReturn([]);
-        $mainSprinkle->shouldReceive('getSprinkles')->once()->andReturn([
-            $coreSprinkle,
-        ]);
-        $coreSprinkle->shouldReceive('getBakeryCommands')->once()->andReturn([$mockCommand]);
-        $mainSprinkle->shouldReceive('getBakeryCommands')->once()->andReturn([]);
-
-        $manager = new SprinkleManager($mainSprinkle);
-        $manager->loadSprinkles();
-
-        // Assertions
-        $this->assertSame([$mockCommand], $manager->getBakeryCommands());
+        $manager = new SprinkleManager(AdminStub::class);
+        $this->assertSame([CommandStub::class], $manager->getBakeryCommands());
     }
 
     /**
@@ -170,16 +111,10 @@ class SprinkleManagerTest extends TestCase
      */
     public function testGetBakeryCommandsWithBadCommand(): void
     {
-        $mockCommand = new \stdClass();
-        $mainSprinkle = m::mock(SprinkleReceipe::class);
-        $mainSprinkle->shouldReceive('getSprinkles')->once()->andReturn([]);
-        $mainSprinkle->shouldReceive('getBakeryCommands')->once()->andReturn([$mockCommand]);
-
-        $manager = new SprinkleManager($mainSprinkle);
-        $manager->loadSprinkles();
-
-        // Assertions
-        $this->assertSame([$mockCommand], $manager->getBakeryCommands());
+        $manager = new SprinkleManager(AccountStub::class);
+        $this->assertSame([
+            \stdClass::class,
+        ], $manager->getBakeryCommands());
     }
 }
 
@@ -189,51 +124,83 @@ class CoreStub extends TestSprinkle
 
 class AdminStub extends TestSprinkle
 {
+    public static function getBakeryCommands(): array
+    {
+        return [
+            CommandStub::class,
+        ];
+    }
 }
 
 class AdminNestedStub extends TestSprinkle
 {
-    public function getSprinkles(): array
+    public static function getSprinkles(): array
     {
         return [
-            new AccountStub(),
+            AccountStub::class,
         ];
     }
 }
 
 class AccountStub extends TestSprinkle
 {
+    public static function getBakeryCommands(): array
+    {
+        return [
+            \stdClass::class,
+        ];
+    }
 }
 
 class MainStub extends TestSprinkle
 {
-    public function getSprinkles(): array
+    public static function getSprinkles(): array
     {
         return [
-            new CoreStub(),
-            new AdminStub(),
-            new AccountStub(),
+            CoreStub::class,
+            AdminStub::class,
+            AccountStub::class,
         ];
     }
 }
 
 class MainNestedStub extends TestSprinkle
 {
-    public function getSprinkles(): array
+    public static function getSprinkles(): array
     {
         return [
-            new CoreStub(),
-            new AdminNestedStub(),
+            CoreStub::class,
+            AdminNestedStub::class,
+        ];
+    }
+}
+
+class MainDuplicateStub extends TestSprinkle
+{
+    public static function getSprinkles(): array
+    {
+        return [
+            CoreStub::class,
+            AdminNestedStub::class,
+            AccountStub::class,
         ];
     }
 }
 
 class NotSprinkleStub extends TestSprinkle
 {
-    public function getSprinkles(): array
+    public static function getSprinkles(): array
     {
         return [
-            new \stdClass(),
+            \stdClass::class,
         ];
+    }
+}
+
+class CommandStub extends CommandReceipe
+{
+    protected function configure()
+    {
+        $this->setName('stub');
     }
 }

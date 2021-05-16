@@ -16,7 +16,6 @@ use Slim\App;
 use Slim\Container;
 use Symfony\Component\Console\Application;
 use UserFrosting\Sprinkle\SprinkleManager;
-use UserFrosting\Sprinkle\SprinkleReceipe;
 
 /**
  * UserFrosting Main Class.
@@ -41,21 +40,20 @@ class UserFrosting
     /**
      * Constructor.
      *
-     * @param SprinkleReceipe $ngredients
+     * @param string $mainSprinkle
      */
     public function __construct(
-        protected SprinkleReceipe $mainSprinkle
+        protected string $mainSprinkle
     ) {
+        $this->init();
     }
 
     //TODO : set/get default sprinkle
 
     /**
      * Initialize the application. Load up Sprinkles and the base app.
-     *
-     * @return static
      */
-    public function init(): static
+    public function init(): void
     {
         // First, we create our DI container
         $this->ci = $this->createContainer();
@@ -78,8 +76,6 @@ class UserFrosting
 
         // Add global middleware
         // $this->fireEvent('onAddGlobalMiddleware', $slimAppEvent);
-
-        return $this;
     }
 
     /**
@@ -163,8 +159,8 @@ class UserFrosting
         /** @var \UserFrosting\System\Sprinkle\SprinkleManager */
         // $sprinkleManager = $this->ci->sprinkleManager;
         // TODO : Move to services
+
         $this->sprinkleManager = new SprinkleManager($this->mainSprinkle);
-        $this->sprinkleManager->loadSprinkles();
 
         // $this->fireEvent('onSprinklesInitialized');
 

@@ -23,14 +23,12 @@ class Bakery extends UserFrosting
     /**
      * {@inheritDoc}
      */
-    public function init(): static
+    public function init(): void
     {
         parent::init();
 
         // Load Bakery commands into Symfony Console Application
         $this->loadCommands();
-
-        return $this;
     }
 
     /**

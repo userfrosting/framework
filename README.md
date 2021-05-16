@@ -1,4 +1,4 @@
-# UserFrosting 4.6 Framework
+# UserFrosting 5.0 Framework
 
 [![Latest Version](https://img.shields.io/github/release/userfrosting/framework.svg)](https://github.com/userfrosting/framework/releases)
 ![PHP Version](https://img.shields.io/packagist/php-v/userfrosting/framework.svg?color=brightgreen)
