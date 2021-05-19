@@ -10,16 +10,20 @@
 
 namespace UserFrosting\Bakery;
 
-use Slim\App;
 use Symfony\Component\Console\Application;
+use UserFrosting\Cupcake;
 use UserFrosting\Exceptions\BakeryClassException;
-use UserFrosting\UserFrosting;
 
 /**
  * Base class for UserFrosting Bakery CLI tools.
  */
-class Bakery extends UserFrosting
+class Bakery extends Cupcake
 {
+    /**
+     * @var Application The Slim application instance.
+     */
+    protected $app;
+
     /**
      * {@inheritDoc}
      */
@@ -32,11 +36,21 @@ class Bakery extends UserFrosting
     }
 
     /**
+     * Return the underlying Slim App instance, if available.
+     *
+     * @return Application
+     */
+    public function getApp(): Application
+    {
+        return $this->app;
+    }
+
+    /**
      * Create Symfony Console App.
      *
-     * @return App|Application
+     * @return Application
      */
-    protected function createApp(): App | Application
+    protected function createApp(): Application
     {
         $app = new Application('UserFrosting Bakery', \UserFrosting\VERSION);
 

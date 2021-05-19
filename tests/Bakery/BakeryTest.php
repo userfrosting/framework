@@ -16,7 +16,7 @@ use Symfony\Component\Console\Application;
 use UserFrosting\Bakery\Bakery;
 use UserFrosting\Bakery\CommandReceipe;
 use UserFrosting\Exceptions\BakeryClassException;
-use UserFrosting\Tests\TestSprinkle;
+use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
 /**
  * Tests Bakery class.
@@ -50,6 +50,8 @@ class BakeryTest extends TestCase
 
         // TODO : Test commmand has been registered.
     }
+
+    // TODO : Test a basic Hello World Command
 
     /**
      * @depends testConstructor

@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 use UserFrosting\Bakery\CommandReceipe;
 use UserFrosting\Exceptions\SprinkleClassException;
 use UserFrosting\Sprinkle\SprinkleManager;
-use UserFrosting\Tests\TestSprinkle;
+use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
 class SprinkleManagerTest extends TestCase
 {
@@ -116,6 +116,8 @@ class SprinkleManagerTest extends TestCase
             \stdClass::class,
         ], $manager->getBakeryCommands());
     }
+
+    // TODO : Test class that doesn't exist
 }
 
 class CoreStub extends TestSprinkle

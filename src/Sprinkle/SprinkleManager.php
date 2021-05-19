@@ -117,8 +117,8 @@ class SprinkleManager
      * Validate the class implements SprinkleReceipe.
      *
      * @param string $class
-     * 
-     * @return boolean True/False if class implements SprinkleReceipe
+     *
+     * @return bool True/False if class implements SprinkleReceipe
      */
     protected function validateClassIsSprinkleReceipe(string $class): bool
     {
@@ -128,6 +128,26 @@ class SprinkleManager
         }
 
         return false;
+    }
+
+    // TEMP METHOD
+    public function registerRoutes($app): void
+    {
+        foreach ($this->sprinkles as $sprinkle) {
+            foreach ($sprinkle::getRoutes() as $uri => $param) {
+                $app->get($uri, $param);
+            }
+        }
+    }
+
+    // TEMP METHOD
+    public function registerServices($ci): void
+    {
+        foreach ($this->sprinkles as $sprinkle) {
+            foreach ($sprinkle::getServices() as $name => $object) {
+                $ci->set($name, $object);
+            }
+        }
     }
 
     /**

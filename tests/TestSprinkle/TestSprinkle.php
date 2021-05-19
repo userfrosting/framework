@@ -8,7 +8,7 @@
  * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Tests;
+namespace UserFrosting\Tests\TestSprinkle;
 
 use UserFrosting\Sprinkle\SprinkleReceipe;
 
@@ -44,5 +44,21 @@ class TestSprinkle implements SprinkleReceipe
     public static function getSprinkles(): array
     {
         return [];
+    }
+
+    // TODO : Evolve into to routeProvider
+    public static function getRoutes(): array
+    {
+        return [
+            '/foo' => [TestController::class, 'index'],
+        ];
+    }
+
+    // TODO : Evolve into to servicesProvider
+    public static function getServices(): array
+    {
+        return [
+            'testMessageGenerator' => \DI\create(MessageGenerator::class),
+        ];
     }
 }
