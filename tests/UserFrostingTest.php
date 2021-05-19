@@ -13,6 +13,7 @@ namespace UserFrosting\Tests;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Slim\App;
+use UserFrosting\Sprinkle\SprinkleManager;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 use UserFrosting\UserFrosting;
 
@@ -39,6 +40,7 @@ class UserFrostingTest extends TestCase
         $this->assertInstanceOf(App::class, $userfrosting->getApp());
         $this->assertInstanceOf(ContainerInterface::class, $userfrosting->getContainer());
         $this->assertSame(TestSprinkle::class, $userfrosting->getMainSprinkle());
+        $this->assertInstanceOf(SprinkleManager::class, $userfrosting->getContainer()->get('sprinkleManager'));
     }
 
     /**

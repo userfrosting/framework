@@ -65,8 +65,8 @@ abstract class Cupcake
         // TODO : REGISTER SERVICES USING SET
         $this->sprinkleManager->registerServices($this->ci);
 
-        // TODO :: Register SprinkleManager into the CI
-        // $this->ci->set('sprinkleManager', \DI\create(MessageGenerator::class));
+        // Register SprinkleManager into the CI
+        $this->ci->set('sprinkleManager', $this->sprinkleManager);
 
         // $slimAppEvent = new SlimAppEvent($this->app);
 
