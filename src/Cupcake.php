@@ -35,13 +35,10 @@ abstract class Cupcake
      *
      * @param string $mainSprinkle
      */
-    public function __construct(
-        protected string $mainSprinkle
-    ) {
+    public function __construct(protected string $mainSprinkle)
+    {
         $this->init();
     }
-
-    //TODO : set/get default sprinkle
 
     /**
      * Initialize the application. Load up Sprinkles and the base app.
@@ -99,6 +96,14 @@ abstract class Cupcake
     public function getContainer(): Container
     {
         return $this->ci;
+    }
+
+    /**
+     * Get constructor.
+     */ 
+    public function getMainSprinkle(): string
+    {
+        return $this->mainSprinkle;
     }
 
     /**
