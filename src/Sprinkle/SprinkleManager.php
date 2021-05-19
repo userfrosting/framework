@@ -118,14 +118,12 @@ class SprinkleManager
      *
      * @param string $class
      *
-     * @throws BadClassNameException If class not found.
-     *
      * @return bool True/False if class implements SprinkleReceipe
      */
     protected function validateClassIsSprinkleReceipe(string $class): bool
     {
         if (!class_exists($class)) {
-            throw new BadClassNameException("Class $class not found.");
+            return false;
         }
 
         $class = new ReflectionClass($class);

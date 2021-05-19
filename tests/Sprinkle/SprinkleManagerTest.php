@@ -36,7 +36,7 @@ class SprinkleManagerTest extends TestCase
 
     public function testNonExistingClass(): void
     {
-        $this->expectException(BadClassNameException::class);
+        $this->expectException(SprinkleClassException::class);
         $manager = new SprinkleManager(FooBar::class);
     }
 
