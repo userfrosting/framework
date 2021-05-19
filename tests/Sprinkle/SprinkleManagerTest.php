@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use UserFrosting\Bakery\CommandReceipe;
 use UserFrosting\Exceptions\SprinkleClassException;
 use UserFrosting\Sprinkle\SprinkleManager;
+use UserFrosting\Support\Exception\BadClassNameException;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
 class SprinkleManagerTest extends TestCase
@@ -31,6 +32,12 @@ class SprinkleManagerTest extends TestCase
     {
         $this->expectException(SprinkleClassException::class);
         $manager = new SprinkleManager(\stdClass::class);
+    }
+
+    public function testNonExistingClass(): void
+    {
+        $this->expectException(BadClassNameException::class);
+        $manager = new SprinkleManager(FooBar::class);
     }
 
     /**
@@ -116,8 +123,6 @@ class SprinkleManagerTest extends TestCase
             \stdClass::class,
         ], $manager->getBakeryCommands());
     }
-
-    // TODO : Test class that doesn't exist
 }
 
 class CoreStub extends TestSprinkle

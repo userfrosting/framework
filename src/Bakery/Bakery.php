@@ -66,7 +66,7 @@ class Bakery extends Cupcake
     }
 
     /**
-     * Return the list of available commands for a specific sprinkle.
+     * Load and register all defined bakery commands.
      */
     protected function loadCommands(): void
     {

@@ -12,6 +12,7 @@ namespace UserFrosting\Sprinkle;
 
 use ReflectionClass;
 use UserFrosting\Exceptions\SprinkleClassException;
+use UserFrosting\Support\Exception\BadClassNameException;
 
 /**
  * Sprinkle manager class.
@@ -31,9 +32,8 @@ class SprinkleManager
      *
      * @param string $mainSprinkle
      */
-    public function __construct(
-        protected string $mainSprinkle
-    ) {
+    public function __construct(protected string $mainSprinkle)
+    {
         $this->loadSprinkles();
     }
 
@@ -118,10 +118,16 @@ class SprinkleManager
      *
      * @param string $class
      *
+     * @throws BadClassNameException If class not found.
+     *
      * @return bool True/False if class implements SprinkleReceipe
      */
     protected function validateClassIsSprinkleReceipe(string $class): bool
     {
+        if (!class_exists($class)) {
+            throw new BadClassNameException("Class $class not found.");
+        }
+
         $class = new ReflectionClass($class);
         if ($class->implementsInterface(SprinkleReceipe::class)) {
             return true;
