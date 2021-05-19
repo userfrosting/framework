@@ -58,6 +58,14 @@ class Bakery extends Cupcake
     }
 
     /**
+     * Run application.
+     */
+    public function run(): void
+    {
+        $this->app->run();
+    }
+
+    /**
      * Return the list of available commands for a specific sprinkle.
      */
     protected function loadCommands(): void

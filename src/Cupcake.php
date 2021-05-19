@@ -82,10 +82,7 @@ abstract class Cupcake
     /**
      * Run application.
      */
-    public function run(): void
-    {
-        $this->app->run();
-    }
+    abstract public function run(): void;
 
     /**
      * Return the underlying Slim or Symfony App instance, if available.
@@ -134,8 +131,6 @@ abstract class Cupcake
         // ]);
         // $ci = $builder->build();
 
-        
-        
         $ci = new Container();
 
         return $ci;

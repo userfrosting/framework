@@ -55,4 +55,12 @@ class UserFrosting extends Cupcake
 
         return $app;
     }
+
+    /**
+     * Run application.
+     */
+    public function run(): void
+    {
+        $this->app->run();
+    }
 }
