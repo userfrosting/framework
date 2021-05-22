@@ -49,7 +49,9 @@ abstract class Cupcake
         $this->setupSprinkles();
 
         // TODO : REGISTER SERVICES DEFINITIONS
-        
+        // AND allow Sprinkle to `addDefinitions` to CI before builder from the SprinkleReceipe (move CI build after sprinkle init, but builder before)
+        //  - AddDefinition would need to be in a static method that receive the $ci_builder as argument
+
         // First, we create our DI container
         $this->ci = $this->createContainer();
 
@@ -63,6 +65,9 @@ abstract class Cupcake
         $this->app = $this->createApp();
 
         // TODO : REGISTER SERVICES USING SET
+        // Allow Sprinkle to register their CI service using "SET
+        // $this->ci->set('testMessageGenerator', \DI\create(MessageGenerator::class));
+        // TEMP METHOD
         $this->sprinkleManager->registerServices($this->ci);
 
         // Register SprinkleManager into the CI
@@ -100,7 +105,7 @@ abstract class Cupcake
 
     /**
      * Get constructor.
-     */ 
+     */
     public function getMainSprinkle(): string
     {
         return $this->mainSprinkle;
@@ -151,17 +156,19 @@ abstract class Cupcake
     /**
      * Register system services, load all sprinkles, and add their resources and services.
      */
-    protected function setupSprinkles(): void
+    protected function setupFrameworkServices(): void
     {
         // Register system services
         // $serviceProvider = new ServicesProvider();
         // $serviceProvider->register($this->ci);
+    }
 
-        // Boot the Sprinkle manager, which creates Sprinkle classes and subscribes them to the event dispatcher
-        /** @var \UserFrosting\System\Sprinkle\SprinkleManager */
-        // $sprinkleManager = $this->ci->sprinkleManager;
-        // TODO : Move to services
-
+    /**
+     * Register system services, load all sprinkles, and add their resources and services.
+     * Boot the Sprinkle manager, which creates Sprinkle classes and subscribes them to the event dispatcher
+     */
+    protected function setupSprinkles(): void
+    {
         $this->sprinkleManager = new SprinkleManager($this->mainSprinkle);
 
         // $this->fireEvent('onSprinklesInitialized');

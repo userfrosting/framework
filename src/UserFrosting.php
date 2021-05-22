@@ -30,8 +30,8 @@ class UserFrosting extends Cupcake
     {
         parent::init();
 
-        // TEMP METHOD
-        $this->sprinkleManager->registerRoutes($this->app);
+        // Load and registering routes
+        $this->loadRoutes();
     }
 
     /**
@@ -62,5 +62,31 @@ class UserFrosting extends Cupcake
     public function run(): void
     {
         $this->app->run();
+    }
+
+    /**
+     * Load and register all routes.
+     */
+    protected function loadRoutes(): void
+    {
+        foreach ($this->sprinkleManager->getRoutesDefinitions() as $file) {
+
+            // Check file exist
+            // TODO
+
+            // Include file
+            $definition = include $file;
+
+            // Make sure file is a closure
+            if (!$definition instanceof \Closure) {
+                throw new \Exception('Route definition must be a Closure');
+                // TODO
+            }
+
+            // TODO : Test a closure that don't accept "App"
+
+            // Run Closure
+            $definition($this->app);
+        }
     }
 }

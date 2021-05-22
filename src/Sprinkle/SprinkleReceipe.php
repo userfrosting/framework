@@ -41,4 +41,11 @@ interface SprinkleReceipe
      * @return array[string]SprinkleReceipe
      */
     public static function getSprinkles(): array;
+
+    /**
+     * Returns a list of routes definition in PHP files.
+     *
+     * @return string[]
+     */
+    public static function getRoutes(): array;
 }

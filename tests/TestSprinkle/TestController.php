@@ -19,7 +19,7 @@ class TestController
     {
         // Prep data container
         $msg = [];
-        
+
         /** @var MessageGenerator */
         $service = $container->get('testMessageGenerator');
 

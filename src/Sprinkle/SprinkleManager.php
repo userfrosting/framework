@@ -12,13 +12,16 @@ namespace UserFrosting\Sprinkle;
 
 use ReflectionClass;
 use UserFrosting\Exceptions\SprinkleClassException;
-use UserFrosting\Support\Exception\BadClassNameException;
 
 /**
- * Sprinkle manager class.
+ * Sprinkle Manager
  *
  * Manages a collection of loaded Sprinkles for the application.
- * Handles Sprinkle class creation, event subscription, services registration, and resource stream registration.
+ * Returns all the informations about the loaded Sprinkles, defined in each SrpinkleReceipe.
+ * This class does not perform any action on the application itself, it only serves informations.
+ * All routes, commands or other registration process is handled elsewhere.
+ *
+ * @property string $mainSprinkle
  */
 class SprinkleManager
 {
@@ -28,7 +31,7 @@ class SprinkleManager
     protected $sprinkles = [];
 
     /**
-     * Constructor.
+     * Load sprinkles on construction.
      *
      * @param string $mainSprinkle
      */
@@ -38,26 +41,11 @@ class SprinkleManager
     }
 
     /**
-     * Initialize a list of Sprinkles, instantiating their boot classes (if they exist),
-     * and subscribing them to the event dispatcher.
-     *
-     * @return static
+     * Generate the list of all loaded sprinkles throught the main sprinkle dependencies.
      */
     public function loadSprinkles(): void
     {
-        // Get Sprinkles
         $this->sprinkles = $this->getDependentSprinkles($this->mainSprinkle);
-
-        // Process each loaded Sprinkles
-        foreach ($this->sprinkles as $sprinkle) {
-
-            // $sprinkle = $this->bootSprinkle($sprinkleName);
-
-            // if ($sprinkle) {
-            //     // Subscribe the sprinkle to the event dispatcher
-            //     $this->ci->eventDispatcher->addSubscriber($sprinkle);
-            // }
-        }
     }
 
     /**
@@ -77,6 +65,26 @@ class SprinkleManager
     }
 
     /**
+     * Returns a list of all routes definition files from all sprinkles.
+     * TODO : Consider if it's worth it to use Locator here instead OR alongside the definitions
+     * TODO : Do file validation here or in UserFrosting ?
+     *
+     * @return string[] List of PHP files containing routes definitions.
+     */
+    public function getRoutesDefinitions(): array
+    {
+        $routes = [];
+
+        foreach ($this->sprinkles as $sprinkle) {
+            foreach ($sprinkle::getRoutes() as $route) {
+                $routes[] = $route;
+            }
+        }
+
+        return $routes;
+    }
+
+    /**
      * Returns a list of available sprinkles.
      *
      * @return SprinkleReceipe[]
@@ -89,7 +97,7 @@ class SprinkleManager
     /**
      * Return a list for the specified sprinkle and it's dependent, recursilvey.
      *
-     * @param string $sprinkle
+     * @param string $sprinkle Sprinkle to load, and it's dependent.
      *
      * @return SprinkleReceipe[]
      */
@@ -132,16 +140,6 @@ class SprinkleManager
         }
 
         return false;
-    }
-
-    // TEMP METHOD
-    public function registerRoutes($app): void
-    {
-        foreach ($this->sprinkles as $sprinkle) {
-            foreach ($sprinkle::getRoutes() as $uri => $param) {
-                $app->get($uri, $param);
-            }
-        }
     }
 
     // TEMP METHOD

@@ -46,11 +46,13 @@ class TestSprinkle implements SprinkleReceipe
         return [];
     }
 
-    // TODO : Evolve into to routeProvider
+    /**
+     * {@inheritDoc}
+     */
     public static function getRoutes(): array
     {
         return [
-            '/foo' => [TestController::class, 'index'],
+            __DIR__ . '/routes/routes.php'
         ];
     }
 
