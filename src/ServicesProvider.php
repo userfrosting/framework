@@ -47,7 +47,7 @@ class ServicesProvider
          * @return \UserFrosting\UniformResourceLocator\ResourceLocator
          */
         $container['locator'] = function ($c) {
-            $locator = new ResourceLocator(\UserFrosting\ROOT_DIR);
+            $locator = new ResourceLocator(\UserFrosting\ROOT_DIR); // TODO : Move into Core ?
 
             // Register streams
             $locator->registerStream('bakery', '', \UserFrosting\BAKERY_SYSTEM_DIR, true);

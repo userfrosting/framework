@@ -15,7 +15,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class TestController
 {
-    public function index(Response $response, MessageGenerator $messageGenerator, Container $container)
+    public function index(Response $response, MessageGenerator $messageGenerator, Container $container): Response
     {
         // Prep data container
         $msg = [];

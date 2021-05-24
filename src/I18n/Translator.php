@@ -10,8 +10,8 @@
 
 namespace UserFrosting\I18n;
 
-use Twig_Environment;
-use Twig_Loader_Filesystem;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 /**
  * Translator Class.
@@ -24,7 +24,7 @@ use Twig_Loader_Filesystem;
 class Translator
 {
     /**
-     * @var Twig_Environment A Twig environment used to replace placeholders.
+     * @var Environment A Twig environment used to replace placeholders.
      */
     protected $twig;
 
@@ -50,8 +50,8 @@ class Translator
         $this->dictionary->getDictionary();
 
         // Preapre Twig Environment
-        $loader = new Twig_Loader_Filesystem();
-        $this->twig = new Twig_Environment($loader);
+        $loader = new FilesystemLoader();
+        $this->twig = new Environment($loader);
     }
 
     /**
