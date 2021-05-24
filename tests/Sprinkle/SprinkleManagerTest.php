@@ -103,7 +103,7 @@ class SprinkleManagerTest extends TestCase
 
     /**
      * getBakeryCommands
-     * 
+     *
      * @depends testGetSprinklesWithNoDependent
      */
     public function testGetBakeryCommandsWithNoEmpty(): void
@@ -147,7 +147,7 @@ class SprinkleManagerTest extends TestCase
         $this->assertCount(1, $routes);
         $this->assertInstanceOf(Closure::class, $routes[0]);
     }
-    
+
     /**
      * @depends testGetRoutesDefinitions
      */
@@ -157,7 +157,7 @@ class SprinkleManagerTest extends TestCase
         $this->expectException(FileNotFoundException::class);
         $manager->getRoutesDefinitions();
     }
-    
+
     /**
      * @depends testGetRoutesDefinitions
      */
@@ -180,7 +180,7 @@ class SprinkleManagerTest extends TestCase
         $this->assertCount(1, $services);
         $this->assertArrayHasKey('testMessageGenerator', $services);
     }
-    
+
     /**
      * @depends testGetServicesDefinitions
      */
@@ -190,7 +190,7 @@ class SprinkleManagerTest extends TestCase
         $this->expectException(FileNotFoundException::class);
         $manager->getServicesDefinitions();
     }
-    
+
     /**
      * @depends testGetServicesDefinitions
      */

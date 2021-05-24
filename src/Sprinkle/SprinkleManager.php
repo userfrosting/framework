@@ -168,7 +168,7 @@ class SprinkleManager
      * Validate command string and returns CommandReceipe instance.
      *
      * @param string $command
-     * 
+     *
      * @return CommandReceipe
      */
     protected function validateCommand(string $command): CommandReceipe

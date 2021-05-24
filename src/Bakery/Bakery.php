@@ -12,7 +12,6 @@ namespace UserFrosting\Bakery;
 
 use Symfony\Component\Console\Application;
 use UserFrosting\Cupcake;
-use UserFrosting\Exceptions\BakeryClassException;
 
 /**
  * Base class for UserFrosting Bakery CLI tools.
