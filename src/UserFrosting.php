@@ -58,6 +58,8 @@ class UserFrosting extends Cupcake
 
     /**
      * Run application.
+     * 
+     * @codeCoverageIgnore
      */
     public function run(): void
     {
@@ -70,10 +72,6 @@ class UserFrosting extends Cupcake
     protected function loadRoutes(): void
     {
         foreach ($this->sprinkleManager->getRoutesDefinitions() as $definition) {
-
-            // TODO : Test a closure that don't accept "App"
-
-            // Run Closure
             $definition($this->app);
         }
     }

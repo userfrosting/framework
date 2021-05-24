@@ -57,14 +57,5 @@ class ServicesProvider
 
             return $locator;
         };
-
-        /*
-         * Set up sprinkle manager service.
-         *
-         * @return \UserFrosting\System\Sprinkle\SprinkleManager
-         */
-        $container['sprinkleManager'] = function ($c) {
-            return new SprinkleManager($c);
-        };
     }
 }

@@ -37,6 +37,7 @@ class BakeryTest extends TestCase
     public function testGetters(Bakery $bakery): void
     {
         $this->assertInstanceOf(Application::class, $bakery->getApp());
+        $this->assertSame(TestSprinkle::class, $bakery->getMainSprinkle());
         $this->assertInstanceOf(ContainerInterface::class, $bakery->getContainer());
     }
 

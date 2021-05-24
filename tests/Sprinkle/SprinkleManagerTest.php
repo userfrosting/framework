@@ -29,6 +29,7 @@ class SprinkleManagerTest extends TestCase
     {
         $manager = new SprinkleManager(CoreStub::class);
         $this->assertSame([CoreStub::class], $manager->getSprinkles());
+        $this->assertSame('Test Sprinkle', $manager->getSprinkles()[0]::getName());
     }
 
     /**

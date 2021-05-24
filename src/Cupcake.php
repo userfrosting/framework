@@ -143,12 +143,12 @@ abstract class Cupcake
     /**
      * Register system services, load all sprinkles, and add their resources and services.
      */
-    protected function setupFrameworkServices(): void
-    {
-        // Register system services
-        // $serviceProvider = new ServicesProvider();
-        // $serviceProvider->register($this->ci);
-    }
+    // protected function setupFrameworkServices(): void
+    // {
+    //     // Register system services
+    //     // $serviceProvider = new ServicesProvider();
+    //     // $serviceProvider->register($this->ci);
+    // }
 
     /**
      * Register system services, load all sprinkles, and add their resources and services.
