@@ -52,7 +52,7 @@ class TestSprinkle implements SprinkleReceipe
     public static function getRoutes(): array
     {
         return [
-            __DIR__ . '/routes/routes.php'
+            self::getPath() . '/routes/routes.php'
         ];
     }
 
@@ -62,7 +62,7 @@ class TestSprinkle implements SprinkleReceipe
     public static function getServices(): array
     {
         return [
-            __DIR__ . '/container/services.php'
+            __DIR__ . '/data/container/services.php'
         ];
     }
 }

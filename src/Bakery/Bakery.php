@@ -71,17 +71,8 @@ class Bakery extends Cupcake
     protected function loadCommands(): void
     {
         foreach ($this->sprinkleManager->getBakeryCommands() as $command) {
-            // Get command instance
-            $instance = new $command();
-
-            // Class must be an instance of symfony command
-            if (!$instance instanceof CommandReceipe) {
-                throw new BakeryClassException('Bakery command `'.$instance::class.'` must be instance of ' . CommandReceipe::class);
-            }
-
-            // Add command to the Console app
-            $instance->setContainer($this->ci);
-            $this->app->add($instance);
+            $command->setContainer($this->ci);
+            $this->app->add($command);
         }
     }
 }

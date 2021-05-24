@@ -10,42 +10,25 @@
 
 namespace UserFrosting\Tests\Unit;
 
+use Closure;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Bakery\CommandReceipe;
+use UserFrosting\Exceptions\BakeryClassException;
 use UserFrosting\Exceptions\SprinkleClassException;
 use UserFrosting\Sprinkle\SprinkleManager;
+use UserFrosting\Exceptions\BadInstanceOfException;
+use UserFrosting\Support\Exception\FileNotFoundException;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
 class SprinkleManagerTest extends TestCase
 {
+    /**
+     * getSprinkles
+     */
     public function testGetSprinklesWithNoDependent(): void
     {
         $manager = new SprinkleManager(CoreStub::class);
         $this->assertSame([CoreStub::class], $manager->getSprinkles());
-    }
-
-    /**
-     * @depends testGetSprinklesWithNoDependent
-     */
-    public function testBadClassSprinkle(): void
-    {
-        $this->expectException(SprinkleClassException::class);
-        $manager = new SprinkleManager(\stdClass::class);
-    }
-
-    public function testNonExistingClass(): void
-    {
-        $this->expectException(SprinkleClassException::class);
-        $manager = new SprinkleManager(FooBar::class);
-    }
-
-    /**
-     * @depends testGetSprinklesWithNoDependent
-     */
-    public function testBadClassSprinkleAsDependent(): void
-    {
-        $this->expectException(SprinkleClassException::class);
-        $manager = new SprinkleManager(NotSprinkleStub::class);
     }
 
     /**
@@ -94,33 +77,128 @@ class SprinkleManagerTest extends TestCase
     }
 
     /**
+     * __construct & Exceptions
+     */
+    public function testConstructorWithBadSprinkleClass(): void
+    {
+        $this->expectException(SprinkleClassException::class);
+        $manager = new SprinkleManager(\stdClass::class);
+    }
+
+    public function testConstructorWithNonExistingClass(): void
+    {
+        $this->expectException(SprinkleClassException::class);
+        $manager = new SprinkleManager(FooBar::class);
+    }
+
+    /**
+     * @depends testConstructorWithBadSprinkleClass
+     * @depends testGetSprinklesWithManyDependent
+     */
+    public function testConstructorWithBadSprinkleClassInDependent(): void
+    {
+        $this->expectException(SprinkleClassException::class);
+        $manager = new SprinkleManager(NotSprinkleStub::class);
+    }
+
+    /**
+     * getBakeryCommands
+     * 
      * @depends testGetSprinklesWithNoDependent
      */
-    public function testGetBakeryCommandsWhenEmpty(): void
+    public function testGetBakeryCommandsWithNoEmpty(): void
     {
         $manager = new SprinkleManager(CoreStub::class);
         $this->assertSame([], $manager->getBakeryCommands());
     }
 
     /**
-     * @depends testGetBakeryCommandsWhenEmpty
+     * @depends testGetBakeryCommandsWithNoEmpty
      */
     public function testGetBakeryCommands(): void
     {
         $manager = new SprinkleManager(AdminStub::class);
-        $this->assertSame([CommandStub::class], $manager->getBakeryCommands());
+        $commands = $manager->getBakeryCommands();
+
+        $this->assertIsArray($commands);
+        $this->assertCount(1, $commands);
+        $this->assertInstanceOf(CommandReceipe::class, $commands[0]);
     }
 
     /**
-     * N.B.: Command interface will be checked in Bakery, not SprinkleManager.
      * @depends testGetBakeryCommands
      */
     public function testGetBakeryCommandsWithBadCommand(): void
     {
         $manager = new SprinkleManager(AccountStub::class);
-        $this->assertSame([
-            \stdClass::class,
-        ], $manager->getBakeryCommands());
+        $this->expectException(BakeryClassException::class);
+        $manager->getBakeryCommands();
+    }
+
+    /**
+     * Test routes
+     */
+    public function testGetRoutesDefinitions(): void
+    {
+        $manager = new SprinkleManager(TestSprinkle::class);
+        $routes = $manager->getRoutesDefinitions();
+
+        $this->assertIsArray($routes);
+        $this->assertCount(1, $routes);
+        $this->assertInstanceOf(Closure::class, $routes[0]);
+    }
+    
+    /**
+     * @depends testGetRoutesDefinitions
+     */
+    public function testGetRoutesDefinitionsWithNotFoundFile(): void
+    {
+        $manager = new SprinkleManager(FileNotFoundSprinkleStub::class);
+        $this->expectException(FileNotFoundException::class);
+        $manager->getRoutesDefinitions();
+    }
+    
+    /**
+     * @depends testGetRoutesDefinitions
+     */
+    public function testGetRoutesDefinitionsWithBadInstance(): void
+    {
+        $manager = new SprinkleManager(BadInstanceOfSprinkleStub::class);
+        $this->expectException(BadInstanceOfException::class);
+        $manager->getRoutesDefinitions();
+    }
+
+    /**
+     * Test Services
+     */
+    public function testGetServicesDefinitions(): void
+    {
+        $manager = new SprinkleManager(TestSprinkle::class);
+        $services = $manager->getServicesDefinitions();
+
+        $this->assertIsArray($services);
+        $this->assertCount(1, $services);
+        $this->assertArrayHasKey('testMessageGenerator', $services);
+    }
+    
+    /**
+     * @depends testGetServicesDefinitions
+     */
+    public function testGetServicesDefinitionsWithNotFoundFile(): void
+    {
+        $manager = new SprinkleManager(FileNotFoundSprinkleStub::class);
+        $this->expectException(FileNotFoundException::class);
+        $manager->getServicesDefinitions();
+    }
+    
+    /**
+     * @depends testGetServicesDefinitions
+     */
+    public function testGetServicesDefinitionsWithBadInstance(): void
+    {
+        $manager = new SprinkleManager(BadInstanceOfSprinkleStub::class);
+        $this->expectException(BadInstanceOfException::class);
+        $manager->getServicesDefinitions();
     }
 }
 
@@ -200,6 +278,32 @@ class NotSprinkleStub extends TestSprinkle
         return [
             \stdClass::class,
         ];
+    }
+}
+
+class FileNotFoundSprinkleStub extends TestSprinkle
+{
+    public static function getRoutes(): array
+    {
+        return ['foo/'];
+    }
+
+    public static function getServices(): array
+    {
+        return ['foo/'];
+    }
+}
+
+class BadInstanceOfSprinkleStub extends TestSprinkle
+{
+    public static function getRoutes(): array
+    {
+        return [self::getPath() . '/routes/badRoutes.php'];
+    }
+
+    public static function getServices(): array
+    {
+        return [self::getPath() . '/container/badServices.php'];
     }
 }
 

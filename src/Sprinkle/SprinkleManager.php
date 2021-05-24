@@ -12,7 +12,10 @@ namespace UserFrosting\Sprinkle;
 
 use Closure;
 use ReflectionClass;
+use UserFrosting\Bakery\CommandReceipe;
+use UserFrosting\Exceptions\BakeryClassException;
 use UserFrosting\Exceptions\SprinkleClassException;
+use UserFrosting\Exceptions\BadInstanceOfException;
 use UserFrosting\Support\Exception\FileNotFoundException;
 
 /**
@@ -60,7 +63,8 @@ class SprinkleManager
         $commands = [];
 
         foreach ($this->sprinkles as $sprinkle) {
-            $commands = array_merge($commands, $sprinkle::getBakeryCommands());
+            $sprinkleCommands = array_map([$this, 'validateCommand'], $sprinkle::getBakeryCommands());
+            $commands = array_merge($commands, $sprinkleCommands);
         }
 
         return $commands;
@@ -161,6 +165,26 @@ class SprinkleManager
     }
 
     /**
+     * Validate command string and returns CommandReceipe instance.
+     *
+     * @param string $command
+     * 
+     * @return CommandReceipe
+     */
+    protected function validateCommand(string $command): CommandReceipe
+    {
+        // Get command instance
+        $instance = new $command();
+
+        // Class must be an instance of symfony command
+        if (!$instance instanceof CommandReceipe) {
+            throw new BakeryClassException('Bakery command `'.$instance::class.'` must be instance of ' . CommandReceipe::class);
+        }
+
+        return $instance;
+    }
+
+    /**
      * Validate route file exist and return Closure the file contains.
      *
      * @throws Exception
@@ -178,8 +202,7 @@ class SprinkleManager
 
         // Make sure file is a closure
         if (!$definition instanceof \Closure) {
-            throw new \Exception('Route definition must be a Closure');
-            // TODO Custom exception
+            throw new BadInstanceOfException('Route definition must be a Closure');
         }
 
         return $definition;
@@ -203,8 +226,7 @@ class SprinkleManager
 
         // Make sure file is a closure
         if (!is_array($definition)) {
-            throw new \Exception('Container definition must be an array');
-            // TODO Custom exception
+            throw new BadInstanceOfException('Container definition must be an array');
         }
 
         return $definition;
