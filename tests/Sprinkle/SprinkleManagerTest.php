@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
 use UserFrosting\Bakery\CommandReceipe;
 use UserFrosting\Exceptions\SprinkleClassException;
 use UserFrosting\Sprinkle\SprinkleManager;
-use UserFrosting\Support\Exception\BadClassNameException;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
 class SprinkleManagerTest extends TestCase

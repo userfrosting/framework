@@ -69,19 +69,7 @@ class UserFrosting extends Cupcake
      */
     protected function loadRoutes(): void
     {
-        foreach ($this->sprinkleManager->getRoutesDefinitions() as $file) {
-
-            // Check file exist
-            // TODO
-
-            // Include file
-            $definition = include $file;
-
-            // Make sure file is a closure
-            if (!$definition instanceof \Closure) {
-                throw new \Exception('Route definition must be a Closure');
-                // TODO
-            }
+        foreach ($this->sprinkleManager->getRoutesDefinitions() as $definition) {
 
             // TODO : Test a closure that don't accept "App"
 

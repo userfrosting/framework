@@ -56,11 +56,13 @@ class TestSprinkle implements SprinkleReceipe
         ];
     }
 
-    // TODO : Evolve into to servicesProvider
+    /**
+     * {@inheritDoc}
+     */
     public static function getServices(): array
     {
         return [
-            'testMessageGenerator' => \DI\create(MessageGenerator::class),
+            __DIR__ . '/container/services.php'
         ];
     }
 }

@@ -10,8 +10,10 @@
 
 namespace UserFrosting\Sprinkle;
 
+use Closure;
 use ReflectionClass;
 use UserFrosting\Exceptions\SprinkleClassException;
+use UserFrosting\Support\Exception\FileNotFoundException;
 
 /**
  * Sprinkle Manager
@@ -66,10 +68,8 @@ class SprinkleManager
 
     /**
      * Returns a list of all routes definition files from all sprinkles.
-     * TODO : Consider if it's worth it to use Locator here instead OR alongside the definitions
-     * TODO : Do file validation here or in UserFrosting ?
      *
-     * @return string[] List of PHP files containing routes definitions.
+     * @return Closure[] List of PHP files containing routes definitions.
      */
     public function getRoutesDefinitions(): array
     {
@@ -77,11 +77,29 @@ class SprinkleManager
 
         foreach ($this->sprinkles as $sprinkle) {
             foreach ($sprinkle::getRoutes() as $route) {
-                $routes[] = $route;
+                $routes[] = $this->validateRouteFile($route);
             }
         }
 
         return $routes;
+    }
+
+    /**
+     * Returns a list of all PHP-DI services/container definition files, from all sprinkles.
+     *
+     * @return string[] List of PHP files containing routes definitions.
+     */
+    public function getServicesDefinitions(): array
+    {
+        $containers = [];
+
+        foreach ($this->sprinkles as $sprinkle) {
+            foreach ($sprinkle::getServices() as $container) {
+                $containers = array_merge($this->validateContainerFile($container), $containers);
+            }
+        }
+
+        return $containers;
     }
 
     /**
@@ -142,14 +160,54 @@ class SprinkleManager
         return false;
     }
 
-    // TEMP METHOD
-    public function registerServices($ci): void
+    /**
+     * Validate route file exist and return Closure the file contains.
+     *
+     * @throws Exception
+     * @throws FileNotFoundException
+     */
+    protected function validateRouteFile(string $file): Closure
     {
-        foreach ($this->sprinkles as $sprinkle) {
-            foreach ($sprinkle::getServices() as $name => $object) {
-                $ci->set($name, $object);
-            }
+        // Check file exist
+        if (!file_exists($file)) {
+            throw new FileNotFoundException($file . ' not found');
         }
+
+        // Include file
+        $definition = include $file;
+
+        // Make sure file is a closure
+        if (!$definition instanceof \Closure) {
+            throw new \Exception('Route definition must be a Closure');
+            // TODO Custom exception
+        }
+
+        return $definition;
+    }
+
+    /**
+     * Validate container definition file exist and return it's array.
+     *
+     * @throws Exception
+     * @throws FileNotFoundException
+     */
+    protected function validateContainerFile(string $file): array
+    {
+        // Check file exist
+        if (!file_exists($file)) {
+            throw new FileNotFoundException($file . ' not found');
+        }
+
+        // Include file
+        $definition = include $file;
+
+        // Make sure file is a closure
+        if (!is_array($definition)) {
+            throw new \Exception('Container definition must be an array');
+            // TODO Custom exception
+        }
+
+        return $definition;
     }
 
     /**

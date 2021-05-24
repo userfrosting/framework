@@ -48,4 +48,11 @@ interface SprinkleReceipe
      * @return string[]
      */
     public static function getRoutes(): array;
+
+    /**
+     * Returns a list of all PHP-DI services/container definitions files.
+     *
+     * @return string[]
+     */
+    public static function getServices(): array;
 }

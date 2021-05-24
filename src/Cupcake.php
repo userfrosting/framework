@@ -11,8 +11,10 @@
 namespace UserFrosting;
 
 use DI\Container;
+use DI\ContainerBuilder;
 use RocketTheme\Toolbox\Event\Event;
 use RocketTheme\Toolbox\Event\EventDispatcher;
+use Slim\App;
 use UserFrosting\Sprinkle\SprinkleManager;
 
 /**
@@ -48,27 +50,14 @@ abstract class Cupcake
         // Setup sprinkles
         $this->setupSprinkles();
 
-        // TODO : REGISTER SERVICES DEFINITIONS
-        // AND allow Sprinkle to `addDefinitions` to CI before builder from the SprinkleReceipe (move CI build after sprinkle init, but builder before)
-        //  - AddDefinition would need to be in a static method that receive the $ci_builder as argument
-
         // First, we create our DI container
         $this->ci = $this->createContainer();
 
         // Set up facade reference to container.
         Facade::setFacadeContainer($this->ci);
 
-        // Set the configuration settings for Slim in the 'settings' service
-        // $this->ci->settings = $this->ci->config['settings'];
-
         // Note that the application is required for the SprinkleManager to set up routes.
         $this->app = $this->createApp();
-
-        // TODO : REGISTER SERVICES USING SET
-        // Allow Sprinkle to register their CI service using "SET
-        // $this->ci->set('testMessageGenerator', \DI\create(MessageGenerator::class));
-        // TEMP METHOD
-        $this->sprinkleManager->registerServices($this->ci);
 
         // Register SprinkleManager into the CI
         $this->ci->set('sprinkleManager', $this->sprinkleManager);
@@ -79,6 +68,9 @@ abstract class Cupcake
 
         // Add global middleware
         // $this->fireEvent('onAddGlobalMiddleware', $slimAppEvent);
+
+        // Register the App itself into the CI
+        $this->ci->set(App::class, $this->app);
     }
 
     /**
@@ -128,20 +120,15 @@ abstract class Cupcake
     // }
 
     /**
-     * Create the container.
+     * Create the container with all sprinkles services definitions.
      *
      * @return Container
      */
     protected function createContainer(): Container
     {
-        // $builder = new \DI\ContainerBuilder();
-        // $builder->addDefinitions([
-        //     // place your definitions here
-        //     'messageGenerator' => \DI\create(MessageGenerator::class)
-        // ]);
-        // $ci = $builder->build();
-
-        $ci = new Container();
+        $builder = new ContainerBuilder();
+        $builder->addDefinitions($this->sprinkleManager->getServicesDefinitions());
+        $ci = $builder->build();
 
         return $ci;
     }
