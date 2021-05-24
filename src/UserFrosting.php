@@ -58,7 +58,7 @@ class UserFrosting extends Cupcake
 
     /**
      * Run application.
-     * 
+     *
      * @codeCoverageIgnore
      */
     public function run(): void
