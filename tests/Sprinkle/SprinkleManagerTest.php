@@ -169,6 +169,20 @@ class SprinkleManagerTest extends TestCase
     }
 
     /**
+     * @depends testGetRoutesDefinitions
+     */
+    public function testGetRoutesDefinitionsWithArgumentNotApp(): void
+    {
+        $manager = new SprinkleManager(NotAppSprinkleStub::class);
+        $routes = $manager->getRoutesDefinitions();
+
+        $this->assertIsArray($routes);
+        $this->assertCount(3, $routes);
+        $this->assertInstanceOf(Closure::class, $routes[1]);
+        $this->assertInstanceOf(Closure::class, $routes[2]);
+    }
+
+    /**
      * Test Services
      */
     public function testGetServicesDefinitions(): void
@@ -200,6 +214,8 @@ class SprinkleManagerTest extends TestCase
         $this->expectException(BadInstanceOfException::class);
         $manager->getServicesDefinitions();
     }
+
+    // TODO : Test order/overwritten of routes & commands & services with multiple sprinkles.
 }
 
 class CoreStub extends TestSprinkle
@@ -304,6 +320,18 @@ class BadInstanceOfSprinkleStub extends TestSprinkle
     public static function getServices(): array
     {
         return [self::getPath() . '/container/badServices.php'];
+    }
+}
+
+class NotAppSprinkleStub extends TestSprinkle
+{
+    public static function getRoutes(): array
+    {
+        return [
+            self::getPath() . '/routes/routes.php',
+            self::getPath() . '/routes/RoutesNotApp.php',
+            self::getPath() . '/routes/routesNoArguments.php'
+        ];
     }
 }
 
