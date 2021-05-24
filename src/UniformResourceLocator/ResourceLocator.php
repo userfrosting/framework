@@ -364,7 +364,7 @@ class ResourceLocator implements ResourceLocatorInterface
             foreach ($files as $file) {
 
                 // Calculate the relative path
-                $basePath = rtrim($this->getBasePath(), $this->separator).$this->separator;
+                $basePath = rtrim($this->getBasePath(), $this->separator) . $this->separator;
                 $fullPath = $file->getPathname();
                 $relPath = str_replace($basePath, '', $fullPath);
                 $relPath = ltrim($relPath, $this->separator);
@@ -494,7 +494,7 @@ class ResourceLocator implements ResourceLocatorInterface
     {
         // Local caching: make sure that the function gets only called at once for each file.
         // We create a key based on the submitted arguments
-        $key = $uri.'@'.(int) $array.(int) $all;
+        $key = $uri . '@' . (int) $array . (int) $all;
 
         if (!isset($this->cache[$key])) {
             try {
@@ -577,21 +577,21 @@ class ResourceLocator implements ResourceLocatorInterface
 
                 // Get filename
                 // Remove prefix from filename.
-                $filename = $this->separator.trim(substr($file, strlen($prefix)), '\/');
+                $filename = $this->separator . trim(substr($file, strlen($prefix)), '\/');
 
                 // Pass each search paths
                 foreach ($paths as $path => $location) {
-                    $basePath = rtrim($this->getBasePath(), $this->separator).$this->separator;
+                    $basePath = rtrim($this->getBasePath(), $this->separator) . $this->separator;
 
                     // Check if path from the ResourceStream is absolute or relative
                     // for both unix and windows
                     if (!preg_match('`^/|\w+:`', $path)) {
                         // Handle relative path lookup.
-                        $relPath = trim($path.$filename, $this->separator);
-                        $fullPath = $basePath.$relPath;
+                        $relPath = trim($path . $filename, $this->separator);
+                        $fullPath = $basePath . $relPath;
                     } else {
                         // Handle absolute path lookup.
-                        $fullPath = rtrim($path.$filename, $this->separator);
+                        $fullPath = rtrim($path . $filename, $this->separator);
                         $relPath = str_replace($basePath, '', $fullPath);
                     }
 

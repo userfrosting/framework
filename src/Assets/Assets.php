@@ -111,7 +111,7 @@ class Assets
 
         // Resolve to url
         foreach ($assets as &$asset) {
-            $asset = $this->getAbsoluteUrl($this->getLocatorScheme().$asset);
+            $asset = $this->getAbsoluteUrl($this->getLocatorScheme() . $asset);
         }
 
         return $assets;
@@ -143,7 +143,7 @@ class Assets
 
         // Resolve to url
         foreach ($assets as &$asset) {
-            $asset = $this->getAbsoluteUrl($this->getLocatorScheme().$asset);
+            $asset = $this->getAbsoluteUrl($this->getLocatorScheme() . $asset);
         }
 
         return $assets;
@@ -181,7 +181,7 @@ class Assets
         // Need to dissociate the scheme from the search query in the stream path
         $streamPathQuery = Util::stripPrefix($streamPath, $this->getLocatorScheme());
 
-        return $this->baseUrl.$streamPathQuery;
+        return $this->baseUrl . $streamPathQuery;
     }
 
     /**
@@ -232,7 +232,7 @@ class Assets
         $urlPath = Util::stripPrefix($urlPath, $this->baseUrl);
 
         // Add back the stream scheme
-        $uri = $this->getLocatorScheme().$urlPath;
+        $uri = $this->getLocatorScheme() . $urlPath;
 
         // Make sure ressource path exist
         if (!$this->locator->getResource($uri)) {
@@ -265,11 +265,11 @@ class Assets
     {
         // Make sure it's a string, until php 7.1
         if (!is_string($baseUrl)) {
-            throw new \InvalidArgumentException('$baseUrl must be of type string but was '.gettype($baseUrl)); // @codeCoverageIgnore
+            throw new \InvalidArgumentException('$baseUrl must be of type string but was ' . gettype($baseUrl)); // @codeCoverageIgnore
         }
 
         // Make sure url ends with a slash
-        $baseUrl = rtrim($baseUrl, '/').'/';
+        $baseUrl = rtrim($baseUrl, '/') . '/';
         $this->baseUrl = $baseUrl;
 
         return $this;
@@ -282,7 +282,7 @@ class Assets
      */
     public function getLocatorScheme()
     {
-        return $this->locatorScheme.'://';
+        return $this->locatorScheme . '://';
     }
 
     /**
@@ -298,7 +298,7 @@ class Assets
     {
         // Make sure it's a string, until php 7.1
         if (!is_string($locatorScheme)) {
-            throw new \InvalidArgumentException('$locateScheme must be of type string but was '.gettype($locatorScheme)); // @codeCoverageIgnore
+            throw new \InvalidArgumentException('$locateScheme must be of type string but was ' . gettype($locatorScheme)); // @codeCoverageIgnore
         } elseif ($locatorScheme == '') {
             throw new \InvalidArgumentException('$locatorScheme must not be an empty string.');
         }

@@ -69,9 +69,9 @@ class TaggableFileStore extends FileStore
         $split = explode($this->separator, $key);
 
         if (count($split) > 1) {
-            $folder = reset($split).$this->ds;
+            $folder = reset($split) . $this->ds;
 
-            if ($folder === $this->tagRepository.$this->ds) {
+            if ($folder === $this->tagRepository . $this->ds) {
                 $isTag = true;
             }
             $key = end($split);
@@ -87,7 +87,7 @@ class TaggableFileStore extends FileStore
             $parts = array_slice(str_split($hash = sha1($key), 2), 0, 2);
         }
 
-        return $this->directory.$this->ds.$folder.(count($parts) > 0 ? implode($this->ds, $parts).$this->ds : '').$hash;
+        return $this->directory . $this->ds . $folder . (count($parts) > 0 ? implode($this->ds, $parts) . $this->ds : '') . $hash;
     }
 
     /**

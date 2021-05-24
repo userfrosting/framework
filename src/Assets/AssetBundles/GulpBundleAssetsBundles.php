@@ -37,7 +37,7 @@ abstract class GulpBundleAssetsBundles implements AssetBundlesInterface
     public function __construct($filePath)
     {
         if (!is_string($filePath)) {
-            throw new \InvalidArgumentException('$filePath must of type string but was '.gettype($filePath)); // @codeCoverageIgnore
+            throw new \InvalidArgumentException('$filePath must of type string but was ' . gettype($filePath)); // @codeCoverageIgnore
         }
 
         // Initalise bundles.
@@ -111,7 +111,7 @@ abstract class GulpBundleAssetsBundles implements AssetBundlesInterface
 
             $schema = json_decode($doc);
             if ($schema === null) {
-                throw new JsonException("The schema '$path' does not contain a valid JSON document.  JSON error: ".json_last_error());
+                throw new JsonException("The schema '$path' does not contain a valid JSON document.  JSON error: " . json_last_error());
             }
 
             return $schema;

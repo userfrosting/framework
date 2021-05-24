@@ -13,13 +13,13 @@ namespace UserFrosting\Sprinkle;
 use Closure;
 use ReflectionClass;
 use UserFrosting\Bakery\CommandReceipe;
+use UserFrosting\Exceptions\BadInstanceOfException;
 use UserFrosting\Exceptions\BakeryClassException;
 use UserFrosting\Exceptions\SprinkleClassException;
-use UserFrosting\Exceptions\BadInstanceOfException;
 use UserFrosting\Support\Exception\FileNotFoundException;
 
 /**
- * Sprinkle Manager
+ * Sprinkle Manager.
  *
  * Manages a collection of loaded Sprinkles for the application.
  * Returns all the informations about the loaded Sprinkles, defined in each SrpinkleReceipe.
@@ -128,6 +128,7 @@ class SprinkleManager
         // Validate class
         if (!$this->validateClassIsSprinkleReceipe($sprinkle)) {
             $e = new SprinkleClassException();
+
             throw $e;
         }
 
@@ -178,7 +179,7 @@ class SprinkleManager
 
         // Class must be an instance of symfony command
         if (!$instance instanceof CommandReceipe) {
-            throw new BakeryClassException('Bakery command `'.$instance::class.'` must be instance of ' . CommandReceipe::class);
+            throw new BakeryClassException('Bakery command `' . $instance::class . '` must be instance of ' . CommandReceipe::class);
         }
 
         return $instance;

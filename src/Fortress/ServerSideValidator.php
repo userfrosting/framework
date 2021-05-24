@@ -287,7 +287,7 @@ class ServerSideValidator extends Validator implements ServerSideValidatorInterf
                 }
                 // Regex validator
                 if ($validatorName == 'regex') {
-                    $this->ruleWithMessage('regex', $messageSet, $fieldName, '/'.$validator['regex'].'/');
+                    $this->ruleWithMessage('regex', $messageSet, $fieldName, '/' . $validator['regex'] . '/');
                 }
                 // Required validator
                 if ($validatorName == 'required') {

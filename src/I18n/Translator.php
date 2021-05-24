@@ -138,8 +138,8 @@ class Translator
             if (is_null($pluralValue)) {
 
                 // If we have a `@TRANSLATION` instruction, return this
-                if ($this->dictionary->has($messageKey.'.@TRANSLATION') && !is_null($this->dictionary->get($messageKey.'.@TRANSLATION'))) {
-                    return $this->dictionary->get($messageKey.'.@TRANSLATION');
+                if ($this->dictionary->has($messageKey . '.@TRANSLATION') && !is_null($this->dictionary->get($messageKey . '.@TRANSLATION'))) {
+                    return $this->dictionary->get($messageKey . '.@TRANSLATION');
                 }
 
                 // Otherwise fallback to singular version
@@ -167,8 +167,8 @@ class Translator
         }
 
         // If we didn't find a plural form, we try to find the "@TRANSLATION" form.
-        if ($this->dictionary->has($messageKey.'.@TRANSLATION')) {
-            return $this->dictionary->get($messageKey.'.@TRANSLATION');
+        if ($this->dictionary->has($messageKey . '.@TRANSLATION')) {
+            return $this->dictionary->get($messageKey . '.@TRANSLATION');
         }
 
         // If the message is an array, but we can't find a plural form or a "@TRANSLATION" instruction, we can't go further.

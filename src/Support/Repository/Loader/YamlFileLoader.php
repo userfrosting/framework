@@ -38,7 +38,7 @@ class YamlFileLoader extends FileRepositoryLoader
             // Fallback to try and parse as JSON, if it fails to be parsed as YAML
             $result = json_decode($doc, true);
             if ($result === null) {
-                throw new JsonException("The file '$path' does not contain a valid YAML or JSON document.  JSON error: ".json_last_error());
+                throw new JsonException("The file '$path' does not contain a valid YAML or JSON document.  JSON error: " . json_last_error());
             }
         }
 

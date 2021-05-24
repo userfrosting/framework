@@ -141,7 +141,7 @@ class Dictionary extends Repository implements DictionaryInterface
             $localesToLoad = array_merge([$locale->getIdentifier()], $locale->getDependentLocalesIdentifier());
             $intersection = array_intersect($localesToLoad, $loadedLocale);
             if (!empty($intersection)) {
-                throw new \LogicException("Can't load dictionary. Dependencies recursion detected : ".implode(', ', $intersection));
+                throw new \LogicException("Can't load dictionary. Dependencies recursion detected : " . implode(', ', $intersection));
             }
 
             $dependentDictionary = new self($locale, $this->locator, $this->fileLoader);
@@ -176,7 +176,7 @@ class Dictionary extends Repository implements DictionaryInterface
      */
     protected function getFiles(): array
     {
-        $ressources = $this->locator->listResources($this->uri.$this->locale->getIdentifier(), true);
+        $ressources = $this->locator->listResources($this->uri . $this->locale->getIdentifier(), true);
         $ressources = array_reverse($ressources);
 
         return $ressources;

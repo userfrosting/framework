@@ -28,6 +28,7 @@ interface SprinkleReceipe
      * @return string
      */
     public static function getPath(): string;
+
     /**
      * Undocumented function.
      *

@@ -119,12 +119,12 @@ class AssetsTemplatePlugin
     private function makeSelfClosingTag($tagName, array $attributes = null)
     {
         if (!is_string($tagName)) {
-            throw new \InvalidArgumentException('Expected $tagName to be type string but was '.gettype($tagName).'.'); // @codeCoverageIgnore
+            throw new \InvalidArgumentException('Expected $tagName to be type string but was ' . gettype($tagName) . '.'); // @codeCoverageIgnore
         }
 
         $output = "<$tagName";
         if ($attributes !== null) {
-            $output .= ' '.$this->convertAttributes($attributes);
+            $output .= ' ' . $this->convertAttributes($attributes);
         }
 
         $output .= ' />';
@@ -145,7 +145,7 @@ class AssetsTemplatePlugin
     {
         $output = "<$tagName";
         if ($attributes !== null) {
-            $output .= ' '.$this->convertAttributes($attributes);
+            $output .= ' ' . $this->convertAttributes($attributes);
         }
         $output .= ">$content</$tagName>";
 

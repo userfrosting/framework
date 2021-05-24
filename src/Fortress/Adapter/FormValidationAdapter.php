@@ -245,13 +245,13 @@ class FormValidationAdapter extends ClientSideValidationAdapter
                 break;
             case 'member_of':
                 if (isset($validator['values'])) {
-                    $params['regexp'] = '^'.implode('|', $validator['values']).'$';
+                    $params['regexp'] = '^' . implode('|', $validator['values']) . '$';
                 }
                 $transformedValidatorJson['regexp'] = $params;
                 break;
             case 'not_member_of':
                 if (isset($validator['values'])) {
-                    $params['regexp'] = '^(?!'.implode('|', $validator['values']).'$).*$';
+                    $params['regexp'] = '^(?!' . implode('|', $validator['values']) . '$).*$';
                 }
                 $transformedValidatorJson['regexp'] = $params;
                 break;

@@ -42,14 +42,14 @@ class GulpBundleAssetsCompiledBundles extends GulpBundleAssetsBundles
             if (is_string($styles)) {
                 $this->cssBundles[$bundleName][] = $styles;
             } elseif ($styles !== null) {
-                throw new InvalidBundlesFileException("Expected styles property for '$bundleName' to be of type string but was '".gettype($styles)."' for '$path'");
+                throw new InvalidBundlesFileException("Expected styles property for '$bundleName' to be of type string but was '" . gettype($styles) . "' for '$path'");
             }
 
             $scripts = $schema["$bundleName.scripts"];
             if (is_string($scripts)) {
                 $this->jsBundles[$bundleName][] = $scripts;
             } elseif ($scripts !== null) {
-                throw new InvalidBundlesFileException("Expected scripts property for '$bundleName' to be of type string but was '".gettype($scripts)."' for '$path'");
+                throw new InvalidBundlesFileException("Expected scripts property for '$bundleName' to be of type string but was '" . gettype($scripts) . "' for '$path'");
             }
         }
     }

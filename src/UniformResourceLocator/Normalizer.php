@@ -89,7 +89,7 @@ class Normalizer
 
         // Before adding back `/`, make sure it's not empty again
         if ($path !== '') {
-            $path = rtrim($path, '/').'/';
+            $path = rtrim($path, '/') . '/';
         }
 
         return $path;

@@ -85,13 +85,13 @@ class GulpBundleAssetsRawBundles extends GulpBundleAssetsBundles
         } elseif (is_array($bundle)) {
             foreach ($bundle as $asset) {
                 if (!is_string($asset)) {
-                    throw new \InvalidArgumentException('Input was array, so string expected but encountered '.gettype($asset));
+                    throw new \InvalidArgumentException('Input was array, so string expected but encountered ' . gettype($asset));
                 }
             }
 
             return $bundle;
         } else {
-            throw new \InvalidArgumentException('Expected string or string[] but input was '.gettype($bundle));
+            throw new \InvalidArgumentException('Expected string or string[] but input was ' . gettype($bundle));
         }
     }
 }

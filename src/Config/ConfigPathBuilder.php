@@ -36,12 +36,12 @@ class ConfigPathBuilder extends PathBuilder
 
         $filePaths = [];
         foreach ($searchPaths as $path) {
-            $cleanPath = rtrim($path, '/\\').'/';
+            $cleanPath = rtrim($path, '/\\') . '/';
 
-            $filePaths[] = $cleanPath.'default.php';
+            $filePaths[] = $cleanPath . 'default.php';
 
             if (!is_null($environment)) {
-                $filePaths[] = $cleanPath.$environment.'.php';
+                $filePaths[] = $cleanPath . $environment . '.php';
             }
         }
 

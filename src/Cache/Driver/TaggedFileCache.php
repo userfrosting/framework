@@ -27,6 +27,6 @@ class TaggedFileCache extends TaggedCache
      */
     public function taggedItemKey($key)
     {
-        return $this->tags->getNamespace().$this->store->separator.$key;
+        return $this->tags->getNamespace() . $this->store->separator . $key;
     }
 }

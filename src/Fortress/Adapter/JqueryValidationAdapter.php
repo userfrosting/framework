@@ -39,7 +39,7 @@ class JqueryValidationAdapter extends ClientSideValidationAdapter
         foreach ($this->schema->all() as $fieldNameO => $field) {
             $fieldNameOnly = $fieldNameO;
             if ($arrayPrefix != '') {
-                $fieldName = $arrayPrefix.'['.$fieldNameO.']';
+                $fieldName = $arrayPrefix . '[' . $fieldNameO . ']';
             } else {
                 $fieldName = $fieldNameO;
             }

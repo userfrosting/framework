@@ -36,7 +36,7 @@ class FileTagSet extends TagSet
      */
     public function tagKey($name)
     {
-        return $this->store->tagRepository.$this->store->separator.preg_replace('/[^\w\s\d\-_~,;\[\]\(\).]/', '~', $name);
+        return $this->store->tagRepository . $this->store->separator . preg_replace('/[^\w\s\d\-_~,;\[\]\(\).]/', '~', $name);
     }
 
     /**

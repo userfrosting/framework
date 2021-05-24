@@ -124,7 +124,7 @@ class Util
         $result = false;
         foreach ((array) $patterns as $pattern) {
             $currMatches = [];
-            if ($pattern != '' && preg_match($delimiter.$pattern.$delimiter, $subject, $currMatches, $flags, $offset)) {
+            if ($pattern != '' && preg_match($delimiter . $pattern . $delimiter, $subject, $currMatches, $flags, $offset)) {
                 $result = true;
                 $matches[$pattern] = $currMatches;
             }

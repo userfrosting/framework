@@ -152,7 +152,7 @@ abstract class Cupcake
 
     /**
      * Register system services, load all sprinkles, and add their resources and services.
-     * Boot the Sprinkle manager, which creates Sprinkle classes and subscribes them to the event dispatcher
+     * Boot the Sprinkle manager, which creates Sprinkle classes and subscribes them to the event dispatcher.
      */
     protected function setupSprinkles(): void
     {
