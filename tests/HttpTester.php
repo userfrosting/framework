@@ -10,16 +10,7 @@
 
 namespace UserFrosting\Tests;
 
-use DI\Container;
-use InvalidArgumentException;
-use JsonException;
 use PHPUnit\Framework\MockObject\MockObject;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UriInterface;
-use Slim\App;
-use Slim\Psr7\Factory\ServerRequestFactory;
-use UnexpectedValueException;
 
 /**
  * HttpTester Trait.
@@ -29,39 +20,13 @@ use UnexpectedValueException;
 trait HttpTester
 {
     /**
-     * @var Container
-     */
-    // protected $container;
-
-    /**
-     * @var App
-     */
-    // protected $app;
-
-    /**
-     * Bootstrap app.
-     *
-     * @throws UnexpectedValueException
-     */
-    /*protected function setUp(): void
-    {
-        $this->app = require __DIR__ . '/../../config/bootstrap.php';
-
-        $container = $this->app->getContainer();
-        if ($container === null) {
-            throw new UnexpectedValueException('Container must be initialized');
-        }
-
-        $this->container = $container;
-    }*/
-
-    /**
      * Add mock to container.
      *
      * @param string $class The class or interface
      *
      * @return MockObject The mock
      */
+    // TODO Enabled if necessary and move to trait
     /*protected function mock(string $class): MockObject
     {
         if (!class_exists($class)) {
@@ -78,63 +43,102 @@ trait HttpTester
     }*/
 
     /**
-     * Create a server request.
+     * Asserts that collections are equivalent.
      *
-     * @param string              $method       The HTTP method
-     * @param string|UriInterface $uri          The URI
-     * @param array               $serverParams The server parameters
-     *
-     * @return ServerRequestInterface
+     * @param  array                                   $expected
+     * @param  array                                   $actual
+     * @param  string                                  $key      [description]
+     * @param  string                                  $message  [description]
+     * @throws \PHPUnit_Framework_AssertionFailedError
      */
-    protected function createRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
+    // TODO : Move to Trait
+    /*public static function assertCollectionsSame($expected, $actual, $key = 'id', $message = '')
     {
-        $request = new ServerRequestFactory();
+        // Check that they have the same number of items
+        static::assertEquals(count($expected), count($actual));
 
-        return $request->createServerRequest($method, $uri, $serverParams);
-    }
+        // Sort by primary key
+        $expected = collect($expected)->sortBy($key);
+        $actual = collect($actual)->sortBy($key);
+
+        // Check that the keys match
+        $expectedKeys = $expected->keys()->all();
+        $actualKeys = $actual->keys()->all();
+        static::assertEquals(sort($expectedKeys), sort($actualKeys));
+
+        // Check that the array representations of each collection item match
+        $expected = $expected->values();
+        $actual = $actual->values();
+        for ($i = 0; $i < count($expected); $i++) {
+            static::assertEquals(
+                static::castToComparable($expected[$i]),
+                static::castToComparable($actual[$i])
+            );
+        }
+    }*/
 
     /**
-     * Create a JSON request.
+     * Call protected/private method of a class.
      *
-     * @param string              $method The HTTP method
-     * @param string|UriInterface $uri    The URI
-     * @param array|null          $data   The json data
-     *
-     * @return ServerRequestInterface
+     * @param  object &$object    Instantiated object that we will run method on.
+     * @param  string $methodName Method name to call
+     * @param  array  $parameters Array of parameters to pass into method.
+     * @return mixed  Method return.
      */
-    protected function createJsonRequest(string $method, $uri, array $data = null): ServerRequestInterface
+    // TODO : Move to Trait
+    /*public function invokeMethod(&$object, $methodName, array $parameters = [])
     {
-        $request = $this->createRequest($method, $uri);
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
 
-        if ($data !== null) {
-            $request = $request->withParsedBody($data);
+        return $method->invokeArgs($object, $parameters);
+    }*/
+
+    /**
+     * Helpers
+     */
+
+    /**
+     * Cast an item to an array if it has a toArray() method.
+     *
+     * @param  object $item
+     * @return mixed
+     */
+    // TODO : Move to Trait
+    /*protected static function castToComparable($item)
+    {
+        return (is_object($item) && method_exists($item, 'toArray')) ? $item->toArray() : $item;
+    }*/
+
+    /**
+     * Remove all relations on a collection of models.
+     *
+     * @param array $models
+     */
+    // TODO : Move to Trait
+    /*protected static function ignoreRelations($models)
+    {
+        foreach ($models as $model) {
+            $model->setRelations([]);
+        }
+    }*/
+
+    /**
+     * cloneObjectArray
+     *
+     * @param  array $original
+     * @return array
+     */
+    // TODO : Move to Trait
+    /*protected function cloneObjectArray($original)
+    {
+        $cloned = [];
+
+        foreach ($original as $k => $v) {
+            $cloned[$k] = clone $v;
         }
 
-        return $request->withHeader('Content-Type', 'application/json');
-    }
-
-    /**
-     * Verify that the given string is an exact match for the body returned.
-     *
-     * @param string            $expected The expected string
-     * @param ResponseInterface $response The response
-     */
-    protected function assertResponseData(string $expected, ResponseInterface $response): void
-    {
-        $this->assertSame($expected, (string) $response->getBody());
-    }
-
-    /**
-     * Verify that the given array is an exact match for the JSON returned.
-     *
-     * @param array             $expected The expected array
-     * @param ResponseInterface $response The response
-     *
-     * @throws JsonException
-     */
-    protected function assertResponseJson(array $expected, ResponseInterface $response): void
-    {
-        $actual = (string) $response->getBody();
-        $this->assertSame($expected, (array) json_decode($actual, true, 512, JSON_THROW_ON_ERROR));
-    }
+        return $cloned;
+    }*/
 }

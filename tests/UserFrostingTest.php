@@ -10,7 +10,6 @@
 
 namespace UserFrosting\Tests;
 
-use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Slim\App;
 use UserFrosting\Sprinkle\SprinkleManager;
@@ -20,16 +19,15 @@ use UserFrosting\UserFrosting;
 /**
  * Tests UserFrosting class.
  */
-class UserFrostingTest extends TestCase
+class UserFrostingTest extends UserFrostingTestCase
 {
-    use HttpTester;
+    protected string $mainSprinkle = TestSprinkle::class;
 
     public function testConstructor(): UserFrosting
     {
-        $userfrosting = new UserFrosting(TestSprinkle::class);
-        $this->assertInstanceOf(UserFrosting::class, $userfrosting);
+        $this->assertInstanceOf(UserFrosting::class, $this->userfrosting);
 
-        return $userfrosting;
+        return $this->userfrosting;
     }
 
     /**
@@ -49,13 +47,9 @@ class UserFrostingTest extends TestCase
      */
     public function testFullRoute(UserFrosting $userfrosting): void
     {
-        $app = $userfrosting->getApp();
-
-        // Create request with method and url
-        $request = $this->createJsonRequest('GET', '/foo');
-
-        // Make request and fetch response
-        $response = $app->handle($request);
+        // Create request with method and url and fetch response
+        $request = $this->createRequest('GET', '/foo');
+        $response = $this->handleRequest($request);
 
         // Asserts
         $this->assertSame(200, $response->getStatusCode());
