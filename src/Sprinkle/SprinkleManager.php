@@ -56,7 +56,7 @@ class SprinkleManager
     /**
      * Return a list for the registered bakery commands, recursilvey.
      *
-     * @return \Symfony\Component\Console\Command\Command[]
+     * @return CommandReceipe[]
      */
     public function getBakeryCommands(): array
     {

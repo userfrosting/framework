@@ -49,10 +49,9 @@ class BakeryTest extends TestCase
         $bakery = new Bakery(SprinkleStub::class);
         $this->assertInstanceOf(Bakery::class, $bakery);
 
-        // TODO : Test commmand has been registered.
+        $command = $bakery->getApp()->get('stub');
+        $this->assertInstanceOf(CommandStub::class, $command);
     }
-
-    // TODO : Test a basic Hello World Command
 
     /**
      * @depends testConstructor

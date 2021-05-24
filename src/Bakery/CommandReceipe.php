@@ -18,8 +18,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Base class for UserFrosting Bakery CLI tools.
- *
- * @author Alex Weissman (https://alexanderweissman.com)
  */
 abstract class CommandReceipe extends Command
 {
