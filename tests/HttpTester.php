@@ -29,6 +29,55 @@ use UnexpectedValueException;
 trait HttpTester
 {
     /**
+     * @var Container
+     */
+    // protected $container;
+
+    /**
+     * @var App
+     */
+    // protected $app;
+
+    /**
+     * Bootstrap app.
+     *
+     * @throws UnexpectedValueException
+     */
+    /*protected function setUp(): void
+    {
+        $this->app = require __DIR__ . '/../../config/bootstrap.php';
+
+        $container = $this->app->getContainer();
+        if ($container === null) {
+            throw new UnexpectedValueException('Container must be initialized');
+        }
+
+        $this->container = $container;
+    }*/
+
+    /**
+     * Add mock to container.
+     *
+     * @param string $class The class or interface
+     *
+     * @return MockObject The mock
+     */
+    /*protected function mock(string $class): MockObject
+    {
+        if (!class_exists($class)) {
+            throw new InvalidArgumentException(sprintf('Class not found: %s', $class));
+        }
+
+        $mock = $this->getMockBuilder($class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->container->set($class, $mock);
+
+        return $mock;
+    }*/
+
+    /**
      * Create a server request.
      *
      * @param string              $method       The HTTP method
