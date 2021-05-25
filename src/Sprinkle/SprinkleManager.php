@@ -259,47 +259,6 @@ class SprinkleManager
     // }
 
     /**
-     * Returns the sprinkle service provider class.
-     *
-     * @param string $sprinkleName
-     *
-     * @return string
-     */
-    // TODO
-    // protected function getSprinkleDefaultServiceProvider(string $sprinkleName): string
-    // {
-    //     return $this->getSprinkleClassNamespace($sprinkleName) . '\\ServicesProvider\\ServicesProvider';
-    // }
-
-    /**
-     * Takes the name of a Sprinkle, and creates an instance of the initializer object (if defined).
-     *
-     * Creates an object of a subclass of UserFrosting\System\Sprinkle\Sprinkle if defined for the sprinkle (converting to StudlyCase).
-     * Otherwise, returns null.
-     *
-     * @param string $sprinkleName The name of the Sprinkle to initialize.
-     *
-     * @return SprinkleReceipe|null Sprinkle class instance or null if no such class exist
-     */
-    // public function bootSprinkle(string $sprinkleName): ?Sprinkle
-    // {
-    //     $fullClassName = $this->getSprinkleClass($sprinkleName);
-
-    //     // Check that class exists.  If not, set to null
-    //     if (class_exists($fullClassName)) {
-    //         $sprinkle = new $fullClassName($this->ci);
-
-    //         if (!$sprinkle instanceof Sprinkle) {
-    //             throw new SprinkleClassException("$fullClassName must be an instance of " . Sprinkle::class);
-    //         }
-
-    //         return $sprinkle;
-    //     } else {
-    //         return null;
-    //     }
-    // }
-
-    /**
      * Returns a list of available sprinkle names.
      *
      * @return string[]

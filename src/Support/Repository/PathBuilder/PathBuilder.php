@@ -20,25 +20,15 @@ use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 abstract class PathBuilder
 {
     /**
-     * @var ResourceLocatorInterface Locator service to use when searching for files.
-     */
-    protected $locator;
-
-    /**
-     * @var string Virtual path to search in the locator.
-     */
-    protected $uri;
-
-    /**
      * Create the loader.
      *
      * @param ResourceLocatorInterface $locator
      * @param string                   $uri
      */
-    public function __construct(ResourceLocatorInterface $locator, string $uri)
-    {
-        $this->locator = $locator;
-        $this->uri = $uri;
+    public function __construct(
+        protected ResourceLocatorInterface $locator,
+        protected string $uri
+    ) {
     }
 
     /**
