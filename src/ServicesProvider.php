@@ -12,7 +12,6 @@ namespace UserFrosting\System;
 
 use Psr\Container\ContainerInterface;
 use RocketTheme\Toolbox\Event\EventDispatcher;
-use UserFrosting\UniformResourceLocator\ResourceLocator;
 
 /**
  * UserFrosting system services provider.

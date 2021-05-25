@@ -16,6 +16,7 @@ use UserFrosting\Bakery\CommandReceipe;
 use UserFrosting\Exceptions\BadInstanceOfException;
 use UserFrosting\Exceptions\BakeryClassException;
 use UserFrosting\Exceptions\SprinkleClassException;
+use UserFrosting\ServicesProvider\ServicesProviderInterface;
 use UserFrosting\Support\Exception\FileNotFoundException;
 
 /**
@@ -99,7 +100,7 @@ class SprinkleManager
 
         foreach ($this->sprinkles as $sprinkle) {
             foreach ($sprinkle::getServices() as $container) {
-                $containers = array_merge($this->validateContainerFile($container), $containers);
+                $containers = array_merge($this->validateServicesProvider($container), $containers);
             }
         }
 
@@ -188,8 +189,8 @@ class SprinkleManager
     /**
      * Validate route file exist and return Closure the file contains.
      *
-     * @throws Exception
      * @throws FileNotFoundException
+     * @throws BadInstanceOfException
      */
     protected function validateRouteFile(string $file): Closure
     {
@@ -212,25 +213,19 @@ class SprinkleManager
     /**
      * Validate container definition file exist and return it's array.
      *
-     * @throws Exception
-     * @throws FileNotFoundException
+     * @throws BadInstanceOfException
      */
-    protected function validateContainerFile(string $file): array
+    protected function validateServicesProvider(string $class): array
     {
-        // Check file exist
-        if (!file_exists($file)) {
-            throw new FileNotFoundException($file . ' not found');
+        // Get class instance
+        $instance = new $class();
+
+        // Class must be an instance of symfony command
+        if (!$instance instanceof ServicesProviderInterface) {
+            throw new BadInstanceOfException('Services Provider `' . $instance::class . '` must be instance of ' . ServicesProviderInterface::class);
         }
 
-        // Include file
-        $definition = include $file;
-
-        // Make sure file is a closure
-        if (!is_array($definition)) {
-            throw new BadInstanceOfException('Container definition must be an array');
-        }
-
-        return $definition;
+        return $instance->register();
     }
 
     /**

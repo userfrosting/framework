@@ -199,16 +199,6 @@ class SprinkleManagerTest extends TestCase
     /**
      * @depends testGetServicesDefinitions
      */
-    public function testGetServicesDefinitionsWithNotFoundFile(): void
-    {
-        $manager = new SprinkleManager(FileNotFoundSprinkleStub::class);
-        $this->expectException(FileNotFoundException::class);
-        $manager->getServicesDefinitions();
-    }
-
-    /**
-     * @depends testGetServicesDefinitions
-     */
     public function testGetServicesDefinitionsWithBadInstance(): void
     {
         $manager = new SprinkleManager(BadInstanceOfSprinkleStub::class);
@@ -304,11 +294,6 @@ class FileNotFoundSprinkleStub extends TestSprinkle
     {
         return ['foo/'];
     }
-
-    public static function getServices(): array
-    {
-        return ['foo/'];
-    }
 }
 
 class BadInstanceOfSprinkleStub extends TestSprinkle
@@ -320,7 +305,7 @@ class BadInstanceOfSprinkleStub extends TestSprinkle
 
     public static function getServices(): array
     {
-        return [self::getPath() . '/container/badServices.php'];
+        return [\stdClass::class];
     }
 }
 

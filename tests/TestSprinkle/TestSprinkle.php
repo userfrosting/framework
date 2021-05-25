@@ -62,7 +62,7 @@ class TestSprinkle implements SprinkleReceipe
     public static function getServices(): array
     {
         return [
-            __DIR__ . '/data/container/services.php'
+            ServicesProviders::class,
         ];
     }
 }

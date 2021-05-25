@@ -8,8 +8,16 @@
  * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
-use UserFrosting\Tests\TestSprinkle\MessageGenerator;
+namespace UserFrosting\ServicesProvider;
 
-return [
-   'testMessageGenerator' => \DI\create(MessageGenerator::class),
-];
+interface ServicesProviderInterface
+{
+    /**
+     * Returns list of injection definitions.
+     *
+     * @see https://php-di.org/doc/php-definitions.html#definition-types
+     *
+     * @return mixed[]
+     */
+    public function register(): array;
+}
