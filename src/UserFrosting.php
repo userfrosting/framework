@@ -72,7 +72,7 @@ class UserFrosting extends Cupcake
     protected function loadRoutes(): void
     {
         foreach ($this->sprinkleManager->getRoutesDefinitions() as $definition) {
-            $definition($this->app);
+            $definition->register($this->app);
         }
     }
 }

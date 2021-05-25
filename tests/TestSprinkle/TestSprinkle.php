@@ -52,7 +52,7 @@ class TestSprinkle implements SprinkleReceipe
     public static function getRoutes(): array
     {
         return [
-            self::getPath() . '/routes/routes.php'
+            RoutesDefinitions::class,
         ];
     }
 

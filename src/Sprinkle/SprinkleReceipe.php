@@ -30,7 +30,7 @@ interface SprinkleReceipe
     public static function getPath(): string;
 
     /**
-     * Undocumented function.
+     * Return an array of all registered Bakery Commands.
      *
      * @return array[string]SprinkleReceipe
      */
@@ -46,14 +46,14 @@ interface SprinkleReceipe
     /**
      * Returns a list of routes definition in PHP files.
      *
-     * @return string[]
+     * @return \UserFrosting\Routes\RouteDefinitionInterface[]
      */
     public static function getRoutes(): array;
 
     /**
      * Returns a list of all PHP-DI services/container definitions files.
      *
-     * @return string[]
+     * @return \UserFrosting\ServicesProvider\ServicesProviderInterface[]
      */
     public static function getServices(): array;
 }

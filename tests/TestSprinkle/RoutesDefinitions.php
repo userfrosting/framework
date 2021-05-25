@@ -8,9 +8,15 @@
  * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
-use Slim\App;
-use UserFrosting\Tests\TestSprinkle\TestController;
+namespace UserFrosting\Tests\TestSprinkle;
 
-return function (App $app) {
-    $app->get('/foo', [TestController::class, 'index']);
-};
+use Slim\App;
+use UserFrosting\Routes\RouteDefinitionInterface;
+
+class RoutesDefinitions implements RouteDefinitionInterface
+{
+    public function register(App $app): void
+    {
+        $app->get('/foo', [TestController::class, 'index']);
+    }
+}

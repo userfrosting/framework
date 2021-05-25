@@ -8,5 +8,14 @@
  * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
-return function () {
-};
+namespace UserFrosting\Routes;
+
+use Slim\App;
+
+interface RouteDefinitionInterface
+{
+    /**
+     * Register routes to the Slim App.
+     */
+    public function register(App $app): void;
+}

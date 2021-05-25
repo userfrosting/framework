@@ -10,14 +10,13 @@
 
 namespace UserFrosting\Tests\Unit;
 
-use Closure;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Bakery\CommandReceipe;
 use UserFrosting\Exceptions\BakeryClassException;
 use UserFrosting\Exceptions\SprinkleClassException;
 use UserFrosting\Sprinkle\SprinkleManager;
 use UserFrosting\Exceptions\BadInstanceOfException;
-use UserFrosting\Support\Exception\FileNotFoundException;
+use UserFrosting\Routes\RouteDefinitionInterface;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
 class SprinkleManagerTest extends TestCase
@@ -146,17 +145,7 @@ class SprinkleManagerTest extends TestCase
 
         $this->assertIsArray($routes);
         $this->assertCount(1, $routes);
-        $this->assertInstanceOf(Closure::class, $routes[0]);
-    }
-
-    /**
-     * @depends testGetRoutesDefinitions
-     */
-    public function testGetRoutesDefinitionsWithNotFoundFile(): void
-    {
-        $manager = new SprinkleManager(FileNotFoundSprinkleStub::class);
-        $this->expectException(FileNotFoundException::class);
-        $manager->getRoutesDefinitions();
+        $this->assertInstanceOf(RouteDefinitionInterface::class, $routes[0]);
     }
 
     /**
@@ -167,20 +156,6 @@ class SprinkleManagerTest extends TestCase
         $manager = new SprinkleManager(BadInstanceOfSprinkleStub::class);
         $this->expectException(BadInstanceOfException::class);
         $manager->getRoutesDefinitions();
-    }
-
-    /**
-     * @depends testGetRoutesDefinitions
-     */
-    public function testGetRoutesDefinitionsWithArgumentNotApp(): void
-    {
-        $manager = new SprinkleManager(NotAppSprinkleStub::class);
-        $routes = $manager->getRoutesDefinitions();
-
-        $this->assertIsArray($routes);
-        $this->assertCount(3, $routes);
-        $this->assertInstanceOf(Closure::class, $routes[1]);
-        $this->assertInstanceOf(Closure::class, $routes[2]);
     }
 
     /**
@@ -288,19 +263,11 @@ class NotSprinkleStub extends TestSprinkle
     }
 }
 
-class FileNotFoundSprinkleStub extends TestSprinkle
-{
-    public static function getRoutes(): array
-    {
-        return ['foo/'];
-    }
-}
-
 class BadInstanceOfSprinkleStub extends TestSprinkle
 {
     public static function getRoutes(): array
     {
-        return [self::getPath() . '/routes/badRoutes.php'];
+        return [\stdClass::class];
     }
 
     public static function getServices(): array

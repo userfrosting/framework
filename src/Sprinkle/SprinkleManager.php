@@ -16,8 +16,8 @@ use UserFrosting\Bakery\CommandReceipe;
 use UserFrosting\Exceptions\BadInstanceOfException;
 use UserFrosting\Exceptions\BakeryClassException;
 use UserFrosting\Exceptions\SprinkleClassException;
+use UserFrosting\Routes\RouteDefinitionInterface;
 use UserFrosting\ServicesProvider\ServicesProviderInterface;
-use UserFrosting\Support\Exception\FileNotFoundException;
 
 /**
  * Sprinkle Manager.
@@ -74,7 +74,7 @@ class SprinkleManager
     /**
      * Returns a list of all routes definition files from all sprinkles.
      *
-     * @return Closure[] List of PHP files containing routes definitions.
+     * @return RouteDefinitionInterface[] List of PHP files containing routes definitions.
      */
     public function getRoutesDefinitions(): array
     {
@@ -82,7 +82,7 @@ class SprinkleManager
 
         foreach ($this->sprinkles as $sprinkle) {
             foreach ($sprinkle::getRoutes() as $route) {
-                $routes[] = $this->validateRouteFile($route);
+                $routes[] = $this->validateRouteClass($route);
             }
         }
 
@@ -189,25 +189,19 @@ class SprinkleManager
     /**
      * Validate route file exist and return Closure the file contains.
      *
-     * @throws FileNotFoundException
      * @throws BadInstanceOfException
      */
-    protected function validateRouteFile(string $file): Closure
+    protected function validateRouteClass(string $class): RouteDefinitionInterface
     {
-        // Check file exist
-        if (!file_exists($file)) {
-            throw new FileNotFoundException($file . ' not found');
+        // Get class instance
+        $instance = new $class();
+
+        // Class must be an instance of symfony command
+        if (!$instance instanceof RouteDefinitionInterface) {
+            throw new BadInstanceOfException('Routes definitions class `' . $instance::class . '` must be instance of ' . RouteDefinitionInterface::class);
         }
 
-        // Include file
-        $definition = include $file;
-
-        // Make sure file is a closure
-        if (!$definition instanceof \Closure) {
-            throw new BadInstanceOfException('Route definition must be a Closure');
-        }
-
-        return $definition;
+        return $instance;
     }
 
     /**
