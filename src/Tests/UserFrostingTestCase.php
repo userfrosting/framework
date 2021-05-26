@@ -11,15 +11,15 @@
 namespace UserFrosting\Tests;
 
 use DI\Container;
-use PHPUnit\Framework\TestCase;
-use Slim\App;
-use UserFrosting\UserFrosting;
 use JsonException;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
+use Slim\App;
 use Slim\Psr7\Factory\ServerRequestFactory;
+use UserFrosting\UserFrosting;
 
 /**
  * Case for test that requires the full App instance.
@@ -37,7 +37,7 @@ class UserFrostingTestCase extends TestCase
     protected Container $ci;
 
     /**
-     * The Slim App Instance
+     * The Slim App Instance.
      */
     protected App $app;
 
@@ -47,7 +47,7 @@ class UserFrostingTestCase extends TestCase
     protected UserFrosting $userfrosting;
 
     /**
-     * String reference to SprinkleReceipe
+     * String reference to SprinkleReceipe.
      */
     protected string $mainSprinkle;
 
