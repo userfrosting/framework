@@ -10,7 +10,6 @@
 
 namespace UserFrosting\Sprinkle;
 
-use Closure;
 use ReflectionClass;
 use UserFrosting\Bakery\CommandReceipe;
 use UserFrosting\Exceptions\BadInstanceOfException;
@@ -100,7 +99,7 @@ class SprinkleManager
 
         foreach ($this->sprinkles as $sprinkle) {
             foreach ($sprinkle::getServices() as $container) {
-                $containers = array_merge($this->validateServicesProvider($container), $containers);
+                $containers = array_merge($this->validateServicesProvider($container)->register(), $containers);
             }
         }
 
@@ -209,7 +208,7 @@ class SprinkleManager
      *
      * @throws BadInstanceOfException
      */
-    protected function validateServicesProvider(string $class): array
+    protected function validateServicesProvider(string $class): ServicesProviderInterface
     {
         // Get class instance
         $instance = new $class();
@@ -219,33 +218,8 @@ class SprinkleManager
             throw new BadInstanceOfException('Services Provider `' . $instance::class . '` must be instance of ' . ServicesProviderInterface::class);
         }
 
-        return $instance->register();
+        return $instance;
     }
-
-    /**
-     * Register resource streams for all base sprinkles.
-     * For each sprinkle, register its resources and then run its initializer.
-     */
-    // TODO
-    // public function addResources(): void
-    // {
-    //     foreach ($this->sprinkles as $sprinkleName => $sprinkle) {
-    //         $this->addSprinkleResources($sprinkleName);
-    //     }
-    // }
-
-    /**
-     * Register a sprinkle as a locator location.
-     *
-     * @param string $sprinkleName
-     */
-    // TODO
-    // public function addSprinkleResources(string $sprinkleName): void
-    // {
-    //     /** @var \UserFrosting\UniformResourceLocator\ResourceLocator $locator */
-    //     $locator = $this->ci->locator;
-    //     $locator->registerLocation($sprinkleName, $this->getSprinklePath($sprinkleName));
-    // }
 
     /**
      * Returns a list of available sprinkle names.
@@ -289,38 +263,5 @@ class SprinkleManager
     //     }
 
     //     return array_values($mathches)[0];
-    // }
-
-    /**
-     * Interate through the list of loaded Sprinkles, and invoke their ServiceProvider classes.
-     */
-    // public function registerAllServices(): void
-    // {
-    //     foreach ($this->getSprinkleNames() as $sprinkleName) {
-    //         $this->registerServices($sprinkleName);
-    //     }
-    // }
-
-    /**
-     * Register services for a specified Sprinkle.
-     *
-     * @param string $sprinkleName
-     */
-    // public function registerServices(string $sprinkleName): void
-    // {
-    //     //Register the default services
-    //     $fullClassName = $this->getSprinkleDefaultServiceProvider($sprinkleName);
-
-    //     // Check that class exists, and register services
-    //     if (class_exists($fullClassName)) {
-    //         // Register core services
-    //         $serviceProvider = new $fullClassName();
-    //         $serviceProvider->register($this->ci);
-    //     }
-
-    //     // Register services from other providers
-    //     if ($this->sprinkles[$sprinkleName] instanceof Sprinkle) {
-    //         $this->sprinkles[$sprinkleName]->registerServices();
-    //     }
     // }
 }

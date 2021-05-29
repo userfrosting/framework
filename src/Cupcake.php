@@ -25,12 +25,12 @@ abstract class Cupcake
     /**
      * @var Container The global container object, which holds all your services.
      */
-    protected $ci;
+    protected Container $ci;
 
     /**
      * @var SprinkleManager
      */
-    protected $sprinkleManager;
+    protected SprinkleManager $sprinkleManager;
 
     /**
      * Constructor.
