@@ -38,7 +38,7 @@ class UserFrostingTest extends UserFrostingTestCase
         $this->assertInstanceOf(App::class, $userfrosting->getApp());
         $this->assertInstanceOf(ContainerInterface::class, $userfrosting->getContainer());
         $this->assertSame(TestSprinkle::class, $userfrosting->getMainSprinkle());
-        $this->assertInstanceOf(SprinkleManager::class, $userfrosting->getContainer()->get('sprinkleManager'));
+        $this->assertInstanceOf(SprinkleManager::class, $userfrosting->getContainer()->get(SprinkleManager::class));
     }
 
     /**

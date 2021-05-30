@@ -60,7 +60,7 @@ abstract class Cupcake
         $this->app = $this->createApp();
 
         // Register SprinkleManager into the CI
-        $this->ci->set('sprinkleManager', $this->sprinkleManager);
+        $this->ci->set(SprinkleManager::class, $this->sprinkleManager);
 
         // $slimAppEvent = new SlimAppEvent($this->app);
 
