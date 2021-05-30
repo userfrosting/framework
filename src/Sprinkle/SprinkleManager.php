@@ -36,12 +36,18 @@ class SprinkleManager
     protected $sprinkles = [];
 
     /**
+     * @var SprinkleReceipe Main sprinkle
+     */
+    protected $mainSprinkle;
+
+    /**
      * Load sprinkles on construction.
      *
-     * @param string $mainSprinkle
+     * @param SprinkleReceipe $mainSprinkle
      */
-    public function __construct(protected string $mainSprinkle)
+    public function __construct($mainSprinkle)
     {
+        $this->mainSprinkle = $mainSprinkle;
         $this->loadSprinkles();
     }
 
@@ -91,7 +97,7 @@ class SprinkleManager
     /**
      * Returns a list of all PHP-DI services/container definition files, from all sprinkles.
      *
-     * @return string[] List of PHP files containing routes definitions.
+     * @return ServicesProviderInterface[] List of PHP files containing routes definitions.
      */
     public function getServicesDefinitions(): array
     {
@@ -114,6 +120,41 @@ class SprinkleManager
     public function getSprinkles(): array
     {
         return $this->sprinkles;
+    }
+
+    /**
+     * Get main sprinkle defined on construction.
+     *
+     * @return SprinkleReceipe
+     */
+    public function getMainSprinkle()
+    {
+        return $this->mainSprinkle;
+    }
+
+    /**
+     * Returns a list of available sprinkle names.
+     *
+     * @return string[]
+     */
+    public function getSprinklesNames(): array
+    {
+        return array_map(function ($sprinkle) {
+            return $sprinkle::getName();
+        }, $this->sprinkles);
+    }
+
+    /**
+     * Return if a Sprinkle is available
+     * Can be used by other Sprinkles to test if their dependencies are met.
+     *
+     * @param string $sprinkle The class of the Sprinkle
+     *
+     * @return bool
+     */
+    public function isAvailable(string $sprinkle): bool
+    {
+        return in_array($sprinkle, $this->sprinkles);
     }
 
     /**
@@ -188,6 +229,8 @@ class SprinkleManager
     /**
      * Validate route file exist and return Closure the file contains.
      *
+     * @param string $class
+     *
      * @throws BadInstanceOfException
      */
     protected function validateRouteClass(string $class): RouteDefinitionInterface
@@ -206,6 +249,8 @@ class SprinkleManager
     /**
      * Validate container definition file exist and return it's array.
      *
+     * @param string $class
+     *
      * @throws BadInstanceOfException
      */
     protected function validateServicesProvider(string $class): ServicesProviderInterface
@@ -220,48 +265,4 @@ class SprinkleManager
 
         return $instance;
     }
-
-    /**
-     * Returns a list of available sprinkle names.
-     *
-     * @return string[]
-     */
-    // TODO
-    // public function getSprinkleNames(): array
-    // {
-    //     return array_keys($this->sprinkles);
-    // }
-
-    /**
-     * Return if a Sprinkle is available
-     * Can be used by other Sprinkles to test if their dependencies are met.
-     *
-     * @param string $sprinkleName The name of the Sprinkle
-     *
-     * @return bool
-     */
-    // TODO
-    // public function isAvailable(string $sprinkleName): bool
-    // {
-    //     return (bool) $this->getSprinkle($sprinkleName);
-    // }
-
-    /**
-     * Find sprinkle value from the sprinkles.json.
-     *
-     * @param string $sprinkleName
-     *
-     * @return string|false Return sprinkle name or false if sprinkle not found
-     */
-    // TODO
-    // public function getSprinkle(string $sprinkleName)
-    // {
-    //     $mathches = preg_grep("/^$sprinkleName$/i", $this->getSprinkleNames());
-
-    //     if (count($mathches) <= 0) {
-    //         return false;
-    //     }
-
-    //     return array_values($mathches)[0];
-    // }
 }

@@ -29,6 +29,14 @@ class SprinkleManagerTest extends TestCase
         $manager = new SprinkleManager(CoreStub::class);
         $this->assertSame([CoreStub::class], $manager->getSprinkles());
         $this->assertSame('Test Sprinkle', $manager->getSprinkles()[0]::getName());
+
+        // Test getMainSprinkle while at it
+        $this->assertSame(CoreStub::class, $manager->getMainSprinkle());
+        $this->assertSame('Test Sprinkle', $manager->getMainSprinkle()::getName());
+
+        // Test isAvaialable while at it
+        $this->assertTrue($manager->isAvailable(CoreStub::class));
+        $this->assertFalse($manager->isAvailable(AdminStub::class));
     }
 
     /**
@@ -44,6 +52,15 @@ class SprinkleManagerTest extends TestCase
             AdminStub::class,
             AccountStub::class,
         ], $manager->getSprinkles());
+        $this->assertSame(MainStub::class, $manager->getMainSprinkle());
+
+        // Test getSprinkleNames while at it
+        $this->assertSame([
+            'Main Sprinkle',
+            'Test Sprinkle',
+            'Test Sprinkle',
+            'Test Sprinkle',
+        ], $manager->getSprinklesNames());
     }
 
     /**
@@ -220,6 +237,11 @@ class AccountStub extends TestSprinkle
 
 class MainStub extends TestSprinkle
 {
+    public static function getName(): string
+    {
+        return 'Main Sprinkle';
+    }
+
     public static function getSprinkles(): array
     {
         return [
