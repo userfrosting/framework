@@ -8,11 +8,11 @@
  * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Tests;
+namespace UserFrosting\Testing;
 
 use DI\Container;
 use JsonException;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase as BaseTestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,10 +25,8 @@ use UserFrosting\UserFrosting;
  * Case for test that requires the full App instance.
  * This can be used for HTTP testing against the real deal.
  */
-class UserFrostingTestCase extends TestCase
+class TestCase extends BaseTestCase
 {
-    use HttpTester;
-
     /**
      * The global container object, which holds all services.
      *
@@ -53,6 +51,7 @@ class UserFrostingTestCase extends TestCase
 
     /**
      * Setup the test environment.
+     * @codeCoverageIgnore
      */
     protected function setUp(): void
     {
@@ -63,6 +62,7 @@ class UserFrostingTestCase extends TestCase
 
     /**
      * Refresh the application instance.
+     * @codeCoverageIgnore
      */
     protected function refreshApplication()
     {
@@ -86,6 +86,7 @@ class UserFrostingTestCase extends TestCase
      * @param array               $serverParams The server parameters
      *
      * @return ServerRequestInterface
+     * @codeCoverageIgnore
      */
     protected function createRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
     {
@@ -102,6 +103,7 @@ class UserFrostingTestCase extends TestCase
      * @param array|null          $data   The json data
      *
      * @return ServerRequestInterface
+     * @codeCoverageIgnore
      */
     protected function createJsonRequest(string $method, $uri, array $data = null): ServerRequestInterface
     {
@@ -120,6 +122,7 @@ class UserFrostingTestCase extends TestCase
      * @param RequestInterface $request
      *
      * @return ResponseInterface
+     * @codeCoverageIgnore
      */
     protected function handleRequest(RequestInterface $request): ResponseInterface
     {
@@ -131,6 +134,7 @@ class UserFrostingTestCase extends TestCase
      *
      * @param string            $expected The expected string
      * @param ResponseInterface $response The response
+     * @codeCoverageIgnore
      */
     protected function assertResponse(string $expected, ResponseInterface $response): void
     {
@@ -144,6 +148,7 @@ class UserFrostingTestCase extends TestCase
      * @param ResponseInterface $response The response
      *
      * @throws JsonException
+     * @codeCoverageIgnore
      */
     protected function assertResponseJson(array $expected, ResponseInterface $response): void
     {

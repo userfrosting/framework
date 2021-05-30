@@ -13,13 +13,14 @@ namespace UserFrosting\Tests;
 use Psr\Container\ContainerInterface;
 use Slim\App;
 use UserFrosting\Sprinkle\SprinkleManager;
+use UserFrosting\Testing\TestCase;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 use UserFrosting\UserFrosting;
 
 /**
  * Tests UserFrosting class.
  */
-class UserFrostingTest extends UserFrostingTestCase
+class UserFrostingTest extends TestCase
 {
     protected string $mainSprinkle = TestSprinkle::class;
 

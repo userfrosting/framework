@@ -8,7 +8,7 @@
  * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Tests;
+namespace UserFrosting\Testing;
 
 use PHPUnit\Framework\MockObject\MockObject;
 
