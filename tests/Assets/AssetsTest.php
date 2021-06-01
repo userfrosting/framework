@@ -83,6 +83,20 @@ class AssetsTest extends TestCase
     }
 
     /**
+     * Test string parameter for getAbsoluteUrl.
+     *
+     * @param Assets $assets
+     *
+     *
+     * @depends testConstructAssets
+     */
+    public function testUrlPathToAbsolutePathWithNoUri(Assets $assets)
+    {
+        $result = $assets->urlPathToAbsolutePath('assets://doesNotExist.js');
+        $this->assertNull($result);
+    }
+
+    /**
      * Test string[] parameter for getAbsoluteUrl.
      *
      * @param Assets $assets
