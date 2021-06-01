@@ -51,6 +51,7 @@ class TestCase extends BaseTestCase
 
     /**
      * Setup the test environment.
+     *
      * @codeCoverageIgnore
      */
     protected function setUp(): void
@@ -62,6 +63,7 @@ class TestCase extends BaseTestCase
 
     /**
      * Refresh the application instance.
+     *
      * @codeCoverageIgnore
      */
     protected function refreshApplication()

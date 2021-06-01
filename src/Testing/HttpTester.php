@@ -45,10 +45,11 @@ trait HttpTester
     /**
      * Asserts that collections are equivalent.
      *
-     * @param  array                                   $expected
-     * @param  array                                   $actual
-     * @param  string                                  $key      [description]
-     * @param  string                                  $message  [description]
+     * @param array  $expected
+     * @param array  $actual
+     * @param string $key      [description]
+     * @param string $message  [description]
+     *
      * @throws \PHPUnit_Framework_AssertionFailedError
      */
     // TODO : Move to Trait
@@ -80,10 +81,11 @@ trait HttpTester
     /**
      * Call protected/private method of a class.
      *
-     * @param  object &$object    Instantiated object that we will run method on.
-     * @param  string $methodName Method name to call
-     * @param  array  $parameters Array of parameters to pass into method.
-     * @return mixed  Method return.
+     * @param object &$object    Instantiated object that we will run method on.
+     * @param string $methodName Method name to call
+     * @param array  $parameters Array of parameters to pass into method.
+     *
+     * @return mixed Method return.
      */
     // TODO : Move to Trait
     /*public function invokeMethod(&$object, $methodName, array $parameters = [])
@@ -96,13 +98,14 @@ trait HttpTester
     }*/
 
     /**
-     * Helpers
+     * Helpers.
      */
 
     /**
      * Cast an item to an array if it has a toArray() method.
      *
-     * @param  object $item
+     * @param object $item
+     *
      * @return mixed
      */
     // TODO : Move to Trait
@@ -125,9 +128,10 @@ trait HttpTester
     }*/
 
     /**
-     * cloneObjectArray
+     * cloneObjectArray.
      *
-     * @param  array $original
+     * @param array $original
+     *
      * @return array
      */
     // TODO : Move to Trait
