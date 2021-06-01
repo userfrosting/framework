@@ -54,11 +54,9 @@ class AssetLoaderTest extends TestCase
             ->andReturn(__DIR__ . '/data/sprinkles/hawks/assets/allowed.txt');
         
         $loader = new AssetLoader($assets);
-        $this->assertInstanceOf(AssetLoader::class, $loader);
-        $result = $loader->loadAsset('allowed.txt');
 
         // Assertions
-        $this->assertTrue($result);
+        $this->assertTrue($loader->loadAsset('allowed.txt'));
         $this->assertSame(file_get_contents(__DIR__.'/data/sprinkles/hawks/assets/allowed.txt'), $loader->getContent());
         $this->assertSame(8, $loader->getLength());
         $this->assertSame('text/plain', $loader->getType());
@@ -76,13 +74,10 @@ class AssetLoaderTest extends TestCase
             ->andReturn(__DIR__ . '/data/sprinkles/hawks/assets/mysterious');
         
         $loader = new AssetLoader($assets);
-        $this->assertInstanceOf(AssetLoader::class, $loader);
         $result = $loader->loadAsset('mysterious');
 
         // Assertions
         $this->assertTrue($result);
-        $this->assertSame(file_get_contents(__DIR__.'/data/sprinkles/hawks/assets/mysterious'), $loader->getContent());
-        $this->assertSame(23, $loader->getLength());
         $this->assertSame('text/plain', $loader->getType());
     }
 }
