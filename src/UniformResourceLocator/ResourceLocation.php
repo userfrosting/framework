@@ -35,6 +35,7 @@ class ResourceLocation implements ResourceLocationInterface
      * @param string      $name
      * @param string|null $path
      */
+    // TODO : Use PHP 8 constructor
     public function __construct(string $name, ?string $path = null)
     {
         if (is_null($path)) {

@@ -47,6 +47,7 @@ class ResourceStream implements ResourceStreamInterface
      * @param string $path
      * @param bool   $shared
      */
+    // TODO : Use names arguments for prefix + type hint
     public function __construct($scheme, $prefix = '', $path = null, $shared = false)
     {
         if (is_null($path)) {

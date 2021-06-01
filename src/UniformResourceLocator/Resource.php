@@ -54,6 +54,7 @@ class Resource implements ResourceInterface
      * @param string                         $path            Resource path, relative to the locator base path, and containing the stream and location path
      * @param string                         $locatorBasePath Locator base Path (default to '')
      */
+    // TODO : Use PHP 8 constructor
     public function __construct(ResourceStreamInterface $stream, ResourceLocationInterface $location = null, string $path, string $locatorBasePath = '')
     {
         $this->setStream($stream);
