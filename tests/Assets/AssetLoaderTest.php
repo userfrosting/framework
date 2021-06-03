@@ -33,7 +33,7 @@ class AssetLoaderTest extends TestCase
             ->shouldReceive('urlPathToAbsolutePath')
             ->with('forbidden.txt')
             ->andReturn('forbidden.txt');
-        
+
         $loader = new AssetLoader($assets);
         $this->assertInstanceOf(AssetLoader::class, $loader);
         $result = $loader->loadAsset('forbidden.txt');
@@ -52,7 +52,7 @@ class AssetLoaderTest extends TestCase
             ->shouldReceive('urlPathToAbsolutePath')
             ->with('allowed.txt')
             ->andReturn(__DIR__ . '/data/sprinkles/hawks/assets/allowed.txt');
-        
+
         $loader = new AssetLoader($assets);
 
         // Assertions
@@ -72,7 +72,7 @@ class AssetLoaderTest extends TestCase
             ->shouldReceive('urlPathToAbsolutePath')
             ->with('mysterious')
             ->andReturn(__DIR__ . '/data/sprinkles/hawks/assets/mysterious');
-        
+
         $loader = new AssetLoader($assets);
         $result = $loader->loadAsset('mysterious');
 
