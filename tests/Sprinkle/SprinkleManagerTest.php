@@ -47,19 +47,19 @@ class SprinkleManagerTest extends TestCase
         $manager = new SprinkleManager(MainStub::class);
         $this->assertCount(4, $manager->getSprinkles());
         $this->assertSame([
-            MainStub::class,
             CoreStub::class,
             AdminStub::class,
             AccountStub::class,
+            MainStub::class,
         ], $manager->getSprinkles());
         $this->assertSame(MainStub::class, $manager->getMainSprinkle());
 
         // Test getSprinkleNames while at it
         $this->assertSame([
+            'Test Sprinkle',
+            'Test Sprinkle',
+            'Test Sprinkle',
             'Main Sprinkle',
-            'Test Sprinkle',
-            'Test Sprinkle',
-            'Test Sprinkle',
         ], $manager->getSprinklesNames());
     }
 
@@ -71,10 +71,10 @@ class SprinkleManagerTest extends TestCase
         $manager = new SprinkleManager(MainNestedStub::class);
         $this->assertCount(4, $manager->getSprinkles());
         $this->assertSame([
-            MainNestedStub::class,
             CoreStub::class,
-            AdminNestedStub::class,
             AccountStub::class,
+            AdminNestedStub::class,
+            MainNestedStub::class,
         ], $manager->getSprinkles());
     }
 
@@ -86,10 +86,10 @@ class SprinkleManagerTest extends TestCase
         $manager = new SprinkleManager(MainDuplicateStub::class);
         $this->assertCount(4, $manager->getSprinkles());
         $this->assertSame([
-            MainDuplicateStub::class,
             CoreStub::class,
-            AdminNestedStub::class,
             AccountStub::class,
+            AdminNestedStub::class,
+            MainDuplicateStub::class,
         ], $manager->getSprinkles());
     }
 
@@ -197,8 +197,6 @@ class SprinkleManagerTest extends TestCase
         $this->expectException(BadInstanceOfException::class);
         $manager->getServicesDefinitions();
     }
-
-    // TODO : Test order/overwritten of routes & commands & services with multiple sprinkles.
 }
 
 class CoreStub extends TestSprinkle

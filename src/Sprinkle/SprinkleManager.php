@@ -173,16 +173,21 @@ class SprinkleManager
             throw $e;
         }
 
-        // Add top sprinkle to return
-        $sprinkles = [$sprinkle];
+        $sprinkles = [];
 
         // Merge dependent sprinkles
         foreach ($sprinkle::getSprinkles() as $dependent) {
             $sprinkles = array_merge($sprinkles, $this->getDependentSprinkles($dependent));
         }
 
-        // Remove duplicate and return
-        return array_unique($sprinkles);
+        // Add top sprinkle to return
+        $sprinkles[] = $sprinkle;
+
+        // Remove duplicate and reindex
+        $sprinkles = array_unique($sprinkles);
+        $sprinkles = array_values($sprinkles);
+
+        return $sprinkles;
     }
 
     /**
