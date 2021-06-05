@@ -13,7 +13,7 @@ namespace UserFrosting\Tests\TestSprinkle;
 use Slim\App;
 use UserFrosting\Routes\RouteDefinitionInterface;
 
-class RoutesDefinitions implements RouteDefinitionInterface
+class TestRoutesDefinitions implements RouteDefinitionInterface
 {
     public function register(App $app): void
     {

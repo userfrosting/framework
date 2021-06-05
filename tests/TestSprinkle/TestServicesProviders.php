@@ -12,7 +12,7 @@ namespace UserFrosting\Tests\TestSprinkle;
 
 use UserFrosting\ServicesProvider\ServicesProviderInterface;
 
-class ServicesProviders implements ServicesProviderInterface
+class TestServicesProviders implements ServicesProviderInterface
 {
     public function register(): array
     {

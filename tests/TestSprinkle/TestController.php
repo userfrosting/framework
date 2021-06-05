@@ -12,10 +12,11 @@ namespace UserFrosting\Tests\TestSprinkle;
 
 use DI\Container;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 class TestController
 {
-    public function index(Response $response, MessageGenerator $messageGenerator, Container $container): Response
+    public function index(Request $request, Response $response, MessageGenerator $messageGenerator, Container $container): Response
     {
         // Prep data container
         $msg = [];
@@ -28,6 +29,9 @@ class TestController
 
         // Message from DI Injection
         $msg[] = $messageGenerator->getMessage();
+
+        // Message from Middleware
+        $msg[] = $request->getAttribute('foo');
 
         // Add both messages to body
         $payload = json_encode($msg);

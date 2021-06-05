@@ -17,6 +17,8 @@ use UserFrosting\Exceptions\SprinkleClassException;
 use UserFrosting\Sprinkle\SprinkleManager;
 use UserFrosting\Exceptions\BadInstanceOfException;
 use UserFrosting\Routes\RouteDefinitionInterface;
+use UserFrosting\Support\Exception\NotFoundException;
+use UserFrosting\Tests\TestSprinkle\TestMiddleware;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
 class SprinkleManagerTest extends TestCase
@@ -197,6 +199,39 @@ class SprinkleManagerTest extends TestCase
         $this->expectException(BadInstanceOfException::class);
         $manager->getServicesDefinitions();
     }
+
+    /**
+     * Test Middlewares
+     */
+    public function testGetMiddlewaresDefinitions(): void
+    {
+        $manager = new SprinkleManager(TestSprinkle::class);
+        $middlewares = $manager->getMiddlewaresDefinitions();
+
+        $this->assertSame([
+            TestMiddleware::class,
+        ], $middlewares);
+    }
+
+    /**
+     * @depends testGetMiddlewaresDefinitions
+     */
+    public function testGetMiddlewaresDefinitionsWithNotFoundClass(): void
+    {
+        $manager = new SprinkleManager(AccountStub::class);
+        $this->expectException(NotFoundException::class);
+        $manager->getMiddlewaresDefinitions();
+    }
+
+    /**
+     * @depends testGetMiddlewaresDefinitions
+     */
+    public function testGetMiddlewaresDefinitionsWithBadClass(): void
+    {
+        $manager = new SprinkleManager(BadInstanceOfSprinkleStub::class);
+        $this->expectException(BadInstanceOfException::class);
+        $manager->getMiddlewaresDefinitions();
+    }
 }
 
 class CoreStub extends TestSprinkle
@@ -230,6 +265,11 @@ class AccountStub extends TestSprinkle
         return [
             \stdClass::class,
         ];
+    }
+
+    public static function getMiddlewares(): array
+    {
+        return [Foo::class];
     }
 }
 
@@ -291,6 +331,11 @@ class BadInstanceOfSprinkleStub extends TestSprinkle
     }
 
     public static function getServices(): array
+    {
+        return [\stdClass::class];
+    }
+
+    public static function getMiddlewares(): array
     {
         return [\stdClass::class];
     }

@@ -52,7 +52,7 @@ class TestSprinkle implements SprinkleReceipe
     public static function getRoutes(): array
     {
         return [
-            RoutesDefinitions::class,
+            TestRoutesDefinitions::class,
         ];
     }
 
@@ -62,7 +62,17 @@ class TestSprinkle implements SprinkleReceipe
     public static function getServices(): array
     {
         return [
-            ServicesProviders::class,
+            TestServicesProviders::class,
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getMiddlewares(): array
+    {
+        return [
+            TestMiddleware::class,
         ];
     }
 }

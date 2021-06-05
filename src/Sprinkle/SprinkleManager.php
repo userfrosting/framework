@@ -10,6 +10,7 @@
 
 namespace UserFrosting\Sprinkle;
 
+use Psr\Http\Server\MiddlewareInterface;
 use ReflectionClass;
 use UserFrosting\Bakery\CommandReceipe;
 use UserFrosting\Exceptions\BadInstanceOfException;
@@ -17,6 +18,7 @@ use UserFrosting\Exceptions\BakeryClassException;
 use UserFrosting\Exceptions\SprinkleClassException;
 use UserFrosting\Routes\RouteDefinitionInterface;
 use UserFrosting\ServicesProvider\ServicesProviderInterface;
+use UserFrosting\Support\Exception\NotFoundException;
 
 /**
  * Sprinkle Manager.
@@ -110,6 +112,23 @@ class SprinkleManager
         }
 
         return $containers;
+    }
+
+    /**
+     * Returns a list of all Middlewares, from all sprinkles.
+     *
+     * @return MiddlewareInterface[]
+     */
+    public function getMiddlewaresDefinitions(): array
+    {
+        $middlewares = [];
+
+        foreach ($this->sprinkles as $sprinkle) {
+            $sprinkleMiddlewares = array_map([$this, 'validateMiddleware'], $sprinkle::getMiddlewares());
+            $middlewares = array_merge($middlewares, $sprinkleMiddlewares);
+        }
+
+        return $middlewares;
     }
 
     /**
@@ -269,5 +288,29 @@ class SprinkleManager
         }
 
         return $instance;
+    }
+
+    /**
+     * Validate middleware class implement MiddlewareInterface and exist.
+     *
+     * @param string $middleware
+     *
+     * @throws NotFoundException
+     * @throws BadInstanceOfException
+     *
+     * @return string
+     */
+    protected function validateMiddleware(string $middleware): string
+    {
+        if (!class_exists($middleware)) {
+            throw new NotFoundException('Class `' . $middleware . '` not found.');
+        }
+
+        $class = new ReflectionClass($middleware);
+        if (!$class->implementsInterface(MiddlewareInterface::class)) {
+            throw new BadInstanceOfException('Middleware `' . $middleware . '` must be instance of ' . MiddlewareInterface::class);
+        }
+
+        return $middleware;
     }
 }

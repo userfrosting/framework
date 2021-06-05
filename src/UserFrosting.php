@@ -32,6 +32,9 @@ class UserFrosting extends Cupcake
 
         // Load and registering routes
         $this->loadRoutes();
+
+        // Load and register middlewares
+        $this->registerMiddlewares();
     }
 
     /**
@@ -73,6 +76,24 @@ class UserFrosting extends Cupcake
     {
         foreach ($this->sprinkleManager->getRoutesDefinitions() as $definition) {
             $definition->register($this->app);
+        }
+    }
+
+    /**
+     * Load and register all middlewares.
+     */
+    protected function registerMiddlewares(): void
+    {
+        // Add default Slim middlewares
+        $this->app->addBodyParsingMiddleware();
+        $this->app->addRoutingMiddleware();
+
+        // Add Sprinkles Middlewares
+        foreach ($this->sprinkleManager->getMiddlewaresDefinitions() as $middleware) {
+            // Bypass Slim Bridge issue when adding MiddlewareInterface
+            // @see https://github.com/PHP-DI/Slim-Bridge/issues/51
+            // $this->app->add($middleware);
+            $this->app->add($this->ci->get($middleware));
         }
     }
 }

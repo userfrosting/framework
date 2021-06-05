@@ -56,4 +56,11 @@ interface SprinkleReceipe
      * @return \UserFrosting\ServicesProvider\ServicesProviderInterface[]
      */
     public static function getServices(): array;
+
+    /**
+     * Returns a list of all Middlewares classes.
+     *
+     * @return \Psr\Http\Server\MiddlewareInterface[]
+     */
+    public static function getMiddlewares(): array;
 }
