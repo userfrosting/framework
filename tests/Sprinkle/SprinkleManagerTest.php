@@ -11,7 +11,7 @@
 namespace UserFrosting\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use UserFrosting\Bakery\CommandReceipe;
+use Symfony\Component\Console\Command\Command;
 use UserFrosting\Exceptions\BakeryClassException;
 use UserFrosting\Exceptions\SprinkleClassException;
 use UserFrosting\Sprinkle\SprinkleManager;
@@ -369,7 +369,7 @@ class NotAppSprinkleStub extends TestSprinkle
     }
 }
 
-class CommandStub extends CommandReceipe
+class CommandStub extends Command
 {
     protected function configure()
     {

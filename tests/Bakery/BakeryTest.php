@@ -13,8 +13,8 @@ namespace UserFrosting\Tests\Bakery;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
 use UserFrosting\Bakery\Bakery;
-use UserFrosting\Bakery\CommandReceipe;
 use UserFrosting\Exceptions\BakeryClassException;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
@@ -83,7 +83,7 @@ class BadCommandSprinkleStub extends TestSprinkle
     }
 }
 
-class CommandStub extends CommandReceipe
+class CommandStub extends Command
 {
     protected function configure()
     {
