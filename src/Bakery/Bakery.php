@@ -72,7 +72,7 @@ class Bakery extends Cupcake
     protected function loadCommands(): void
     {
         foreach ($this->sprinkleManager->getBakeryCommands() as $command) {
-            $command->setContainer($this->ci);
+            $command = $this->ci->get($command);
             $this->app->add($command);
         }
     }

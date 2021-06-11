@@ -141,7 +141,6 @@ class SprinkleManagerTest extends TestCase
 
         $this->assertIsArray($commands);
         $this->assertCount(1, $commands);
-        $this->assertInstanceOf(CommandReceipe::class, $commands[0]);
     }
 
     /**
@@ -149,8 +148,18 @@ class SprinkleManagerTest extends TestCase
      */
     public function testGetBakeryCommandsWithBadCommand(): void
     {
-        $manager = new SprinkleManager(AccountStub::class);
+        $manager = new SprinkleManager(BadInstanceOfSprinkleStub::class);
         $this->expectException(BakeryClassException::class);
+        $manager->getBakeryCommands();
+    }
+
+    /**
+     * @depends testGetBakeryCommands
+     */
+    public function testGetBakeryCommandsWithCommandNotFound(): void
+    {
+        $manager = new SprinkleManager(NotFoundStub::class);
+        $this->expectException(NotFoundException::class);
         $manager->getBakeryCommands();
     }
 
@@ -218,7 +227,7 @@ class SprinkleManagerTest extends TestCase
      */
     public function testGetMiddlewaresDefinitionsWithNotFoundClass(): void
     {
-        $manager = new SprinkleManager(AccountStub::class);
+        $manager = new SprinkleManager(NotFoundStub::class);
         $this->expectException(NotFoundException::class);
         $manager->getMiddlewaresDefinitions();
     }
@@ -260,17 +269,6 @@ class AdminNestedStub extends TestSprinkle
 
 class AccountStub extends TestSprinkle
 {
-    public static function getBakeryCommands(): array
-    {
-        return [
-            \stdClass::class,
-        ];
-    }
-
-    public static function getMiddlewares(): array
-    {
-        return [Foo::class];
-    }
 }
 
 class MainStub extends TestSprinkle
@@ -335,9 +333,27 @@ class BadInstanceOfSprinkleStub extends TestSprinkle
         return [\stdClass::class];
     }
 
+    public static function getBakeryCommands(): array
+    {
+        return [\stdClass::class];
+    }
+
     public static function getMiddlewares(): array
     {
         return [\stdClass::class];
+    }
+}
+
+class NotFoundStub extends TestSprinkle
+{
+    public static function getBakeryCommands(): array
+    {
+        return [Foo::class];
+    }
+
+    public static function getMiddlewares(): array
+    {
+        return [Foo::class];
     }
 }
 

@@ -12,6 +12,7 @@ namespace UserFrosting\Sprinkle;
 
 use Psr\Http\Server\MiddlewareInterface;
 use ReflectionClass;
+use Symfony\Component\Console\Command\Command;
 use UserFrosting\Bakery\CommandReceipe;
 use UserFrosting\Exceptions\BadInstanceOfException;
 use UserFrosting\Exceptions\BakeryClassException;
@@ -235,19 +236,20 @@ class SprinkleManager
      *
      * @param string $command
      *
-     * @return CommandReceipe
+     * @throws BakeryClassException
      */
-    protected function validateCommand(string $command): CommandReceipe
+    protected function validateCommand(string $command): string
     {
-        // Get command instance
-        $instance = new $command();
-
-        // Class must be an instance of symfony command
-        if (!$instance instanceof CommandReceipe) {
-            throw new BakeryClassException('Bakery command `' . $instance::class . '` must be instance of ' . CommandReceipe::class);
+        if (!class_exists($command)) {
+            throw new NotFoundException('Bakery command `' . $command . '` not found.');
         }
 
-        return $instance;
+        $class = new ReflectionClass($command);
+        if (!$class->isSubclassOf(Command::class)) {
+            throw new BakeryClassException('Bakery command `' . $command . '` must extends ' . Command::class);
+        }
+
+        return $command;
     }
 
     /**
