@@ -127,6 +127,7 @@ abstract class Cupcake
     protected function createContainer(): Container
     {
         $builder = new ContainerBuilder();
+        $builder->useAnnotations(true);
         $builder->addDefinitions($this->sprinkleManager->getServicesDefinitions());
         $ci = $builder->build();
 
