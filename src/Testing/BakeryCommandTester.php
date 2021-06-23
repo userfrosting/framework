@@ -1,11 +1,11 @@
 <?php
 
 /*
- * UserFrosting (http://www.userfrosting.com)
+ * UserFrosting Framework (http://www.userfrosting.com)
  *
- * @link      https://github.com/userfrosting/UserFrosting
- * @copyright Copyright (c) 2019 Alexander Weissman
- * @license   https://github.com/userfrosting/UserFrosting/blob/master/LICENSE.md (MIT License)
+ * @link      https://github.com/userfrosting/framework
+ * @copyright Copyright (c) 2013-2021 Alexander Weissman, Louis Charette, Jordan Mele
+ * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
 namespace UserFrosting\Testing;
@@ -21,7 +21,8 @@ use Symfony\Component\Console\Tester\CommandTester;
 trait BakeryCommandTester
 {
     /**
-     * Execute Bakery command
+     * Execute Bakery command.
+     *
      * @codeCoverageIgnore
      *
      * @param string $command     Commands to register.
