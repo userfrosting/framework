@@ -66,7 +66,7 @@ class TestCase extends BaseTestCase
      *
      * @codeCoverageIgnore
      */
-    protected function refreshApplication()
+    protected function refreshApplication(): void
     {
         // Force setting UF_MODE.  This is needed at the moment because Bakery
         // uses passthru to invoke PHPUnit.  This means that the value of UF_MODE
