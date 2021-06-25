@@ -10,50 +10,43 @@
 
 namespace UserFrosting\Testing;
 
-use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Trait that provide `runCommand` method to test Bakery commands.
  * Requires the CI (\UserFrosting\Testing\TestCase).
  */
-trait BakeryCommandTester
+class BakeryTester
 {
     /**
      * Execute Bakery command.
-     *
      * @codeCoverageIgnore
      *
-     * @param string $command     Commands to register.
+     * @param Command $command    Commands to test.
      * @param array  $input       An array of command arguments and options
      * @param array  $userInputAn Array of strings representing each input passed to the command input stream
      *
      * @return CommandTester
      */
-    protected function runCommand(
-        string $command,
+    public static function runCommand(
+        Command $command,
         array $input = [],
         array $userInput = []
     ): CommandTester {
 
-        // Fail if no $ci
-        if (!isset($this->ci) || !($this->ci instanceof ContainerInterface)) {
-            throw new \Exception('runCommand requires access to the ContainerInterface in `$this->ci`.');
-        }
-
-        // Create app and add command instance from CI to App
+        // Create app and add command to it
         $app = new Application();
-        $instance = $this->ci->get($command);
-        $app->add($instance);
+        $app->add($command);
 
         // Add the command to the input to create the execute argument
         $executeDefinition = array_merge([
-            'command' => $instance->getName(),
+            'command' => $command->getName(),
         ], $input);
 
         // Create command tester
-        $commandTester = new CommandTester($instance);
+        $commandTester = new CommandTester($command);
 
         // Set user inpu
         if (!empty($userInput)) {
