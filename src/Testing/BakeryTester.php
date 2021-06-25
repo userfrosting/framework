@@ -22,11 +22,12 @@ class BakeryTester
 {
     /**
      * Execute Bakery command.
+     *
      * @codeCoverageIgnore
      *
-     * @param Command $command    Commands to test.
-     * @param array  $input       An array of command arguments and options
-     * @param array  $userInputAn Array of strings representing each input passed to the command input stream
+     * @param Command $command     Commands to test.
+     * @param array   $input       An array of command arguments and options
+     * @param array   $userInputAn Array of strings representing each input passed to the command input stream
      *
      * @return CommandTester
      */
