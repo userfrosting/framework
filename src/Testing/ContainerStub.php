@@ -18,11 +18,20 @@ use DI\ContainerBuilder;
  */
 class ContainerStub
 {
-    public static function create(): Container
+    /**
+     * Create a container Stub used for testing. 
+     * Optionally add definitions to load into builder.
+     *
+     * @param array $definitions (default: []). See https://php-di.org/doc/php-definitions.html
+     * 
+     * @return Container
+     */
+    public static function create(array $definitions = []): Container
     {
         $builder = new ContainerBuilder();
+        $builder->addDefinitions($definitions);
         $builder->useAnnotations(true);
-        
+
         return $builder->build();
     }
 }
