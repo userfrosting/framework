@@ -13,7 +13,7 @@ namespace UserFrosting\Sprinkle;
 /**
  * Sprinkle definition Interface.
  */
-interface SprinkleReceipe
+interface SprinkleRecipe
 {
     /**
      * Return the Sprinkle name.
@@ -32,14 +32,14 @@ interface SprinkleReceipe
     /**
      * Return an array of all registered Bakery Commands.
      *
-     * @return array[string]SprinkleReceipe
+     * @return array[string]SprinkleRecipe
      */
     public static function getBakeryCommands(): array;
 
     /**
      * Return dependent sprinkles.
      *
-     * @return array[string]SprinkleReceipe
+     * @return array[string]SprinkleRecipe
      */
     public static function getSprinkles(): array;
 

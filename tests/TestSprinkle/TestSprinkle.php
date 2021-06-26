@@ -10,9 +10,9 @@
 
 namespace UserFrosting\Tests\TestSprinkle;
 
-use UserFrosting\Sprinkle\SprinkleReceipe;
+use UserFrosting\Sprinkle\SprinkleRecipe;
 
-class TestSprinkle implements SprinkleReceipe
+class TestSprinkle implements SprinkleRecipe
 {
     /**
      * {@inheritDoc}

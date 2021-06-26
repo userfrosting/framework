@@ -24,8 +24,8 @@ use UserFrosting\Support\Exception\NotFoundException;
  * Sprinkle Manager.
  *
  * Manages a collection of loaded Sprinkles for the application.
- * Returns all the informations about the loaded Sprinkles, defined in each SrpinkleReceipe.
- * This class does not perform any action on the application itself, it only serves informations.
+ * Returns all the information about the loaded Sprinkles, defined in each SprinkleRecipe.
+ * This class does not perform any action on the application itself, it only serves information.
  * All routes, commands or other registration process is handled elsewhere.
  *
  * @property string $mainSprinkle
@@ -33,19 +33,19 @@ use UserFrosting\Support\Exception\NotFoundException;
 class SprinkleManager
 {
     /**
-     * @var SprinkleReceipe[] List of avaialable sprinkles
+     * @var SprinkleRecipe[] List of available sprinkles
      */
     protected $sprinkles = [];
 
     /**
-     * @var SprinkleReceipe Main sprinkle
+     * @var SprinkleRecipe Main sprinkle
      */
     protected $mainSprinkle;
 
     /**
      * Load sprinkles on construction.
      *
-     * @param SprinkleReceipe $mainSprinkle
+     * @param SprinkleRecipe $mainSprinkle
      */
     public function __construct($mainSprinkle)
     {
@@ -54,7 +54,7 @@ class SprinkleManager
     }
 
     /**
-     * Generate the list of all loaded sprinkles throught the main sprinkle dependencies.
+     * Generate the list of all loaded sprinkles through the main sprinkle dependencies.
      */
     public function loadSprinkles(): void
     {
@@ -62,7 +62,7 @@ class SprinkleManager
     }
 
     /**
-     * Return a list for the registered bakery commands, recursilvey.
+     * Return a list for the registered bakery commands, recursively.
      *
      * @return Command[]
      */
@@ -115,7 +115,7 @@ class SprinkleManager
     }
 
     /**
-     * Returns a list of all Middlewares, from all sprinkles.
+     * Returns a list of all Middleware, from all sprinkles.
      *
      * @return MiddlewareInterface[]
      */
@@ -134,7 +134,7 @@ class SprinkleManager
     /**
      * Returns a list of available sprinkles.
      *
-     * @return SprinkleReceipe[]
+     * @return SprinkleRecipe[]
      */
     public function getSprinkles(): array
     {
@@ -144,7 +144,7 @@ class SprinkleManager
     /**
      * Get main sprinkle defined on construction.
      *
-     * @return SprinkleReceipe
+     * @return SprinkleRecipe
      */
     public function getMainSprinkle()
     {
@@ -177,16 +177,16 @@ class SprinkleManager
     }
 
     /**
-     * Return a list for the specified sprinkle and it's dependent, recursilvey.
+     * Return a list for the specified sprinkle and it's dependent, recursively.
      *
      * @param string $sprinkle Sprinkle to load, and it's dependent.
      *
-     * @return SprinkleReceipe[]
+     * @return SprinkleRecipe[]
      */
     protected function getDependentSprinkles(string $sprinkle): array
     {
         // Validate class
-        if (!$this->validateClassIsSprinkleReceipe($sprinkle)) {
+        if (!$this->validateClassIsSprinkleRecipe($sprinkle)) {
             $e = new SprinkleClassException();
 
             throw $e;
@@ -202,7 +202,7 @@ class SprinkleManager
         // Add top sprinkle to return
         $sprinkles[] = $sprinkle;
 
-        // Remove duplicate and reindex
+        // Remove duplicate and re-index
         $sprinkles = array_unique($sprinkles);
         $sprinkles = array_values($sprinkles);
 
@@ -210,20 +210,20 @@ class SprinkleManager
     }
 
     /**
-     * Validate the class implements SprinkleReceipe.
+     * Validate the class implements SprinkleRecipe.
      *
      * @param string $class
      *
-     * @return bool True/False if class implements SprinkleReceipe
+     * @return bool True/False if class implements SprinkleRecipe
      */
-    protected function validateClassIsSprinkleReceipe(string $class): bool
+    protected function validateClassIsSprinkleRecipe(string $class): bool
     {
         if (!class_exists($class)) {
             return false;
         }
 
         $class = new ReflectionClass($class);
-        if ($class->implementsInterface(SprinkleReceipe::class)) {
+        if ($class->implementsInterface(SprinkleRecipe::class)) {
             return true;
         }
 

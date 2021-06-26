@@ -45,7 +45,7 @@ class TestCase extends BaseTestCase
     protected UserFrosting $userfrosting;
 
     /**
-     * String reference to SprinkleReceipe.
+     * String reference to SprinkleRecipe.
      */
     protected string $mainSprinkle;
 
@@ -119,7 +119,7 @@ class TestCase extends BaseTestCase
     }
 
     /**
-     * Handle request and returns the reponse.
+     * Handle request and returns the response.
      *
      * @param RequestInterface $request
      *
