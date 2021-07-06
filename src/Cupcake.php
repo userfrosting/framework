@@ -149,7 +149,7 @@ abstract class Cupcake
     {
         return new SprinkleManager($this->mainSprinkle);
 
-        // TODO 
+        // TODO
         // $this->fireEvent('onSprinklesInitialized');
 
         // Add Sprinkle resources (assets, templates, etc) to locator

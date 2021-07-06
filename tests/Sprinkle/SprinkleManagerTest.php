@@ -12,11 +12,11 @@ namespace UserFrosting\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
+use UserFrosting\Exceptions\BadInstanceOfException;
 use UserFrosting\Exceptions\BakeryClassException;
 use UserFrosting\Exceptions\SprinkleClassException;
-use UserFrosting\Sprinkle\SprinkleManager;
-use UserFrosting\Exceptions\BadInstanceOfException;
 use UserFrosting\Routes\RouteDefinitionInterface;
+use UserFrosting\Sprinkle\SprinkleManager;
 use UserFrosting\Support\Exception\NotFoundException;
 use UserFrosting\Tests\TestSprinkle\TestMiddleware;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;

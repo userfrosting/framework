@@ -12,10 +12,10 @@ namespace UserFrosting\Tests\Alert;
 
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
-use UserFrosting\Session\Session;
 use UserFrosting\Alert\AlertStream;
 use UserFrosting\Alert\SessionAlertStream;
 use UserFrosting\I18n\Translator;
+use UserFrosting\Session\Session;
 
 class SessionAlertStreamTest extends TestCase
 {

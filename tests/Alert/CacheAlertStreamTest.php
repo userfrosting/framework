@@ -10,11 +10,11 @@
 
 namespace UserFrosting\Tests\Alert;
 
+use Illuminate\Cache\Repository as Cache;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Alert\AlertStream;
 use UserFrosting\Alert\CacheAlertStream;
-use Illuminate\Cache\Repository as Cache;
 use UserFrosting\I18n\Translator;
 
 class CacheAlertStreamTest extends TestCase
