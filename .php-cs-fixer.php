@@ -62,6 +62,7 @@ $rules = [
     'no_whitespace_in_blank_line'                 => true,
     'normalize_index_brace'                       => true,
     'object_operator_without_whitespace'          => true,
+    'ordered_imports'                             => ['sort_algorithm' => 'alpha'],
     'phpdoc_align'                                => true,
     'phpdoc_indent'                               => true,
     'general_phpdoc_tag_rename'                   => true,

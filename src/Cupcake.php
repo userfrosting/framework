@@ -48,7 +48,7 @@ abstract class Cupcake
     public function init(): void
     {
         // Setup sprinkles
-        $this->setupSprinkles();
+        $this->sprinkleManager = $this->initSprinkleManager();
 
         // First, we create our DI container
         $this->ci = $this->createContainer();
@@ -145,10 +145,11 @@ abstract class Cupcake
      * Register system services, load all sprinkles, and add their resources and services.
      * Boot the Sprinkle manager, which creates Sprinkle classes and subscribes them to the event dispatcher.
      */
-    protected function setupSprinkles(): void
+    protected function initSprinkleManager(): SprinkleManager
     {
-        $this->sprinkleManager = new SprinkleManager($this->mainSprinkle);
+        return new SprinkleManager($this->mainSprinkle);
 
+        // TODO 
         // $this->fireEvent('onSprinklesInitialized');
 
         // Add Sprinkle resources (assets, templates, etc) to locator
