@@ -49,7 +49,7 @@ class RecipeExtensionLoaderTest extends TestCase
      */
     public function testValidate(RecipeExtensionLoader $loader): void
     {
-        $this->assertTrue($loader->validateClass(Foo::class));
+        $this->assertTrue($loader->validateClass(RecipeExtensionLoaderStub::class));
     }
 
     /**
@@ -93,7 +93,7 @@ class RecipeExtensionLoaderTest extends TestCase
     public function testGetInstances(): void
     {
         $ci = Mockery::mock(Container::class)
-            ->shouldReceive('get')->with(Foo::class)->once()->andReturn(Foo::class)
+            ->shouldReceive('get')->with(RecipeExtensionLoaderStub::class)->once()->andReturn(RecipeExtensionLoaderStub::class)
             ->getMock();
 
         $manager = Mockery::mock(SprinkleManager::class)
@@ -104,7 +104,7 @@ class RecipeExtensionLoaderTest extends TestCase
 
         $instances = $loader->getInstances('getFoo');
 
-        $this->assertSame($instances, [Foo::class]);
+        $this->assertSame($instances, [RecipeExtensionLoaderStub::class]);
     }
 
     /**
@@ -146,7 +146,7 @@ class RecipeExtensionLoaderTest extends TestCase
     }
 }
 
-class Foo
+class RecipeExtensionLoaderStub
 {
 }
 
@@ -155,7 +155,7 @@ class SprinkleStub extends TestSprinkle
     public static function getFoo(): array
     {
         return [
-            Foo::class
+            RecipeExtensionLoaderStub::class
         ];
     }
 }

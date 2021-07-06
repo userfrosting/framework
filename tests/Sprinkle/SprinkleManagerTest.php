@@ -348,12 +348,12 @@ class NotFoundStub extends TestSprinkle
 {
     public static function getBakeryCommands(): array
     {
-        return [Foo::class];
+        return [NotFound::class];
     }
 
     public static function getMiddlewares(): array
     {
-        return [Foo::class];
+        return [NotFound::class];
     }
 }
 
