@@ -68,6 +68,28 @@ class RecipeExtensionLoaderTest extends TestCase
      *
      * @param RecipeExtensionLoader $loader
      */
+    public function testValidateWithSubclass(RecipeExtensionLoader $loader): void
+    {
+        $isValid = $loader->validateClass(RecipeExtensionLoaderStubExtended::class, RecipeExtensionLoaderStub::class);
+        $this->assertTrue($isValid);
+    }
+
+    /**
+     * @depends testConstructor
+     *
+     * @param RecipeExtensionLoader $loader
+     */
+    public function testValidateWithBadSubclass(RecipeExtensionLoader $loader): void
+    {
+        $this->expectException(BadInstanceOfException::class);
+        $loader->validateClass(\stdClass::class, RecipeExtensionLoaderStub::class);
+    }
+
+    /**
+     * @depends testConstructor
+     *
+     * @param RecipeExtensionLoader $loader
+     */
     public function testValidateClassNotFound(RecipeExtensionLoader $loader): void
     {
         $this->expectException(NotFoundException::class);
@@ -147,6 +169,10 @@ class RecipeExtensionLoaderTest extends TestCase
 }
 
 class RecipeExtensionLoaderStub
+{
+}
+
+class RecipeExtensionLoaderStubExtended extends RecipeExtensionLoaderStub
 {
 }
 

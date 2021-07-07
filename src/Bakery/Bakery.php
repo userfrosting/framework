@@ -11,7 +11,9 @@
 namespace UserFrosting\Bakery;
 
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
 use UserFrosting\Cupcake;
+use UserFrosting\Sprinkle\RecipeExtensionLoader;
 
 /**
  * Base class for UserFrosting Bakery CLI tools.
@@ -71,8 +73,15 @@ class Bakery extends Cupcake
      */
     protected function loadCommands(): void
     {
-        foreach ($this->sprinkleManager->getBakeryCommands() as $command) {
-            $command = $this->ci->get($command);
+        /** @var RecipeExtensionLoader */
+        $extensionLoader = $this->ci->get(RecipeExtensionLoader::class);
+
+        $commands = $extensionLoader->getInstances(
+            method: 'getBakeryCommands',
+            extensionInterface: Command::class
+        );
+
+        foreach ($commands as $command) {
             $this->app->add($command);
         }
     }

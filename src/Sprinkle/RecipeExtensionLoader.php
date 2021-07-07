@@ -11,7 +11,6 @@
 namespace UserFrosting\Sprinkle;
 
 use DI\Container;
-use ReflectionClass;
 use UserFrosting\Exceptions\BadInstanceOfException;
 use UserFrosting\Support\Exception\NotFoundException;
 
@@ -76,8 +75,7 @@ class RecipeExtensionLoader
             return true;
         }
 
-        $reflection = new ReflectionClass($class);
-        if (!$reflection->implementsInterface($interface) && !$reflection->isSubclassOf($interface)) {
+        if (!is_subclass_of($class, $interface)) {
             throw new BadInstanceOfException('Class `' . $class . '` must be instance of ' . $interface);
         }
 

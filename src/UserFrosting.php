@@ -11,7 +11,10 @@
 namespace UserFrosting;
 
 use DI\Bridge\Slim\Bridge;
+use Psr\Http\Server\MiddlewareInterface;
 use Slim\App;
+use UserFrosting\Routes\RouteDefinitionInterface;
+use UserFrosting\Sprinkle\RecipeExtensionLoader;
 
 /**
  * UserFrosting Main Class.
@@ -74,26 +77,43 @@ class UserFrosting extends Cupcake
      */
     protected function loadRoutes(): void
     {
-        foreach ($this->sprinkleManager->getRoutesDefinitions() as $definition) {
+        /** @var RecipeExtensionLoader */
+        $extensionLoader = $this->ci->get(RecipeExtensionLoader::class);
+
+        $definitions = $extensionLoader->getInstances(
+            method: 'getRoutes',
+            extensionInterface: RouteDefinitionInterface::class
+        );
+
+        foreach ($definitions as $definition) {
             $definition->register($this->app);
         }
     }
 
     /**
      * Load and register all middlewares.
+     *
+     * Note : Middlewares needs to be instanced by CI to bypass Slim Bridge issue
+     * when adding MiddlewareInterface. This is done automatically by RecipeExtensionLoader
+     * @see https://github.com/PHP-DI/Slim-Bridge/issues/51
      */
     protected function registerMiddlewares(): void
     {
+        /** @var RecipeExtensionLoader */
+        $extensionLoader = $this->ci->get(RecipeExtensionLoader::class);
+
         // Add default Slim middlewares
         $this->app->addBodyParsingMiddleware();
         $this->app->addRoutingMiddleware();
 
-        // Add Sprinkles Middlewares
-        foreach ($this->sprinkleManager->getMiddlewaresDefinitions() as $middleware) {
-            // Bypass Slim Bridge issue when adding MiddlewareInterface
-            // @see https://github.com/PHP-DI/Slim-Bridge/issues/51
-            // $this->app->add($middleware);
-            $this->app->add($this->ci->get($middleware));
+        // Add the registered Middlewares
+        $middlewares = $extensionLoader->getInstances(
+            method: 'getMiddlewares',
+            extensionInterface: MiddlewareInterface::class
+        );
+
+        foreach ($middlewares as $middleware) {
+            $this->app->add($middleware);
         }
     }
 }

@@ -15,7 +15,7 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use UserFrosting\Bakery\Bakery;
-use UserFrosting\Exceptions\BakeryClassException;
+use UserFrosting\Exceptions\BadInstanceOfException;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
 /**
@@ -58,8 +58,8 @@ class BakeryTest extends TestCase
      */
     public function testBadCommandException(): void
     {
-        $this->expectException(BakeryClassException::class);
-        $bakery = new Bakery(BadCommandSprinkleStub::class);
+        $this->expectException(BadInstanceOfException::class);
+        new Bakery(BadCommandSprinkleStub::class);
     }
 }
 

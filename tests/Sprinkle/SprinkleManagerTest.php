@@ -13,12 +13,8 @@ namespace UserFrosting\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
 use UserFrosting\Exceptions\BadInstanceOfException;
-use UserFrosting\Exceptions\BakeryClassException;
 use UserFrosting\Exceptions\SprinkleClassException;
-use UserFrosting\Routes\RouteDefinitionInterface;
 use UserFrosting\Sprinkle\SprinkleManager;
-use UserFrosting\Support\Exception\NotFoundException;
-use UserFrosting\Tests\TestSprinkle\TestMiddleware;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
 class SprinkleManagerTest extends TestCase
@@ -121,72 +117,6 @@ class SprinkleManagerTest extends TestCase
     }
 
     /**
-     * getBakeryCommands
-     *
-     * @depends testGetSprinklesWithNoDependent
-     */
-    public function testGetBakeryCommandsWithNoEmpty(): void
-    {
-        $manager = new SprinkleManager(CoreStub::class);
-        $this->assertSame([], $manager->getBakeryCommands());
-    }
-
-    /**
-     * @depends testGetBakeryCommandsWithNoEmpty
-     */
-    public function testGetBakeryCommands(): void
-    {
-        $manager = new SprinkleManager(AdminStub::class);
-        $commands = $manager->getBakeryCommands();
-
-        $this->assertIsArray($commands);
-        $this->assertCount(1, $commands);
-    }
-
-    /**
-     * @depends testGetBakeryCommands
-     */
-    public function testGetBakeryCommandsWithBadCommand(): void
-    {
-        $manager = new SprinkleManager(BadInstanceOfSprinkleStub::class);
-        $this->expectException(BakeryClassException::class);
-        $manager->getBakeryCommands();
-    }
-
-    /**
-     * @depends testGetBakeryCommands
-     */
-    public function testGetBakeryCommandsWithCommandNotFound(): void
-    {
-        $manager = new SprinkleManager(NotFoundStub::class);
-        $this->expectException(NotFoundException::class);
-        $manager->getBakeryCommands();
-    }
-
-    /**
-     * Test routes
-     */
-    public function testGetRoutesDefinitions(): void
-    {
-        $manager = new SprinkleManager(TestSprinkle::class);
-        $routes = $manager->getRoutesDefinitions();
-
-        $this->assertIsArray($routes);
-        $this->assertCount(1, $routes);
-        $this->assertInstanceOf(RouteDefinitionInterface::class, $routes[0]);
-    }
-
-    /**
-     * @depends testGetRoutesDefinitions
-     */
-    public function testGetRoutesDefinitionsWithBadInstance(): void
-    {
-        $manager = new SprinkleManager(BadInstanceOfSprinkleStub::class);
-        $this->expectException(BadInstanceOfException::class);
-        $manager->getRoutesDefinitions();
-    }
-
-    /**
      * Test Services
      */
     public function testGetServicesDefinitions(): void
@@ -207,39 +137,6 @@ class SprinkleManagerTest extends TestCase
         $manager = new SprinkleManager(BadInstanceOfSprinkleStub::class);
         $this->expectException(BadInstanceOfException::class);
         $manager->getServicesDefinitions();
-    }
-
-    /**
-     * Test Middlewares
-     */
-    public function testGetMiddlewaresDefinitions(): void
-    {
-        $manager = new SprinkleManager(TestSprinkle::class);
-        $middlewares = $manager->getMiddlewaresDefinitions();
-
-        $this->assertSame([
-            TestMiddleware::class,
-        ], $middlewares);
-    }
-
-    /**
-     * @depends testGetMiddlewaresDefinitions
-     */
-    public function testGetMiddlewaresDefinitionsWithNotFoundClass(): void
-    {
-        $manager = new SprinkleManager(NotFoundStub::class);
-        $this->expectException(NotFoundException::class);
-        $manager->getMiddlewaresDefinitions();
-    }
-
-    /**
-     * @depends testGetMiddlewaresDefinitions
-     */
-    public function testGetMiddlewaresDefinitionsWithBadClass(): void
-    {
-        $manager = new SprinkleManager(BadInstanceOfSprinkleStub::class);
-        $this->expectException(BadInstanceOfException::class);
-        $manager->getMiddlewaresDefinitions();
     }
 }
 

@@ -10,15 +10,11 @@
 
 namespace UserFrosting\Sprinkle;
 
-use Psr\Http\Server\MiddlewareInterface;
 use ReflectionClass;
 use Symfony\Component\Console\Command\Command;
 use UserFrosting\Exceptions\BadInstanceOfException;
-use UserFrosting\Exceptions\BakeryClassException;
 use UserFrosting\Exceptions\SprinkleClassException;
-use UserFrosting\Routes\RouteDefinitionInterface;
 use UserFrosting\ServicesProvider\ServicesProviderInterface;
-use UserFrosting\Support\Exception\NotFoundException;
 
 /**
  * Sprinkle Manager.
@@ -59,76 +55,6 @@ class SprinkleManager
     public function loadSprinkles(): void
     {
         $this->sprinkles = $this->getDependentSprinkles($this->mainSprinkle);
-    }
-
-    /**
-     * Return a list for the registered bakery commands, recursively.
-     *
-     * @return Command[]
-     */
-    public function getBakeryCommands(): array
-    {
-        $commands = [];
-
-        foreach ($this->sprinkles as $sprinkle) {
-            $sprinkleCommands = array_map([$this, 'validateCommand'], $sprinkle::getBakeryCommands());
-            $commands = array_merge($commands, $sprinkleCommands);
-        }
-
-        return $commands;
-    }
-
-    /**
-     * Returns a list of all routes definition files from all sprinkles.
-     *
-     * @return RouteDefinitionInterface[] List of PHP files containing routes definitions.
-     */
-    public function getRoutesDefinitions(): array
-    {
-        $routes = [];
-
-        foreach ($this->sprinkles as $sprinkle) {
-            foreach ($sprinkle::getRoutes() as $route) {
-                $routes[] = $this->validateRouteClass($route);
-            }
-        }
-
-        return $routes;
-    }
-
-    /**
-     * Returns a list of all PHP-DI services/container definition files, from all sprinkles.
-     *
-     * @return ServicesProviderInterface[] List of PHP files containing routes definitions.
-     */
-    public function getServicesDefinitions(): array
-    {
-        $containers = [];
-
-        foreach ($this->sprinkles as $sprinkle) {
-            foreach ($sprinkle::getServices() as $container) {
-                $containers = array_merge($this->validateServicesProvider($container)->register(), $containers);
-            }
-        }
-
-        return $containers;
-    }
-
-    /**
-     * Returns a list of all Middleware, from all sprinkles.
-     *
-     * @return MiddlewareInterface[]
-     */
-    public function getMiddlewaresDefinitions(): array
-    {
-        $middlewares = [];
-
-        foreach ($this->sprinkles as $sprinkle) {
-            $sprinkleMiddlewares = array_map([$this, 'validateMiddleware'], $sprinkle::getMiddlewares());
-            $middlewares = array_merge($middlewares, $sprinkleMiddlewares);
-        }
-
-        return $middlewares;
     }
 
     /**
@@ -174,6 +100,24 @@ class SprinkleManager
     public function isAvailable(string $sprinkle): bool
     {
         return in_array($sprinkle, $this->sprinkles);
+    }
+
+    /**
+     * Returns a list of all PHP-DI services/container definition files, from all sprinkles.
+     *
+     * @return ServicesProviderInterface[] List of PHP files containing routes definitions.
+     */
+    public function getServicesDefinitions(): array
+    {
+        $containers = [];
+
+        foreach ($this->sprinkles as $sprinkle) {
+            foreach ($sprinkle::getServices() as $container) {
+                $containers = array_merge($this->validateServicesProvider($container)->register(), $containers);
+            }
+        }
+
+        return $containers;
     }
 
     /**
@@ -231,48 +175,6 @@ class SprinkleManager
     }
 
     /**
-     * Validate command class string.
-     *
-     * @param string $command
-     *
-     * @throws NotFoundException
-     * @throws BakeryClassException
-     */
-    protected function validateCommand(string $command): string
-    {
-        if (!class_exists($command)) {
-            throw new NotFoundException('Bakery command `' . $command . '` not found.');
-        }
-
-        $class = new ReflectionClass($command);
-        if (!$class->isSubclassOf(Command::class)) {
-            throw new BakeryClassException('Bakery command `' . $command . '` must extends ' . Command::class);
-        }
-
-        return $command;
-    }
-
-    /**
-     * Validate route file exist and return Closure the file contains.
-     *
-     * @param string $class
-     *
-     * @throws BadInstanceOfException
-     */
-    protected function validateRouteClass(string $class): RouteDefinitionInterface
-    {
-        // Get class instance
-        $instance = new $class();
-
-        // Class must be an instance of symfony command
-        if (!$instance instanceof RouteDefinitionInterface) {
-            throw new BadInstanceOfException('Routes definitions class `' . $instance::class . '` must be instance of ' . RouteDefinitionInterface::class);
-        }
-
-        return $instance;
-    }
-
-    /**
      * Validate container definition file exist and return it's array.
      *
      * @param string $class
@@ -290,29 +192,5 @@ class SprinkleManager
         }
 
         return $instance;
-    }
-
-    /**
-     * Validate middleware class implement MiddlewareInterface and exist.
-     *
-     * @param string $middleware
-     *
-     * @throws NotFoundException
-     * @throws BadInstanceOfException
-     *
-     * @return string
-     */
-    protected function validateMiddleware(string $middleware): string
-    {
-        if (!class_exists($middleware)) {
-            throw new NotFoundException('Class `' . $middleware . '` not found.');
-        }
-
-        $class = new ReflectionClass($middleware);
-        if (!$class->implementsInterface(MiddlewareInterface::class)) {
-            throw new BadInstanceOfException('Middleware `' . $middleware . '` must be instance of ' . MiddlewareInterface::class);
-        }
-
-        return $middleware;
     }
 }
