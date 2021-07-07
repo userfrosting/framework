@@ -95,7 +95,7 @@ class UserFrosting extends Cupcake
      *
      * Note : Middlewares needs to be instanced by CI to bypass Slim Bridge issue
      * when adding MiddlewareInterface. This is done automatically by RecipeExtensionLoader
-     * @see https://github.com/PHP-DI/Slim-Bridge/issues/51
+     * https://github.com/PHP-DI/Slim-Bridge/issues/51
      */
     protected function registerMiddlewares(): void
     {

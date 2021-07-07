@@ -21,7 +21,7 @@ class ContainerStub
     /**
      * Create a container Stub used for testing.
      * Optionally add definitions to load into builder.
-     * 
+     *
      * @codeCoverageIgnore
      *
      * @param array $definitions (default: []). See https://php-di.org/doc/php-definitions.html
