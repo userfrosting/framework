@@ -23,8 +23,6 @@ class BakeryTester
     /**
      * Execute Bakery command.
      *
-     * @codeCoverageIgnore
-     *
      * @param Command $command     Commands to test.
      * @param array   $input       An array of command arguments and options
      * @param array   $userInputAn Array of strings representing each input passed to the command input stream
@@ -49,7 +47,7 @@ class BakeryTester
         // Create command tester
         $commandTester = new CommandTester($command);
 
-        // Set user inpu
+        // Set user input
         if (!empty($userInput)) {
             $commandTester->setInputs($userInput);
         }
