@@ -254,18 +254,6 @@ class NotFoundStub extends TestSprinkle
     }
 }
 
-class NotAppSprinkleStub extends TestSprinkle
-{
-    public static function getRoutes(): array
-    {
-        return [
-            self::getPath() . '/routes/routes.php',
-            self::getPath() . '/routes/RoutesNotApp.php',
-            self::getPath() . '/routes/routesNoArguments.php'
-        ];
-    }
-}
-
 class CommandStub extends Command
 {
     protected function configure()

@@ -11,7 +11,6 @@
 namespace UserFrosting\Sprinkle;
 
 use ReflectionClass;
-use Symfony\Component\Console\Command\Command;
 use UserFrosting\Exceptions\BadInstanceOfException;
 use UserFrosting\Exceptions\SprinkleClassException;
 use UserFrosting\ServicesProvider\ServicesProviderInterface;
@@ -186,7 +185,7 @@ class SprinkleManager
         // Get class instance
         $instance = new $class();
 
-        // Class must be an instance of symfony command
+        // Class must be an instance of ServicesProviderInterface
         if (!$instance instanceof ServicesProviderInterface) {
             throw new BadInstanceOfException('Services Provider `' . $instance::class . '` must be instance of ' . ServicesProviderInterface::class);
         }

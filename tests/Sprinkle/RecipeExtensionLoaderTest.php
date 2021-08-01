@@ -115,7 +115,10 @@ class RecipeExtensionLoaderTest extends TestCase
     public function testGetInstances(): void
     {
         $ci = Mockery::mock(Container::class)
-            ->shouldReceive('get')->with(RecipeExtensionLoaderStub::class)->once()->andReturn(RecipeExtensionLoaderStub::class)
+            ->shouldReceive('get')
+            ->with(RecipeExtensionLoaderStub::class)
+            ->once()
+            ->andReturn(new RecipeExtensionLoaderStub())
             ->getMock();
 
         $manager = Mockery::mock(SprinkleManager::class)
@@ -126,7 +129,9 @@ class RecipeExtensionLoaderTest extends TestCase
 
         $instances = $loader->getInstances('getFoo');
 
-        $this->assertSame($instances, [RecipeExtensionLoaderStub::class]);
+        $this->assertIsArray($instances);
+        $this->assertCount(1, $instances);
+        $this->assertInstanceOf(RecipeExtensionLoaderStub::class, $instances[0]);
     }
 
     /**
