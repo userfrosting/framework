@@ -12,6 +12,7 @@ namespace UserFrosting\Testing;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -32,7 +33,8 @@ class BakeryTester
     public static function runCommand(
         Command $command,
         array $input = [],
-        array $userInput = []
+        array $userInput = [],
+        int $verbosity = OutputInterface::VERBOSITY_NORMAL,
     ): CommandTester {
 
         // Create app and add command to it
@@ -53,7 +55,7 @@ class BakeryTester
         }
 
         // Execute command
-        $commandTester->execute($executeDefinition);
+        $commandTester->execute($executeDefinition, ['verbosity' => $verbosity]);
 
         return $commandTester;
     }
