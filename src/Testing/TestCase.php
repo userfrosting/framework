@@ -62,19 +62,12 @@ class TestCase extends BaseTestCase
     }
 
     /**
-     * Refresh the application instance.
+     * Refresh the application instance by setting up a basic UF app.
      *
      * @codeCoverageIgnore
      */
     protected function refreshApplication(): void
     {
-        // Force setting UF_MODE.  This is needed at the moment because Bakery
-        // uses passthru to invoke PHPUnit.  This means that the value of UF_MODE
-        // has already been set when Bakery was set up, and PHPUnit < 6.3 has
-        // no way to override environment vars that have already been set.
-        putenv('UF_MODE=testing');
-
-        // Setup the base UF app
         $this->userfrosting = new UserFrosting($this->mainSprinkle);
         $this->app = $this->userfrosting->getApp();
         $this->ci = $this->userfrosting->getContainer();
