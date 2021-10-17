@@ -29,24 +29,28 @@ class RecipeExtensionLoader
 
     /**
      * Get registered instances from all Sprinkles, recursively.
+     * The instances will be initiated by the Dependencies Injection.
      *
      * @param string      $method             Method used to retrieve the registered instance from the Recipes.
-     * @param string|null $recipeInterface    Interface the recipe must (optionally) implement.
+     * @param string|null $recipeInterface    Interface the sprinkle recipe must (optionally) implement. Sprinkle Recipe that don't implement this interface will be ignored.
      * @param string|null $extensionInterface Interface the registered must (optionally) implement.
+     * @param bool        $throwBadInterface  If true, will throws BadInstanceOfException if Sprinkle Recipe don't implement $recipeInterface. Sprinkle will be ignored if false (default).
      *
-     * @throws NotFoundException      If $class is not found.
-     * @throws BadInstanceOfException If $class doesn't implement $interface.
+     * @throws NotFoundException      If a $class is not found.
+     * @throws BadInstanceOfException If a $class doesn't implement the $interface.
      *
      * @return mixed[]
      */
-    public function getInstances(string $method, ?string $recipeInterface = null, ?string $extensionInterface = null): array
+    public function getInstances(string $method, ?string $recipeInterface = null, ?string $extensionInterface = null, bool $throwBadInterface = false): array
     {
         $instances = [];
 
         foreach ($this->sprinkleManager->getSprinkles() as $sprinkle) {
-            $this->validateClass($sprinkle, $recipeInterface);
+            if (!$this->validateClass($sprinkle, $recipeInterface, $throwBadInterface)) {
+                continue;
+            }
             foreach ($sprinkle::$method() as $extension) {
-                $this->validateClass($extension, $extensionInterface);
+                $this->validateClass($extension, $extensionInterface, true);
                 $instances[] = $this->ci->get($extension);
             }
         }
@@ -55,17 +59,53 @@ class RecipeExtensionLoader
     }
 
     /**
+     * Get registered objects from all Sprinkles, recursively.
+     * The objects WON'T be initiated by the Dependencies Injection.
+     *
+     * @param string      $method             Method used to retrieve the registered instance from the Recipes.
+     * @param string|null $recipeInterface    Interface the sprinkle recipe must (optionally) implement. Sprinkle Recipe that don't implement this interface will be ignored.
+     * @param string|null $extensionInterface Interface the object must (optionally) implement.
+     * @param bool        $throwBadInterface  If true, will throws BadInstanceOfException if Sprinkle Recipe don't implement $recipeInterface. Sprinkle will be ignored if false (default).
+     *
+     * @throws NotFoundException      If sprinkle $class is not found.
+     * @throws BadInstanceOfException If sprinkle $class doesn't implement the $interface.
+     *
+     * @return mixed[]
+     */
+    public function getObjects(string $method, ?string $recipeInterface = null, ?string $extensionInterface = null, bool $throwBadInterface = false): array
+    {
+        $collection = [];
+
+        foreach ($this->sprinkleManager->getSprinkles() as $sprinkle) {
+            if (!$this->validateClass($sprinkle, $recipeInterface, $throwBadInterface)) {
+                continue;
+            }
+            $objects = $sprinkle::$method();
+            foreach ($objects as $object) {
+                if (!is_null($extensionInterface) && !is_subclass_of($object, $extensionInterface)) {
+                    throw new BadInstanceOfException('Object must be instance of ' . $extensionInterface);
+                }
+
+                $collection[] = $object;
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
      * Validate the class implements the right interface.
      *
      * @param string      $class
      * @param string|null $interface
+     * @param bool        $throwBadInterface Throws BadInstanceOfException if true, otherwise return false.
      *
      * @throws NotFoundException      If $class is not found.
      * @throws BadInstanceOfException If $class doesn't implement $interface.
      *
      * @return bool Return true if ok, throws error otherwise.
      */
-    public function validateClass(string $class, ?string $interface = null): bool
+    public function validateClass(string $class, ?string $interface = null, bool $throwBadInterface = false): bool
     {
         if (!class_exists($class)) {
             throw new NotFoundException('Class `' . $class . '` not found.');
@@ -76,7 +116,11 @@ class RecipeExtensionLoader
         }
 
         if (!is_subclass_of($class, $interface)) {
-            throw new BadInstanceOfException('Class `' . $class . '` must be instance of ' . $interface);
+            if ($throwBadInterface) {
+                throw new BadInstanceOfException('Class `' . $class . '` must be instance of ' . $interface);
+            } else {
+                return false;
+            }
         }
 
         return true;

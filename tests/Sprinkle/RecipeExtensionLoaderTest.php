@@ -81,8 +81,19 @@ class RecipeExtensionLoaderTest extends TestCase
      */
     public function testValidateWithBadSubclass(RecipeExtensionLoader $loader): void
     {
+        $result = $loader->validateClass(\stdClass::class, RecipeExtensionLoaderStub::class);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @depends testConstructor
+     *
+     * @param RecipeExtensionLoader $loader
+     */
+    public function testValidateWithBadSubclassWithThrowInterface(RecipeExtensionLoader $loader): void
+    {
         $this->expectException(BadInstanceOfException::class);
-        $loader->validateClass(\stdClass::class, RecipeExtensionLoaderStub::class);
+        $loader->validateClass(\stdClass::class, RecipeExtensionLoaderStub::class, true);
     }
 
     /**
@@ -103,8 +114,19 @@ class RecipeExtensionLoaderTest extends TestCase
      */
     public function testValidateWithBadInterface(RecipeExtensionLoader $loader): void
     {
+        $result = $loader->validateClass(SprinkleStub::class, ContainerInterface::class);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @depends testConstructor
+     *
+     * @param RecipeExtensionLoader $loader
+     */
+    public function testValidateWithBadInterfaceWithThrowInterface(RecipeExtensionLoader $loader): void
+    {
         $this->expectException(BadInstanceOfException::class);
-        $loader->validateClass(SprinkleStub::class, ContainerInterface::class);
+        $loader->validateClass(SprinkleStub::class, ContainerInterface::class, true);
     }
 
     /**
@@ -135,6 +157,56 @@ class RecipeExtensionLoaderTest extends TestCase
     }
 
     /**
+     * We can now test getInstances.
+     *
+     * @depends testGetInstances
+     */
+    public function testGetInstancesWithNoRecipe(): void
+    {
+        $ci = Mockery::mock(Container::class)
+            ->shouldNotReceive('get')->with(RecipeExtensionLoaderStub::class)
+            ->getMock();
+
+        $manager = Mockery::mock(SprinkleManager::class)
+            ->shouldReceive('getSprinkles')->once()->andReturn([SprinkleStubB::class])
+            ->getMock();
+
+        $loader = new RecipeExtensionLoader($manager, $ci);
+
+        $instances = $loader->getInstances('getFoo', CustomRecipeInterface::class);
+
+        $this->assertIsArray($instances);
+        $this->assertCount(0, $instances);
+    }
+
+    /**
+     * We can now test getInstances.
+     *
+     * @depends testGetInstances
+     */
+    public function testGetInstancesWithTwoSprinkles(): void
+    {
+        $ci = Mockery::mock(Container::class)
+            ->shouldReceive('get')
+            ->with(RecipeExtensionLoaderStub::class)
+            ->once()
+            ->andReturn(new RecipeExtensionLoaderStub())
+            ->getMock();
+
+        $manager = Mockery::mock(SprinkleManager::class)
+            ->shouldReceive('getSprinkles')->once()->andReturn([SprinkleStub::class, SprinkleStubB::class])
+            ->getMock();
+
+        $loader = new RecipeExtensionLoader($manager, $ci);
+
+        $instances = $loader->getInstances('getFoo', CustomRecipeInterface::class);
+
+        $this->assertIsArray($instances);
+        $this->assertCount(1, $instances);
+        $this->assertInstanceOf(RecipeExtensionLoaderStub::class, $instances[0]);
+    }
+
+    /**
      * Make sure recipeInterface is correctly passed.
      *
      * @depends testValidateWithBadInterface
@@ -149,8 +221,27 @@ class RecipeExtensionLoaderTest extends TestCase
 
         $loader = new RecipeExtensionLoader($manager, $ci);
 
+        $result = $loader->getInstances('getFoo', recipeInterface: ContainerInterface::class);
+        $this->assertSame([], $result);
+    }
+
+    /**
+     * Make sure recipeInterface is correctly passed.
+     *
+     * @depends testValidateWithBadInterface
+     */
+    public function testGetInstancesWithBadRecipeInterfaceWithThrowInterface(): void
+    {
+        $ci = Mockery::mock(Container::class);
+
+        $manager = Mockery::mock(SprinkleManager::class)
+            ->shouldReceive('getSprinkles')->once()->andReturn([SprinkleStub::class])
+            ->getMock();
+
+        $loader = new RecipeExtensionLoader($manager, $ci);
+
         $this->expectException(BadInstanceOfException::class);
-        $loader->getInstances('getFoo', recipeInterface: ContainerInterface::class);
+        $loader->getInstances('getFoo', recipeInterface: ContainerInterface::class, throwBadInterface: true);
     }
 
     /**
@@ -171,6 +262,109 @@ class RecipeExtensionLoaderTest extends TestCase
         $this->expectException(BadInstanceOfException::class);
         $loader->getInstances('getFoo', extensionInterface: SprinkleRecipe::class);
     }
+
+    /**
+     * We can now test getObjects.
+     *
+     * @depends testValidate
+     */
+    public function testGetObjects(): void
+    {
+        $ci = Mockery::mock(Container::class);
+
+        $manager = Mockery::mock(SprinkleManager::class)
+            ->shouldReceive('getSprinkles')->once()->andReturn([SprinkleStub::class])
+            ->getMock();
+
+        $loader = new RecipeExtensionLoader($manager, $ci);
+
+        $instances = $loader->getObjects('getBar');
+
+        $this->assertIsArray($instances);
+        $this->assertCount(1, $instances);
+        $this->assertInstanceOf(RecipeExtensionLoaderStub::class, $instances[0]);
+    }
+
+    /**
+     * We can now test getObjects.
+     *
+     * @depends testGetObjects
+     */
+    public function testGetObjectsWithNoRecipe(): void
+    {
+        $ci = Mockery::mock(Container::class);
+
+        $manager = Mockery::mock(SprinkleManager::class)
+            ->shouldReceive('getSprinkles')->once()->andReturn([SprinkleStubB::class])
+            ->getMock();
+
+        $loader = new RecipeExtensionLoader($manager, $ci);
+
+        $instances = $loader->getObjects('getBar', CustomRecipeInterface::class);
+
+        $this->assertIsArray($instances);
+        $this->assertCount(0, $instances);
+    }
+
+    /**
+     * We can now test getObjects.
+     *
+     * @depends testGetObjects
+     */
+    public function testGetObjectsWithTwoSprinkles(): void
+    {
+        $ci = Mockery::mock(Container::class);
+
+        $manager = Mockery::mock(SprinkleManager::class)
+            ->shouldReceive('getSprinkles')->once()->andReturn([SprinkleStub::class, SprinkleStubB::class])
+            ->getMock();
+
+        $loader = new RecipeExtensionLoader($manager, $ci);
+
+        $instances = $loader->getObjects('getBar', CustomRecipeInterface::class);
+
+        $this->assertIsArray($instances);
+        $this->assertCount(1, $instances);
+        $this->assertInstanceOf(RecipeExtensionLoaderStub::class, $instances[0]);
+    }
+
+    /**
+     * Make sure recipeInterface is correctly passed.
+     *
+     * @depends testValidateWithBadInterface
+     */
+    public function testGetObjectsWithBadRecipeInterfaceWithThrowInterface(): void
+    {
+        $ci = Mockery::mock(Container::class);
+
+        $manager = Mockery::mock(SprinkleManager::class)
+            ->shouldReceive('getSprinkles')->once()->andReturn([SprinkleStub::class])
+            ->getMock();
+
+        $loader = new RecipeExtensionLoader($manager, $ci);
+
+        $this->expectException(BadInstanceOfException::class);
+        $loader->getObjects('getBar', recipeInterface: ContainerInterface::class, throwBadInterface: true);
+    }
+
+    /**
+     * Make sure extensionInterface is correctly passed.
+     *
+     * @depends testValidateWithBadInterface
+     */
+    public function testGetObjectsWithBadExtensionInterface(): void
+    {
+        $ci = Mockery::mock(Container::class);
+
+        $manager = Mockery::mock(SprinkleManager::class)
+            ->shouldReceive('getSprinkles')->once()->andReturn([SprinkleStub::class])
+            ->getMock();
+
+        $loader = new RecipeExtensionLoader($manager, $ci);
+
+        $this->expectException(BadInstanceOfException::class);
+        $loader->getObjects('getBar', extensionInterface: SprinkleRecipe::class);
+    }
 }
 
 class RecipeExtensionLoaderStub
@@ -181,7 +375,11 @@ class RecipeExtensionLoaderStubExtended extends RecipeExtensionLoaderStub
 {
 }
 
-class SprinkleStub extends TestSprinkle
+interface CustomRecipeInterface
+{
+}
+
+class SprinkleStub extends TestSprinkle implements CustomRecipeInterface
 {
     public static function getFoo(): array
     {
@@ -189,4 +387,15 @@ class SprinkleStub extends TestSprinkle
             RecipeExtensionLoaderStub::class
         ];
     }
+
+    public static function getBar(): array
+    {
+        return [
+            new RecipeExtensionLoaderStub(),
+        ];
+    }
+}
+
+class SprinkleStubB extends TestSprinkle
+{
 }
