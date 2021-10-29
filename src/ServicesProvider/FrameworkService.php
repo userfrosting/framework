@@ -20,7 +20,7 @@ use UserFrosting\Routes\RouteDefinitionInterface;
 use UserFrosting\Sprinkle\RecipeExtensionLoader;
 
 /**
- * Register framework base services
+ * Register framework base services.
  */
 final class FrameworkService implements ServicesProviderInterface
 {
