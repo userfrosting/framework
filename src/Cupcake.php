@@ -12,9 +12,7 @@ namespace UserFrosting;
 
 use DI\Container;
 use DI\ContainerBuilder;
-use RocketTheme\Toolbox\Event\Event;
-use RocketTheme\Toolbox\Event\EventDispatcher;
-use Slim\App;
+use UserFrosting\ServicesProvider\FrameworkService;
 use UserFrosting\Sprinkle\SprinkleManager;
 
 /**
@@ -43,34 +41,24 @@ abstract class Cupcake
     }
 
     /**
-     * Initialize the application. Load up Sprinkles and the base app.
+     * Initialize the application. Setup Sprinkles, DI Container and the base app.
      */
     public function init(): void
     {
         // Setup sprinkles
-        $this->sprinkleManager = $this->initSprinkleManager();
+        $this->sprinkleManager = new SprinkleManager($this->mainSprinkle);
 
-        // First, we create our DI container
+        // Create the DI container
         $this->ci = $this->createContainer();
-
-        // Set up facade reference to container.
-        Facade::setFacadeContainer($this->ci);
-
-        // Note that the application is required for the SprinkleManager to set up routes.
-        $this->app = $this->createApp();
 
         // Register SprinkleManager into the CI
         $this->ci->set(SprinkleManager::class, $this->sprinkleManager);
 
-        // $slimAppEvent = new SlimAppEvent($this->app);
+        // Set up facade reference to container.
+        Facade::setFacadeContainer($this->ci);
 
-        // $this->fireEvent('onAppInitialize', $slimAppEvent);
-
-        // Add global middleware
-        // $this->fireEvent('onAddGlobalMiddleware', $slimAppEvent);
-
-        // Register the App itself into the CI
-        $this->ci->set(App::class, $this->app);
+        // Create application
+        $this->app = $this->initiateApp();
     }
 
     /**
@@ -79,7 +67,7 @@ abstract class Cupcake
     abstract public function run(): void;
 
     /**
-     * Return the underlying Slim or Symfony App instance, if available.
+     * Return the underlying Slim or Symfony Application instance, if available.
      *
      * @return mixed
      */
@@ -96,28 +84,12 @@ abstract class Cupcake
     }
 
     /**
-     * Get constructor.
+     * Get main sprinkle class name.
      */
     public function getMainSprinkle(): string
     {
         return $this->mainSprinkle;
     }
-
-    /**
-     * Fires an event with optional parameters.
-     *
-     * @param string     $eventName
-     * @param Event|null $event
-     *
-     * @return Event
-     */
-    // public function fireEvent($eventName, Event $event = null)
-    // {
-    //     /** @var EventDispatcher */
-    //     $eventDispatcher = $this->ci->eventDispatcher;
-
-    //     return $eventDispatcher->dispatch($eventName, $event);
-    // }
 
     /**
      * Create the container with all sprinkles services definitions.
@@ -126,8 +98,11 @@ abstract class Cupcake
      */
     protected function createContainer(): Container
     {
+        $frameworkServices = new FrameworkService();
+
         $builder = new ContainerBuilder();
         $builder->useAnnotations(true);
+        $builder->addDefinitions($frameworkServices->register());
         $builder->addDefinitions($this->sprinkleManager->getServicesDefinitions());
         $ci = $builder->build();
 
@@ -135,29 +110,9 @@ abstract class Cupcake
     }
 
     /**
-     * Instantiate the Slim or Symfony application.
+     * Instantiate the Slim or Symfony application and return it.
      *
-     * @return mixed
+     * @return mixed The created app
      */
-    abstract protected function createApp();
-
-    /**
-     * Register system services, load all sprinkles, and add their resources and services.
-     * Boot the Sprinkle manager, which creates Sprinkle classes and subscribes them to the event dispatcher.
-     */
-    protected function initSprinkleManager(): SprinkleManager
-    {
-        return new SprinkleManager($this->mainSprinkle);
-
-        // TODO
-        // $this->fireEvent('onSprinklesInitialized');
-
-        // Add Sprinkle resources (assets, templates, etc) to locator
-        // $sprinkleManager->addResources();
-        // $this->fireEvent('onSprinklesAddResources');
-
-        // Register Sprinkle services
-        // $sprinkleManager->registerAllServices();
-        // $this->fireEvent('onSprinklesRegisterServices');
-    }
+    abstract protected function initiateApp();
 }
