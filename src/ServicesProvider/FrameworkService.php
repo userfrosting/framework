@@ -71,10 +71,6 @@ final class FrameworkService implements ServicesProviderInterface
     /**
      * Load and register all middlewares.
      *
-     * Note : Middlewares needs to be instanced by CI to bypass Slim Bridge issue
-     * when adding MiddlewareInterface. This is done automatically by RecipeExtensionLoader
-     * https://github.com/PHP-DI/Slim-Bridge/issues/51
-     *
      * @param SlimApp               $app
      * @param RecipeExtensionLoader $extensionLoader
      */
@@ -85,7 +81,7 @@ final class FrameworkService implements ServicesProviderInterface
         $app->addRoutingMiddleware();
 
         // Add the registered Middlewares
-        $middlewares = $extensionLoader->getInstances(
+        $middlewares = $extensionLoader->getObjects(
             method: 'getMiddlewares',
             extensionInterface: MiddlewareInterface::class
         );
