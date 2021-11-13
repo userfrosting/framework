@@ -463,7 +463,7 @@ class ResourceLocatorTest extends TestCase
 
         $resource = $locator->findResource('files://blah.json');
 
-        $this->assertSame(__DIR__.'/Building/Garage/files/blah.json', $resource);
+        $this->assertSame(Normalizer::normalizePath(__DIR__).'Building/Garage/files/blah.json', $resource);
     }
 
     /**
@@ -477,6 +477,6 @@ class ResourceLocatorTest extends TestCase
 
         $resources = $locator->listResources('files://', true);
 
-        $this->assertSame(__DIR__.'/Building/Garage/files/blah.json', $resources[0]->getAbsolutePath());
+        $this->assertSame(Normalizer::normalizePath(__DIR__).'Building/Garage/files/blah.json', $resources[0]->getAbsolutePath());
     }
 }

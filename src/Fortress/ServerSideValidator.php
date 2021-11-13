@@ -33,7 +33,8 @@ class ServerSideValidator extends Validator implements ServerSideValidatorInterf
      */
     protected $translator;
 
-    /** Create a new server-side validator.
+    /**
+     * Create a new server-side validator.
      *
      * @param RequestSchemaInterface $schema     A RequestSchemaInterface object, containing the validation rules.
      * @param Translator             $translator A Translator to be used to translate message ids found in the schema.
