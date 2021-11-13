@@ -439,7 +439,7 @@ class ResourceLocatorTest extends TestCase
     }
 
     /**
-     * With stream poiting to `app/uploads/profile`, we make sure we can't access `app/uploads/MyFile.txt`.
+     * With stream pointing to `app/uploads/profile`, we make sure we can't access `app/uploads/MyFile.txt`.
      */
     public function testFindResourceWithBackPath(): void
     {
@@ -450,5 +450,33 @@ class ResourceLocatorTest extends TestCase
         $result = $locator->findResource('sprinkles://'.'../MyFile.txt');
 
         $this->assertFalse($result);
+    }
+
+    /**
+     * Test a location outside of the main path produce the correct relative path.
+     */
+    public function testFindResourceOutsideMainPath(): void
+    {
+        $locator = new ResourceLocator(__DIR__.'/Building/Floors');
+        $locator->registerStream('files');
+        $locator->registerLocation('Garage', __DIR__.'/Building/Garage');
+
+        $resource = $locator->findResource('files://blah.json');
+
+        $this->assertSame(__DIR__.'/Building/Garage/files/blah.json', $resource);
+    }
+
+    /**
+     * Test a location outside of the main path produce the correct relative path.
+     */
+    public function testListResourceOutsideMainPath(): void
+    {
+        $locator = new ResourceLocator(__DIR__.'/Building/Floors');
+        $locator->registerStream('files');
+        $locator->registerLocation('Garage', __DIR__.'/Building/Garage');
+
+        $resources = $locator->listResources('files://', true);
+
+        $this->assertSame(__DIR__.'/Building/Garage/files/blah.json', $resources[0]->getAbsolutePath());
     }
 }

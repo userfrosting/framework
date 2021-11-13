@@ -72,9 +72,9 @@ class Normalizer
     }
 
     /**
-     * Normalise a path:
+     * Normalize a path:
      *  - Make sure all `\` (from a Windows path) are changed to `/`
-     *  - Make sure a trailling slash is present
+     *  - Make sure a trailing slash is present
      *  - Doesn't change the beginning of the path (don't change absolute / relative path), but will change `C:\` to `C:/`.
      *
      * @param string $path

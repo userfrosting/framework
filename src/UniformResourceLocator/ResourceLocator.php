@@ -135,7 +135,7 @@ class ResourceLocator implements ResourceLocatorInterface
             return;
         }
 
-        // First unset the sheme. Prevent issue if someone else already registered it
+        // First unset the scheme. Prevent issue if someone else already registered it
         $this->unsetStreamWrapper($scheme);
 
         // register the scheme as a stream wrapper
@@ -189,7 +189,9 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function registerSharedStream(string $scheme, string $prefix = '', $paths = null): self
     {
-        return $this->registerStream($scheme, $prefix, $paths, true);
+        $this->registerStream($scheme, $prefix, $paths, true);
+
+        return $this;
     }
 
     /**
@@ -347,7 +349,7 @@ class ResourceLocator implements ResourceLocatorInterface
     {
         $list = [];
 
-        // Get all directory where we can find this ressource. Will be returned with the priority order
+        // Get all directory where we can find this resource. Will be returned with the priority order
         $directories = $this->getResources($uri);
 
         foreach ($directories as $directory) {
@@ -355,7 +357,7 @@ class ResourceLocator implements ResourceLocatorInterface
             // Use Filesystem to list all file in the directory
             $files = $this->filesystem->allFiles($directory->getAbsolutePath());
 
-            // Sort files. Filesystem can return inconsistant order sometime
+            // Sort files. Filesystem can return inconsistent order sometime
             // Files will be sorted alphabetically inside a location even if don't resort later across all sprinkles
             $files = Arr::sort($files, function ($resource) {
                 return $resource->getRealPath();
@@ -367,10 +369,15 @@ class ResourceLocator implements ResourceLocatorInterface
                 $basePath = rtrim($this->getBasePath(), $this->separator).$this->separator;
                 $fullPath = $file->getPathname();
                 $relPath = str_replace($basePath, '', $fullPath);
-                $relPath = ltrim($relPath, $this->separator);
 
-                // Create the ressource and add it to the list
-                $resource = new Resource($directory->getStream(), $directory->getLocation(), $relPath, $basePath);
+                // Create the resource and add it to the list
+                // Handle relPath that is an absolute outside the basePath
+                // This can happen when the location has an absolute path outside the locator base path.
+                if ($fullPath == $relPath) {
+                    $resource = new Resource($directory->getStream(), $directory->getLocation(), $fullPath);
+                } else {
+                    $resource = new Resource($directory->getStream(), $directory->getLocation(), $relPath, $basePath);
+                }
 
                 if ($all) {
                     // Add all files to the list
@@ -428,7 +435,7 @@ class ResourceLocator implements ResourceLocatorInterface
 
     /**
      * Find highest priority instance from a resource. Return the path for said resource
-     * For example, if looking for a `test.json` ressource, only the top priority
+     * For example, if looking for a `test.json` resource, only the top priority
      * instance of `test.json` found will be returned.
      *
      * @param string $uri      Input URI to be searched (can be a file or directory)
@@ -437,7 +444,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @throws \BadMethodCallException
      *
-     * @return string|bool The ressource path, or false if not found resource
+     * @return string|bool The resource path, or false if not found resource
      */
     public function findResource($uri, $absolute = true, $first = false)
     {
@@ -456,14 +463,14 @@ class ResourceLocator implements ResourceLocatorInterface
 
     /**
      * Find all instances from a resource. Return an array of paths for said resource
-     * For example, if looking for a `test.json` ressource, all instance
+     * For example, if looking for a `test.json` resource, all instance
      * of `test.json` found will be listed.
      *
      * @param string $uri      Input URI to be searched (can be a file or directory)
      * @param bool   $absolute Whether to return absolute path.
      * @param bool   $all      Whether to return all paths even if they don't exist.
      *
-     * @return string[] An array of all the ressources path
+     * @return string[] An array of all the resources path
      */
     public function findResources($uri, $absolute = true, $all = false)
     {
@@ -488,7 +495,7 @@ class ResourceLocator implements ResourceLocatorInterface
      * @param bool   $array Return an array or a single path
      * @param bool   $all   Whether to return all paths even if they don't exist.
      *
-     * @return ResourceInterface[]|ResourceInterface|false The ressource path or an array of all the ressources path or false if not resource can be found
+     * @return ResourceInterface[]|ResourceInterface|false The resource path or an array of all the resources path or false if not resource can be found
      */
     protected function findCached(string $uri, bool $array, bool $all)
     {
@@ -510,7 +517,7 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Build the search path out of the defined strean and locations.
+     * Build the search path out of the defined stream and locations.
      * If the scheme is shared, we don't need to involve locations and can return it's path directly.
      *
      * @param ResourceStreamInterface $stream The stream to search for
@@ -597,7 +604,15 @@ class ResourceLocator implements ResourceLocatorInterface
 
                     // Add the result to the list if the path exist, unless we want all results
                     if ($all || $this->filesystem->exists($fullPath)) {
-                        $currentResource = new Resource($stream, $location, $relPath, $basePath);
+
+                        // Handle relpath that is an absolute outside the basePath
+                        // This can happen when the location has an absolute path outside the locator base path.
+                        if ($fullPath == $relPath) {
+                            $currentResource = new Resource($stream, $location, $fullPath);
+                        } else {
+                            $currentResource = new Resource($stream, $location, $relPath, $basePath);
+                        }
+
                         if (!$array) {
                             return $currentResource;
                         }

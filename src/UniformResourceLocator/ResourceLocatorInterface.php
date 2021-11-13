@@ -45,7 +45,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      * @param string               $scheme
      * @param string               $prefix (default '')
      * @param string|string[]|null $paths  (default null). When using null path, the scheme will be used as a path
-     * @param bool                 $shared (default false) Shared resoureces are not affected by locations
+     * @param bool                 $shared (default false) Shared resources are not affected by locations
      *
      * @return static
      */
@@ -61,7 +61,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
     public function removeStream(string $scheme);
 
     /**
-     * Return information about a specfic stream.
+     * Return information about a specific stream.
      * Return value is an array of ResourceStreamInterface, for each prefix
      * For example :
      *   $array = array(
@@ -111,7 +111,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
     public function schemeExists(string $scheme): bool;
 
     /**
-     * Add an existing RessourceLocation instance to the location list.
+     * Add an existing ResourceLocation instance to the location list.
      *
      * @param ResourceLocationInterface $location
      *
@@ -193,15 +193,15 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
     public function getResources(string $uri, bool $all = false): array;
 
     /**
-     * List all ressources found at a given uri.
+     * List all resources found at a given uri.
      * Same as listing all file in a directory, except here all topmost
-     * ressources will be returned when considering all locations.
+     * resources will be returned when considering all locations.
      *
      * @param string $uri  Input URI to be searched (can be a uri/path ONLY)
      * @param bool   $all  If true, all resources will be returned, not only topmost ones
      * @param bool   $sort Set to true to sort results alphabetically by absolute path. Set to false to sort by absolute priority, higest location first. Default to true.
      *
-     * @return ResourceInterface[] The ressources list
+     * @return ResourceInterface[] The resources list
      */
     public function listResources(string $uri, bool $all = false, bool $sort = true);
 
