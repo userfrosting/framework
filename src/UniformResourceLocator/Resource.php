@@ -19,8 +19,8 @@ namespace UserFrosting\UniformResourceLocator;
  * paths of the file. Using this information, we can later rebuilt the URI used
  * to find this file. Since the full path will contains the relative location of
  * the stream and location inside the filesystem, this information will be
- * removed to recrete the relative 'basepath' of the file, allowing the
- * recreatation of the uri (scheme://basePath).
+ * removed to recreate the relative 'basepath' of the file, allowing the
+ * recreation of the uri (scheme://basePath).
  *
  * @author Louis Charette
  */
@@ -65,7 +65,7 @@ class Resource implements ResourceInterface
 
     /**
      * Get Resource URI
-     * Also adds the prefix stream prefix if it existprefix.
+     * Also adds the prefix stream prefix if it exist.
      *
      * @return string
      */
@@ -84,7 +84,7 @@ class Resource implements ResourceInterface
             $parts[] = $this->getBasePath();
         }
 
-        // Glue parts togeter.
+        // Glue parts together.
         $path = implode('/', $parts);
 
         return $this->stream->getScheme() . '://' . $path;
