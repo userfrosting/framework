@@ -36,6 +36,7 @@ class Util
      *
      * @return string|array|bool
      */
+    // TODO : Could be replace by the method in locator
     public static function normalizePath($uri, $throwException = false, $splitStream = false)
     {
         if (!is_string($uri)) {
