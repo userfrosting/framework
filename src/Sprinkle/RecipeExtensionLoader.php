@@ -12,7 +12,7 @@ namespace UserFrosting\Sprinkle;
 
 use DI\Container;
 use UserFrosting\Exceptions\BadInstanceOfException;
-use UserFrosting\Support\Exception\NotFoundException;
+use UserFrosting\Support\Exception\ClassNotFoundException;
 
 /**
  * Class service used to load recipe extensions.
@@ -36,7 +36,7 @@ class RecipeExtensionLoader
      * @param string|null $extensionInterface Interface the registered must (optionally) implement.
      * @param bool        $throwBadInterface  If true, will throws BadInstanceOfException if Sprinkle Recipe don't implement $recipeInterface. Sprinkle will be ignored if false (default).
      *
-     * @throws NotFoundException      If a $class is not found.
+     * @throws ClassNotFoundException If a $class is not found.
      * @throws BadInstanceOfException If a $class doesn't implement the $interface.
      *
      * @return mixed[]
@@ -67,7 +67,7 @@ class RecipeExtensionLoader
      * @param string|null $extensionInterface Interface the object must (optionally) implement.
      * @param bool        $throwBadInterface  If true, will throws BadInstanceOfException if Sprinkle Recipe don't implement $recipeInterface. Sprinkle will be ignored if false (default).
      *
-     * @throws NotFoundException      If sprinkle $class is not found.
+     * @throws ClassNotFoundException If sprinkle $class is not found.
      * @throws BadInstanceOfException If sprinkle $class doesn't implement the $interface.
      *
      * @return mixed[]
@@ -100,7 +100,7 @@ class RecipeExtensionLoader
      * @param string|null $interface
      * @param bool        $throwBadInterface Throws BadInstanceOfException if true, otherwise return false.
      *
-     * @throws NotFoundException      If $class is not found.
+     * @throws ClassNotFoundException If $class is not found.
      * @throws BadInstanceOfException If $class doesn't implement $interface.
      *
      * @return bool Return true if ok, throws error otherwise.
@@ -108,7 +108,7 @@ class RecipeExtensionLoader
     public function validateClass(string $class, ?string $interface = null, bool $throwBadInterface = false): bool
     {
         if (!class_exists($class)) {
-            throw new NotFoundException('Class `' . $class . '` not found.');
+            throw new ClassNotFoundException('Class `' . $class . '` not found.');
         }
 
         if (is_null($interface)) {

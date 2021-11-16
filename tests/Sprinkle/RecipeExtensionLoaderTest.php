@@ -19,7 +19,7 @@ use UserFrosting\Exceptions\BadInstanceOfException;
 use UserFrosting\Sprinkle\RecipeExtensionLoader;
 use UserFrosting\Sprinkle\SprinkleManager;
 use UserFrosting\Sprinkle\SprinkleRecipe;
-use UserFrosting\Support\Exception\NotFoundException;
+use UserFrosting\Support\Exception\ClassNotFoundException;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
 class RecipeExtensionLoaderTest extends TestCase
@@ -103,7 +103,7 @@ class RecipeExtensionLoaderTest extends TestCase
      */
     public function testValidateClassNotFound(RecipeExtensionLoader $loader): void
     {
-        $this->expectException(NotFoundException::class);
+        $this->expectException(ClassNotFoundException::class);
         $loader->validateClass(Bar::class);
     }
 
