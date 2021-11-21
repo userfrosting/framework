@@ -15,28 +15,28 @@ namespace UserFrosting\Support\Message;
  *
  * A user-viewable message, consisting of a message string or message token, and zero or more parameters for the message.
  * Parameters can be used, for example, to fill in placeholders in dynamically generated messages.
- *
- * @author Alexander Weissman (https://alexanderweissman.com)
  */
+// TODO : Rename to translatable message
+// TODO : Add __toString(), which will return a translated message (depend on Translator... or have Translator accept a TranslatableMessage)
 class UserMessage
 {
     /**
      * @var string The user-viewable error message.
      */
-    public $message;
+    public string $message;
 
     /**
-     * @var array The parameters to be filled in for any placeholders in the message.
+     * @var string[] The parameters to be filled in for any placeholders in the message.
      */
-    public $parameters = [];
+    public array $parameters = [];
 
     /**
      * Public constructor.
      *
-     * @param string $message
-     * @param array  $parameters The parameters to be filled in for any placeholders in the message.
+     * @param string   $message
+     * @param string[] $parameters The parameters to be filled in for any placeholders in the message.
      */
-    public function __construct($message, $parameters = [])
+    public function __construct(string $message, array $parameters = [])
     {
         $this->message = $message;
         $this->parameters = $parameters;
