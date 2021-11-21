@@ -10,10 +10,10 @@
 
 namespace UserFrosting\Tests\Fortress;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
-use UserFrosting\Support\Exception\BadRequestException;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 
 class RequestDataTransformerTest extends TestCase
@@ -115,7 +115,7 @@ class RequestDataTransformerTest extends TestCase
         $this->transformer = new RequestDataTransformer($schema);
 
         // Set expectations
-        $this->expectException(BadRequestException::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage("The field 'admin' is not a valid input field.");
 
         // Act

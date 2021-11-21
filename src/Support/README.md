@@ -9,35 +9,6 @@ This module contains support classes for UserFrosting and related modules.
 - RuntimeException
   - FileNotFoundException
   - JsonException
-- HttpException
-  - BadRequestException
-  - ForbiddenException
-  - NotFoundException
-
-### HttpException
-
-A large portion of UserFrosting's exception types inherit from the `HttpException` class.
-
-The `HttpException` class acts like a typical exception, but it maintains two additional parameters internally: a list of messages (`UserMessage`) that the exception handler may display to the client, and a status code that should be returned with the response.  As a simple example, consider the `BadRequestException`:
-
-```php
-<?php
-class BadRequestException extends HttpException
-{
-    protected $defaultMessage = 'Bad data!';
-    protected $httpErrorCode = 400;
-}
-```
-
-It defines a default message, `'Bad data!'`, that a registered exception handler can display on an error page or push to the alert stream.  It also sets a default HTTP status code to return with the error response.
-
-The default message can be overridden when the exception is thrown in your code:
-
-```php
-$e = new BadRequestException("This is the exception message that will be logged for the dev/sysadmin.");
-$e->addUserMessage("This is a custom error message that will be sent back to the client.  Hello, client!");
-throw $e;
-```
 
 ## Repository
 

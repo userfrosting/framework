@@ -10,8 +10,8 @@
 
 namespace UserFrosting\Fortress;
 
+use Exception;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaInterface;
-use UserFrosting\Support\Exception\BadRequestException;
 
 /**
  * RequestDataTransformer Class.
@@ -77,7 +77,8 @@ class RequestDataTransformer implements RequestDataTransformerInterface
                         $transformedData[$name] = $value;
                         break;
                     case 'error':
-                        $e = new BadRequestException("The field '$name' is not a valid input field.");
+                        // TODO : BadRequestException temp replacement
+                        $e = new Exception("The field '$name' is not a valid input field.");
 
                         throw $e;
                         break;
