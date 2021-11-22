@@ -12,10 +12,14 @@ namespace UserFrosting\ServicesProvider;
 
 use DI\Bridge\Slim\Bridge;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Slim\App as SlimApp;
 use Symfony\Component\Console\Application as ConsoleApp;
 use Symfony\Component\Console\Command\Command;
+use UserFrosting\Event\EventDispatcher;
+use UserFrosting\Event\SprinkleListenerProvider;
 use UserFrosting\Routes\RouteDefinitionInterface;
 use UserFrosting\Sprinkle\RecipeExtensionLoader;
 
@@ -47,6 +51,10 @@ final class FrameworkService implements ServicesProviderInterface
 
                 return $app;
             },
+
+            // Events
+            EventDispatcherInterface::class  => \DI\autowire(EventDispatcher::class),
+            ListenerProviderInterface::class => \DI\autowire(SprinkleListenerProvider::class),
         ];
     }
 
