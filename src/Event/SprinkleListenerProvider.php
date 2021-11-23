@@ -23,7 +23,7 @@ use UserFrosting\Sprinkle\SprinkleManager;
  * Also make use of PHP-DI Slim Bridge CallableResolver to revolve callable, class and
  * [class, method] notations with PHP-DI container.
  */
-class SprinkleListenerProvider implements ListenerProviderInterface
+final class SprinkleListenerProvider implements ListenerProviderInterface
 {
     public function __construct(
         protected CallableResolver $resolver,
@@ -37,6 +37,11 @@ class SprinkleListenerProvider implements ListenerProviderInterface
     public function getListenersForEvent(object $event): iterable
     {
         $listeners = $this->getRegisteredListeners();
+
+        // Catch if event doesn't have listener
+        if (!array_key_exists($event::class, $listeners)) {
+            return [];
+        }
 
         foreach ($listeners[$event::class] as $listener) {
             yield $this->resolver->resolve($listener);

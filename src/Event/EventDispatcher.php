@@ -21,7 +21,7 @@ use Psr\EventDispatcher\StoppableEventInterface;
  *
  * @see https://github.com/Crell/Tukio/blob/003c9a6072fa8032e2bab6a9b43d71266983fc19/src/Dispatcher.php
  */
-class EventDispatcher implements EventDispatcherInterface
+final class EventDispatcher implements EventDispatcherInterface
 {
     public function __construct(
         protected ListenerProviderInterface $provider,

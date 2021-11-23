@@ -79,6 +79,19 @@ class EventsTest extends TestCase
         $event = $dispatcher->dispatch(new PizzaHasPineapple());
         $this->assertSame([], $event->passedThrough);
     }
+
+    /** @depends testIntegration */
+    public function testUnregisteredEvent(): void
+    {
+        /** @var EventDispatcherInterface */
+        $dispatcher = $this->ci->get(EventDispatcherInterface::class);
+
+        $pizzaIsCold = new PizzaIsCold();
+        $event = $dispatcher->dispatch($pizzaIsCold);
+
+        // Test dispatched event is returned untouched when no handler is present.
+        $this->assertSame($pizzaIsCold, $event);
+    }
 }
 
 /* Stub events */
@@ -107,6 +120,11 @@ class Pizza implements StoppableEventInterface
     {
         return $this->stopped;
     }
+}
+
+// Unregistered event
+class PizzaIsCold
+{
 }
 
 /* Stub Handler 1 */
