@@ -14,11 +14,12 @@ namespace UserFrosting\Tests\Unit;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
+use Psr\EventDispatcher\StoppableEventInterface;
 use UserFrosting\Event\EventListenerRecipe;
 use UserFrosting\Testing\TestCase;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
-class SprinkleListenerProviderTest extends TestCase
+class EventsTest extends TestCase
 {
     protected string $mainSprinkle = SprinkleAStub::class;
 
@@ -36,8 +37,12 @@ class SprinkleListenerProviderTest extends TestCase
                 HandlePizza::class,
                 [HandlePizza::class, 'onPizzaArrived'],
             ],
-            PizzaIsLate::class => [
-                [LogPizza::class, 'onPizzaLate'],
+            Pizza::class => [
+                [LogPizza::class, 'onPizza'],
+                [HandlePizza::class, 'isPizzaHot'],
+            ],
+            PizzaHasPineapple::class => [
+                HandlePizza::class,
             ],
         ], $data);
     }
@@ -56,14 +61,24 @@ class SprinkleListenerProviderTest extends TestCase
             'HandlePizza::__invoke',
             'HandlePizza::onPizzaArrived',
         ], $event->passedThrough);
-
-        $event = $dispatcher->dispatch(new PizzaIsLate());
-        $this->assertSame([
-            'LogPizza::onPizzaLate',
-        ], $event->passedThrough);
     }
 
-    // TODO : Test Stopable events
+    /** @depends testIntegration */
+    public function testStoppableEvent(): void
+    {
+        /** @var EventDispatcherInterface */
+        $dispatcher = $this->ci->get(EventDispatcherInterface::class);
+
+        // 'HandlePizza::isPizzaHot' is not here, as LogPizza stop execution
+        $event = $dispatcher->dispatch(new Pizza());
+        $this->assertSame([
+            'LogPizza::onPizza',
+        ], $event->passedThrough);
+
+        // Even if it's registered, PizzaHasPineapple won't be passedThrough HandlePizza
+        $event = $dispatcher->dispatch(new PizzaHasPineapple());
+        $this->assertSame([], $event->passedThrough);
+    }
 }
 
 /* Stub events */
@@ -72,9 +87,26 @@ class PizzaArrived
     public array $passedThrough = [];
 }
 
-class PizzaIsLate
+class PizzaHasPineapple implements StoppableEventInterface
 {
     public array $passedThrough = [];
+
+    public function isPropagationStopped() : bool
+    {
+        return true;
+    }
+}
+
+class Pizza implements StoppableEventInterface
+{
+    public array $passedThrough = [];
+
+    public bool $stopped = false;
+
+    public function isPropagationStopped() : bool
+    {
+        return $this->stopped;
+    }
 }
 
 /* Stub Handler 1 */
@@ -83,6 +115,10 @@ class HandlePizza
     public function onPizzaArrived(PizzaArrived $event) : void
     {
         $event->passedThrough[] = 'HandlePizza::onPizzaArrived';
+    }
+    public function isPizzaHot(Pizza $event) : void
+    {
+        $event->passedThrough[] = 'HandlePizza::isPizzaHot';
     }
     public function __invoke(PizzaArrived $event): void
     {
@@ -93,13 +129,14 @@ class HandlePizza
 /* Stub Handler 2 */
 class LogPizza
 {
-    public function onPizzaLate(PizzaIsLate $event) : void
-    {
-        $event->passedThrough[] = 'LogPizza::onPizzaLate';
-    }
     public function onPizzaArrived(PizzaArrived $event) : void
     {
         $event->passedThrough[] = 'LogPizza::onPizzaArrived';
+    }
+    public function onPizza(Pizza $event) : void
+    {
+        $event->passedThrough[] = 'LogPizza::onPizza';
+        $event->stopped = true;
     }
     public function __invoke(PizzaArrived $event): void
     {
@@ -116,7 +153,13 @@ class SprinkleAStub extends TestSprinkle implements EventListenerRecipe
             PizzaArrived::class => [
                 HandlePizza::class,
                 [HandlePizza::class, 'onPizzaArrived'],
-            ]
+            ],
+            PizzaHasPineapple::class => [
+                HandlePizza::class,
+            ],
+            Pizza::class => [
+                [HandlePizza::class, 'isPizzaHot'],
+            ],
         ];
     }
 
@@ -140,8 +183,8 @@ class SprinkleBStub extends TestSprinkle implements EventListenerRecipe
                 LogPizza::class,
                 [LogPizza::class, 'onPizzaArrived'],
             ],
-            PizzaIsLate::class => [
-                [LogPizza::class, 'onPizzaLate'],
+            Pizza::class => [
+                [LogPizza::class, 'onPizza'],
             ],
         ];
     }
