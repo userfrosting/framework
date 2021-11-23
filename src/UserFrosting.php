@@ -11,6 +11,8 @@
 namespace UserFrosting;
 
 use Slim\App;
+use UserFrosting\Event\AppInitiatedEvent;
+use UserFrosting\Event\EventDispatcher;
 
 /**
  * UserFrosting Main Class.
@@ -34,12 +36,14 @@ final class UserFrosting extends Cupcake
 
     /**
      * Instantiate the Slim application.
-     *
-     * @return App
      */
-    protected function initiateApp(): App
+    protected function initiateApp(): void
     {
-        return $this->ci->get(App::class);
+        $this->app = $this->ci->get(App::class);
+
+        // Dispatch AppInitiatedEvent 
+        $eventDispatcher = $this->ci->get(EventDispatcher::class);
+        $eventDispatcher->dispatch(new AppInitiatedEvent);
     }
 
     /**

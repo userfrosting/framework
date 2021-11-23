@@ -55,7 +55,7 @@ abstract class Cupcake
         $this->ci->set(SprinkleManager::class, $this->sprinkleManager);
 
         // Create application
-        $this->app = $this->initiateApp();
+        $this->initiateApp();
     }
 
     /**
@@ -108,8 +108,6 @@ abstract class Cupcake
 
     /**
      * Instantiate the Slim or Symfony application and return it.
-     *
-     * @return mixed The created app
      */
-    abstract protected function initiateApp();
+    abstract protected function initiateApp(): void;
 }

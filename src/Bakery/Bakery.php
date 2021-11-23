@@ -12,6 +12,8 @@ namespace UserFrosting\Bakery;
 
 use Symfony\Component\Console\Application;
 use UserFrosting\Cupcake;
+use UserFrosting\Event\BakeryInitiatedEvent;
+use UserFrosting\Event\EventDispatcher;
 
 /**
  * Base class for UserFrosting Bakery CLI tools.
@@ -35,12 +37,14 @@ final class Bakery extends Cupcake
 
     /**
      * Create Symfony Console App.
-     *
-     * @return Application
      */
-    protected function initiateApp(): Application
+    protected function initiateApp(): void
     {
-        return $this->ci->get(Application::class);
+        $this->app = $this->ci->get(Application::class);
+
+        // Dispatch AppInitiatedEvent 
+        $eventDispatcher = $this->ci->get(EventDispatcher::class);
+        $eventDispatcher->dispatch(new BakeryInitiatedEvent);
     }
 
     /**
