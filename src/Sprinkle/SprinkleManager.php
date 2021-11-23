@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -22,8 +24,6 @@ use UserFrosting\ServicesProvider\ServicesProviderInterface;
  * Returns all the information about the loaded Sprinkles, defined in each SprinkleRecipe.
  * This class does not perform any action on the application itself, it only serves information.
  * All routes, commands or other registration process is handled elsewhere.
- *
- * @property string $mainSprinkle
  */
 class SprinkleManager
 {
@@ -102,7 +102,7 @@ class SprinkleManager
     }
 
     /**
-     * Returns a list of all PHP-DI services/container definition files, from all sprinkles.
+     * Returns a list of all PHP-DI services/container definitions, from all sprinkles.
      *
      * @return ServicesProviderInterface[] List of PHP files containing routes definitions.
      */
@@ -112,7 +112,7 @@ class SprinkleManager
 
         foreach ($this->sprinkles as $sprinkle) {
             foreach ($sprinkle::getServices() as $container) {
-                $containers = array_merge($this->validateServicesProvider($container)->register(), $containers);
+                $containers = array_merge($this->initServicesProvider($container)->register(), $containers);
             }
         }
 
@@ -174,13 +174,16 @@ class SprinkleManager
     }
 
     /**
-     * Validate container definition file exist and return it's array.
+     * Transform a class string into an instance of ServicesProviderInterface.
+     * Validate the class instance implements ServicesProviderInterface.
      *
-     * @param string $class
+     * @param string $class The class to instantiate.
      *
-     * @throws BadInstanceOfException
+     * @throws BadInstanceOfException id $class doesn't implement ServicesProviderInterface interface.
+     *
+     * @return ServicesProviderInterface
      */
-    protected function validateServicesProvider(string $class): ServicesProviderInterface
+    protected function initServicesProvider(string $class): ServicesProviderInterface
     {
         // Get class instance
         $instance = new $class();

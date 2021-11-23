@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -66,6 +68,7 @@ final class FrameworkService implements ServicesProviderInterface
      */
     protected function registerRoutes(SlimApp $app, RecipeExtensionLoader $extensionLoader): void
     {
+        /** @var RouteDefinitionInterface[] */
         $definitions = $extensionLoader->getInstances(
             method: 'getRoutes',
             extensionInterface: RouteDefinitionInterface::class
@@ -89,6 +92,7 @@ final class FrameworkService implements ServicesProviderInterface
         $app->addRoutingMiddleware();
 
         // Add the registered Middlewares
+        /** @var MiddlewareInterface[] */
         $middlewares = $extensionLoader->getObjects(
             method: 'getMiddlewares',
             extensionInterface: MiddlewareInterface::class
@@ -107,6 +111,7 @@ final class FrameworkService implements ServicesProviderInterface
      */
     protected function loadCommands(ConsoleApp $app, RecipeExtensionLoader $extensionLoader): void
     {
+        /** @var Command[] */
         $commands = $extensionLoader->getInstances(
             method: 'getBakeryCommands',
             extensionInterface: Command::class

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -39,11 +41,15 @@ final class UserFrosting extends Cupcake
      */
     protected function initiateApp(): void
     {
-        $this->app = $this->ci->get(App::class);
+        /** @var App */
+        $app = $this->ci->get(App::class);
 
         // Dispatch AppInitiatedEvent
+        /** @var EventDispatcher */
         $eventDispatcher = $this->ci->get(EventDispatcher::class);
         $eventDispatcher->dispatch(new AppInitiatedEvent());
+
+        $this->app = $app;
     }
 
     /**

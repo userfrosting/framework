@@ -33,6 +33,8 @@ final class SprinkleListenerProvider implements ListenerProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return callable[]
      */
     public function getListenersForEvent(object $event): iterable
     {
@@ -57,7 +59,7 @@ final class SprinkleListenerProvider implements ListenerProviderInterface
     {
         $listeners = [];
 
-        /** @var EventListenerRecipe $sprinkle */
+        /** @var \UserFrosting\Sprinkle\SprinkleRecipe $sprinkle */
         foreach ($this->sprinkleManager->getSprinkles() as $sprinkle) {
 
             // Skip any sprinkle recipe that doesn't implement recipe interface
