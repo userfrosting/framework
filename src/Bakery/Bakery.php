@@ -42,9 +42,9 @@ final class Bakery extends Cupcake
     {
         $this->app = $this->ci->get(Application::class);
 
-        // Dispatch AppInitiatedEvent 
+        // Dispatch AppInitiatedEvent
         $eventDispatcher = $this->ci->get(EventDispatcher::class);
-        $eventDispatcher->dispatch(new BakeryInitiatedEvent);
+        $eventDispatcher->dispatch(new BakeryInitiatedEvent());
     }
 
     /**

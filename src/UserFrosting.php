@@ -41,9 +41,9 @@ final class UserFrosting extends Cupcake
     {
         $this->app = $this->ci->get(App::class);
 
-        // Dispatch AppInitiatedEvent 
+        // Dispatch AppInitiatedEvent
         $eventDispatcher = $this->ci->get(EventDispatcher::class);
-        $eventDispatcher->dispatch(new AppInitiatedEvent);
+        $eventDispatcher->dispatch(new AppInitiatedEvent());
     }
 
     /**
