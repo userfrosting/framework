@@ -54,9 +54,6 @@ abstract class Cupcake
         // Register SprinkleManager into the CI
         $this->ci->set(SprinkleManager::class, $this->sprinkleManager);
 
-        // Set up facade reference to container.
-        Facade::setFacadeContainer($this->ci);
-
         // Create application
         $this->app = $this->initiateApp();
     }
