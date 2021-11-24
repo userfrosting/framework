@@ -46,7 +46,12 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
-        "phpunit/phpunit": "^9.5",        
+        "phpunit/phpunit": "^9.5",
+        "phpstan/phpstan": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-mockery": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "phpstan/phpstan-strict-rules": "^1.0",  
         "mockery/mockery": "^1.2",
         "victorjonsson/markdowndocs": "^1.3"
     },
