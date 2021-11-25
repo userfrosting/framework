@@ -8,17 +8,14 @@
  * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Exceptions;
+namespace UserFrosting\Support\Exception;
 
 use LogicException;
-use UserFrosting\Sprinkle\SprinkleRecipe;
 
 /**
- * SprinkleClassException.
- *
- * This exception should be thrown when a sprinkle class doesn't extend the right base class.
+ * Bad class exception. Used when a class doesn't implement the correct interface.
  */
-class SprinkleClassException extends LogicException
+class BadInstanceOfException extends LogicException
 {
-    protected $message = 'Sprinkle class must implement ' . SprinkleRecipe::class;
+    //
 }

@@ -15,7 +15,7 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use UserFrosting\Bakery\Bakery;
-use UserFrosting\Exceptions\BadInstanceOfException;
+use UserFrosting\Support\Exception\BadInstanceOfException;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
 /**
@@ -65,7 +65,7 @@ class BakeryTest extends TestCase
 
 class SprinkleStub extends TestSprinkle
 {
-    public static function getBakeryCommands(): array
+    public function getBakeryCommands(): array
     {
         return [
             CommandStub::class,
@@ -75,7 +75,7 @@ class SprinkleStub extends TestSprinkle
 
 class BadCommandSprinkleStub extends TestSprinkle
 {
-    public static function getBakeryCommands(): array
+    public function getBakeryCommands(): array
     {
         return [
             \stdClass::class,

@@ -8,15 +8,14 @@
  * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Exceptions;
+namespace UserFrosting\Support\Exception;
 
 use LogicException;
 
 /**
- * BakeryClassException.
- *
- * This exception should be thrown when a sprinkle class doesn't extend the right base class.
+ * Bad method name exception. Used when a method name is dynamically invoked,
+ * but the method does not exist on the object.
  */
-class BakeryClassException extends LogicException
+class BadMethodNameException extends LogicException
 {
 }

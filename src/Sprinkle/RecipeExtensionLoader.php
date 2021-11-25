@@ -13,8 +13,10 @@ declare(strict_types=1);
 namespace UserFrosting\Sprinkle;
 
 use DI\Container;
-use UserFrosting\Exceptions\BadInstanceOfException;
-use UserFrosting\Support\Exception\ClassNotFoundException;
+use InvalidArgumentException;
+use UserFrosting\Support\Exception\BadClassNameException;
+use UserFrosting\Support\Exception\BadInstanceOfException;
+use UserFrosting\Support\Exception\BadMethodNameException;
 
 /**
  * Class service used to load recipe extensions.
@@ -38,22 +40,50 @@ class RecipeExtensionLoader
      * @param string|null $extensionInterface Interface the registered must (optionally) implement.
      * @param bool        $throwBadInterface  If true, will throws BadInstanceOfException if Sprinkle Recipe don't implement $recipeInterface. Sprinkle will be ignored if false (default).
      *
-     * @throws ClassNotFoundException If a $class is not found.
+     * @throws BadClassNameException  If a $class is not found.
      * @throws BadInstanceOfException If a $class doesn't implement the $interface.
      *
-     * @return mixed[]
+     * @return object[]
      */
-    public function getInstances(string $method, ?string $recipeInterface = null, ?string $extensionInterface = null, bool $throwBadInterface = false): array
-    {
+    public function getInstances(
+        string $method,
+        ?string $recipeInterface = null,
+        ?string $extensionInterface = null,
+        bool $throwBadInterface = false
+    ): array {
         $instances = [];
 
         foreach ($this->sprinkleManager->getSprinkles() as $sprinkle) {
             if (!$this->validateClass($sprinkle, $recipeInterface, $throwBadInterface)) {
                 continue;
             }
-            foreach ($sprinkle::$method() as $extension) {
+
+            if (!method_exists($sprinkle, $method)) {
+                if ($throwBadInterface) {
+                    throw new BadMethodNameException("Sprinkle Recipe doesn't have $method");
+                } else {
+                    continue;
+                }
+            }
+
+            // @phpstan-ignore-next-line (False negative, checked above)
+            $extensions = $sprinkle->$method();
+
+            // Extensions must be iterable
+            if (!is_iterable($extensions)) {
+                if ($throwBadInterface) {
+                    throw new InvalidArgumentException("Sprinkle Recipe '$method' doesn't return iterable");
+                } else {
+                    continue;
+                }
+            }
+
+            foreach ($extensions as $extension) {
                 $this->validateClass($extension, $extensionInterface, true);
-                $instances[] = $this->ci->get($extension);
+
+                /** @var object $instance */
+                $instance = $this->ci->get($extension);
+                $instances[] = $instance;
             }
         }
 
@@ -69,23 +99,38 @@ class RecipeExtensionLoader
      * @param string|null $extensionInterface Interface the object must (optionally) implement.
      * @param bool        $throwBadInterface  If true, will throws BadInstanceOfException if Sprinkle Recipe don't implement $recipeInterface. Sprinkle will be ignored if false (default).
      *
-     * @throws ClassNotFoundException If sprinkle $class is not found.
+     * @throws BadClassNameException  If sprinkle $class is not found.
      * @throws BadInstanceOfException If sprinkle $class doesn't implement the $interface.
      *
      * @return mixed[]
      */
-    public function getObjects(string $method, ?string $recipeInterface = null, ?string $extensionInterface = null, bool $throwBadInterface = false): array
-    {
+    public function getObjects(
+        string $method,
+        ?string $recipeInterface = null,
+        ?string $extensionInterface = null,
+        bool $throwBadInterface = false
+    ): array {
         $collection = [];
 
         foreach ($this->sprinkleManager->getSprinkles() as $sprinkle) {
             if (!$this->validateClass($sprinkle, $recipeInterface, $throwBadInterface)) {
                 continue;
             }
-            $objects = $sprinkle::$method();
+
+            if (!method_exists($sprinkle, $method)) {
+                if ($throwBadInterface) {
+                    throw new BadMethodNameException("Sprinkle Recipe doesn't have $method");
+                } else {
+                    continue;
+                }
+            }
+
+            // @phpstan-ignore-next-line (False negative, checked above)
+            $objects = $sprinkle->$method();
+
             foreach ($objects as $object) {
                 if (!is_null($extensionInterface) && !is_subclass_of($object, $extensionInterface)) {
-                    throw new BadInstanceOfException('Object must be instance of ' . $extensionInterface);
+                    throw new BadInstanceOfException("Object must be instance of $extensionInterface");
                 }
 
                 $collection[] = $object;
@@ -98,19 +143,22 @@ class RecipeExtensionLoader
     /**
      * Validate the class implements the right interface.
      *
-     * @param string      $class
-     * @param string|null $interface
-     * @param bool        $throwBadInterface Throws BadInstanceOfException if true, otherwise return false.
+     * @param string|object $class
+     * @param string|null   $interface
+     * @param bool          $throwBadInterface Throws BadInstanceOfException if true, otherwise return false.
      *
-     * @throws ClassNotFoundException If $class is not found.
+     * @throws BadClassNameException  If $class is not found.
      * @throws BadInstanceOfException If $class doesn't implement $interface.
      *
      * @return bool Return true if ok, throws error otherwise.
      */
-    public function validateClass(string $class, ?string $interface = null, bool $throwBadInterface = false): bool
-    {
-        if (!class_exists($class)) {
-            throw new ClassNotFoundException('Class `' . $class . '` not found.');
+    public function validateClass(
+        string|object $class,
+        ?string $interface = null,
+        bool $throwBadInterface = false
+    ): bool {
+        if (is_string($class) && !class_exists($class)) {
+            throw new BadClassNameException("Class `$class` not found.");
         }
 
         if (is_null($interface)) {
@@ -119,7 +167,7 @@ class RecipeExtensionLoader
 
         if (!is_subclass_of($class, $interface)) {
             if ($throwBadInterface) {
-                throw new BadInstanceOfException('Class `' . $class . '` must be instance of ' . $interface);
+                throw new BadInstanceOfException("Class must be instance of $interface");
             } else {
                 return false;
             }

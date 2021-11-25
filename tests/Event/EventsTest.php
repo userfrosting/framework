@@ -181,7 +181,7 @@ class SprinkleAStub extends TestSprinkle implements EventListenerRecipe
         ];
     }
 
-    public static function getSprinkles(): array
+    public function getSprinkles(): array
     {
         return [
             SprinkleBStub::class,

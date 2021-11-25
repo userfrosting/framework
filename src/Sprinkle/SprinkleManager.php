@@ -12,10 +12,9 @@ declare(strict_types=1);
 
 namespace UserFrosting\Sprinkle;
 
-use ReflectionClass;
-use UserFrosting\Exceptions\BadInstanceOfException;
-use UserFrosting\Exceptions\SprinkleClassException;
 use UserFrosting\ServicesProvider\ServicesProviderInterface;
+use UserFrosting\Support\Exception\BadClassNameException;
+use UserFrosting\Support\Exception\BadInstanceOfException;
 
 /**
  * Sprinkle Manager.
@@ -30,21 +29,21 @@ class SprinkleManager
     /**
      * @var SprinkleRecipe[] List of available sprinkles
      */
-    protected $sprinkles = [];
+    protected array $sprinkles = [];
 
     /**
      * @var SprinkleRecipe Main sprinkle
      */
-    protected $mainSprinkle;
+    protected SprinkleRecipe $mainSprinkle;
 
     /**
      * Load sprinkles on construction.
      *
-     * @param SprinkleRecipe $mainSprinkle
+     * @param string|SprinkleRecipe $mainSprinkle
      */
-    public function __construct($mainSprinkle)
+    public function __construct(string|SprinkleRecipe $mainSprinkle)
     {
-        $this->mainSprinkle = $mainSprinkle;
+        $this->mainSprinkle = $this->validateClassIsRecipe($mainSprinkle);
         $this->loadSprinkles();
     }
 
@@ -71,7 +70,7 @@ class SprinkleManager
      *
      * @return SprinkleRecipe
      */
-    public function getMainSprinkle()
+    public function getMainSprinkle(): SprinkleRecipe
     {
         return $this->mainSprinkle;
     }
@@ -84,7 +83,7 @@ class SprinkleManager
     public function getSprinklesNames(): array
     {
         return array_map(function ($sprinkle) {
-            return $sprinkle::getName();
+            return $sprinkle->getName();
         }, $this->sprinkles);
     }
 
@@ -96,23 +95,24 @@ class SprinkleManager
      *
      * @return bool
      */
-    public function isAvailable(string $sprinkle): bool
-    {
-        return in_array($sprinkle, $this->sprinkles);
-    }
+    // TODO
+    // public function isAvailable(string $sprinkle): bool
+    // {
+    //     return in_array($sprinkle, $this->sprinkles);
+    // }
 
     /**
      * Returns a list of all PHP-DI services/container definitions, from all sprinkles.
      *
-     * @return ServicesProviderInterface[] List of PHP files containing routes definitions.
+     * @return mixed[] PHP-DI definitions.
      */
     public function getServicesDefinitions(): array
     {
         $containers = [];
 
         foreach ($this->sprinkles as $sprinkle) {
-            foreach ($sprinkle::getServices() as $container) {
-                $containers = array_merge($this->initServicesProvider($container)->register(), $containers);
+            foreach ($sprinkle->getServices() as $provider) {
+                $containers = array_merge($this->validateClassIsServicesProvider($provider)->register(), $containers);
             }
         }
 
@@ -122,23 +122,17 @@ class SprinkleManager
     /**
      * Return a list for the specified sprinkle and it's dependent, recursively.
      *
-     * @param string $sprinkle Sprinkle to load, and it's dependent.
+     * @param SprinkleRecipe $sprinkle Sprinkle to load, and it's dependent.
      *
      * @return SprinkleRecipe[]
      */
-    protected function getDependentSprinkles(string $sprinkle): array
+    protected function getDependentSprinkles(SprinkleRecipe $sprinkle): array
     {
-        // Validate class
-        if (!$this->validateClassIsSprinkleRecipe($sprinkle)) {
-            $e = new SprinkleClassException();
-
-            throw $e;
-        }
-
         $sprinkles = [];
 
         // Merge dependent sprinkles
-        foreach ($sprinkle::getSprinkles() as $dependent) {
+        foreach ($sprinkle->getSprinkles() as $dependent) {
+            $dependent = $this->validateClassIsRecipe($dependent);
             $sprinkles = array_merge($sprinkles, $this->getDependentSprinkles($dependent));
         }
 
@@ -146,51 +140,71 @@ class SprinkleManager
         $sprinkles[] = $sprinkle;
 
         // Remove duplicate and re-index
-        $sprinkles = array_unique($sprinkles);
+        // $sprinkles = array_unique($sprinkles); // TODO
         $sprinkles = array_values($sprinkles);
 
         return $sprinkles;
     }
 
     /**
-     * Validate the class implements SprinkleRecipe.
+     * Instantiate a class string into an instance of SprinkleRecipe.
+     * Provides flexibility, allowing string and object to be referenced.
      *
-     * @param string $class
+     * @param string|SprinkleRecipe $class
      *
-     * @return bool True/False if class implements SprinkleRecipe
+     * @throws BadClassNameException  If $class is not found
+     * @throws BadInstanceOfException If $class doesn't implement SprinkleRecipe interface.
+     *
+     * @return SprinkleRecipe
      */
-    protected function validateClassIsSprinkleRecipe(string $class): bool
+    protected function validateClassIsRecipe(string|SprinkleRecipe $class): SprinkleRecipe
     {
+        if (!is_string($class)) {
+            return $class;
+        }
+
         if (!class_exists($class)) {
-            return false;
+            throw new BadClassNameException("Class `$class` not found");
         }
 
-        $class = new ReflectionClass($class);
-        if ($class->implementsInterface(SprinkleRecipe::class)) {
-            return true;
+        // Get class instance
+        $instance = new $class();
+
+        // Class must be an instance of SprinkleRecipe
+        if (!$instance instanceof SprinkleRecipe) {
+            throw new BadInstanceOfException("Class $class is not a valid SprinkleRecipe");
         }
 
-        return false;
+        return $instance;
     }
 
     /**
-     * Transform a class string into an instance of ServicesProviderInterface.
-     * Validate the class instance implements ServicesProviderInterface.
+     * Instantiate a class string into an instance of ServicesProviderInterface.
+     * Provides flexibility, allowing string and object to be referenced.
      *
-     * @param string $class The class to instantiate.
+     * @param string|ServicesProviderInterface $class
      *
-     * @throws BadInstanceOfException id $class doesn't implement ServicesProviderInterface interface.
+     * @throws BadClassNameException  If $class is not found
+     * @throws BadInstanceOfException If $class doesn't implement ServicesProviderInterface interface.
      *
      * @return ServicesProviderInterface
      */
-    protected function initServicesProvider(string $class): ServicesProviderInterface
+    protected function validateClassIsServicesProvider(string|ServicesProviderInterface $class): ServicesProviderInterface
     {
+        if (!is_string($class)) {
+            return $class;
+        }
+
+        if (!class_exists($class)) {
+            throw new BadClassNameException("Class `$class` not found");
+        }
+
         // Get class instance
         $instance = new $class();
 
         // Class must be an instance of ServicesProviderInterface
         if (!$instance instanceof ServicesProviderInterface) {
-            throw new BadInstanceOfException('Services Provider `' . $instance::class . '` must be instance of ' . ServicesProviderInterface::class);
+            throw new BadInstanceOfException("$class is not a valid ServicesProviderInterface");
         }
 
         return $instance;

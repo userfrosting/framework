@@ -12,29 +12,41 @@ namespace UserFrosting\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
-use UserFrosting\Exceptions\BadInstanceOfException;
-use UserFrosting\Exceptions\SprinkleClassException;
 use UserFrosting\Sprinkle\SprinkleManager;
+use UserFrosting\Support\Exception\BadClassNameException;
+use UserFrosting\Support\Exception\BadInstanceOfException;
+use UserFrosting\Tests\TestSprinkle\TestServicesProviders;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
 class SprinkleManagerTest extends TestCase
 {
     /**
-     * getSprinkles
+     * getSprinkles|getMainSprinkle
      */
     public function testGetSprinklesWithNoDependent(): void
     {
         $manager = new SprinkleManager(CoreStub::class);
-        $this->assertSame([CoreStub::class], $manager->getSprinkles());
-        $this->assertSame('Test Sprinkle', $manager->getSprinkles()[0]::getName());
+        $sprinkles = $manager->getSprinkles();
+
+        $this->assertCount(1, $sprinkles);
+        $this->assertContainsOnlyInstancesOf(CoreStub::class, $sprinkles);
+        $this->assertSame('Test Sprinkle', $sprinkles[0]->getName());
 
         // Test getMainSprinkle while at it
-        $this->assertSame(CoreStub::class, $manager->getMainSprinkle());
-        $this->assertSame('Test Sprinkle', $manager->getMainSprinkle()::getName());
+        $this->assertInstanceOf(CoreStub::class, $manager->getMainSprinkle());
+        $this->assertSame('Test Sprinkle', $manager->getMainSprinkle()->getName());
+    }
 
-        // Test isAvaialable while at it
-        $this->assertTrue($manager->isAvailable(CoreStub::class));
-        $this->assertFalse($manager->isAvailable(AdminStub::class));
+    /**
+     * @depends testGetSprinklesWithNoDependent
+     */
+    public function testGetSprinklesWithNoDependentAndObject(): void
+    {
+        $manager = new SprinkleManager(new CoreStub());
+        $sprinkles = $manager->getSprinkles();
+
+        $this->assertCount(1, $sprinkles);
+        $this->assertContainsOnlyInstancesOf(CoreStub::class, $sprinkles);
     }
 
     /**
@@ -43,14 +55,15 @@ class SprinkleManagerTest extends TestCase
     public function testGetSprinklesWithManyDependent(): void
     {
         $manager = new SprinkleManager(MainStub::class);
-        $this->assertCount(4, $manager->getSprinkles());
-        $this->assertSame([
-            CoreStub::class,
-            AdminStub::class,
-            AccountStub::class,
-            MainStub::class,
-        ], $manager->getSprinkles());
-        $this->assertSame(MainStub::class, $manager->getMainSprinkle());
+        $sprinkles = $manager->getSprinkles();
+
+        // TODO : Change to key array comparison once enabled
+        $this->assertCount(4, $sprinkles);
+        $this->assertInstanceOf(CoreStub::class, $sprinkles[0]);
+        $this->assertInstanceOf(AdminStub::class, $sprinkles[1]);
+        $this->assertInstanceOf(AccountStub::class, $sprinkles[2]);
+        $this->assertInstanceOf(MainStub::class, $sprinkles[3]);
+        $this->assertInstanceOf(MainStub::class, $manager->getMainSprinkle());
 
         // Test getSprinkleNames while at it
         $this->assertSame([
@@ -67,42 +80,47 @@ class SprinkleManagerTest extends TestCase
     public function testGetSprinklesWithNestedDependent(): void
     {
         $manager = new SprinkleManager(MainNestedStub::class);
-        $this->assertCount(4, $manager->getSprinkles());
-        $this->assertSame([
-            CoreStub::class,
-            AccountStub::class,
-            AdminNestedStub::class,
-            MainNestedStub::class,
-        ], $manager->getSprinkles());
+        $sprinkles = $manager->getSprinkles();
+
+        // TODO : Change to key array comparison once enabled
+        $this->assertCount(4, $sprinkles);
+        $this->assertInstanceOf(CoreStub::class, $sprinkles[0]);
+        $this->assertInstanceOf(AccountStub::class, $sprinkles[1]);
+        $this->assertInstanceOf(AdminNestedStub::class, $sprinkles[2]);
+        $this->assertInstanceOf(MainNestedStub::class, $sprinkles[3]);
     }
 
     /**
      * @depends testGetSprinklesWithNestedDependent
      */
-    public function testGetSprinklesWithDuplicateSprinkles(): void
+    // TODO : Make list <:class => instance>
+    /*public function testGetSprinklesWithDuplicateSprinkles(): void
     {
         $manager = new SprinkleManager(MainDuplicateStub::class);
-        $this->assertCount(4, $manager->getSprinkles());
-        $this->assertSame([
-            CoreStub::class,
-            AccountStub::class,
-            AdminNestedStub::class,
-            MainDuplicateStub::class,
-        ], $manager->getSprinkles());
-    }
+        $sprinkles = $manager->getSprinkles();
+
+        // TODO : Change to key array comparison once enabled
+        $this->assertCount(4, $sprinkles);
+        $this->assertInstanceOf(CoreStub::class, $sprinkles[0]);
+        $this->assertInstanceOf(AccountStub::class, $sprinkles[1]);
+        $this->assertInstanceOf(AdminNestedStub::class, $sprinkles[2]);
+        $this->assertInstanceOf(MainDuplicateStub::class, $sprinkles[3]);
+    }*/
 
     /**
      * __construct & Exceptions
      */
     public function testConstructorWithBadSprinkleClass(): void
     {
-        $this->expectException(SprinkleClassException::class);
+        $this->expectException(BadInstanceOfException::class);
         $manager = new SprinkleManager(\stdClass::class);
     }
 
     public function testConstructorWithNonExistingClass(): void
     {
-        $this->expectException(SprinkleClassException::class);
+        $this->expectException(BadClassNameException::class);
+
+        // @phpstan-ignore-next-line
         $manager = new SprinkleManager(FooBar::class);
     }
 
@@ -112,7 +130,7 @@ class SprinkleManagerTest extends TestCase
      */
     public function testConstructorWithBadSprinkleClassInDependent(): void
     {
-        $this->expectException(SprinkleClassException::class);
+        $this->expectException(BadInstanceOfException::class);
         $manager = new SprinkleManager(NotSprinkleStub::class);
     }
 
@@ -124,7 +142,6 @@ class SprinkleManagerTest extends TestCase
         $manager = new SprinkleManager(TestSprinkle::class);
         $services = $manager->getServicesDefinitions();
 
-        $this->assertIsArray($services);
         $this->assertCount(1, $services);
         $this->assertArrayHasKey('testMessageGenerator', $services);
     }
@@ -138,6 +155,28 @@ class SprinkleManagerTest extends TestCase
         $this->expectException(BadInstanceOfException::class);
         $manager->getServicesDefinitions();
     }
+
+    /**
+     * @depends testGetServicesDefinitions
+     */
+    public function testGetServicesDefinitionsWithNotFound(): void
+    {
+        $manager = new SprinkleManager(NotFoundStub::class);
+        $this->expectException(BadClassNameException::class);
+        $manager->getServicesDefinitions();
+    }
+
+    /**
+     * @depends testGetServicesDefinitions
+     */
+    public function testGetServicesDefinitionsWithObject(): void
+    {
+        $manager = new SprinkleManager(ServiceSprinkleStub::class);
+        $services = $manager->getServicesDefinitions();
+
+        $this->assertCount(1, $services);
+        $this->assertArrayHasKey('testMessageGenerator', $services);
+    }
 }
 
 class CoreStub extends TestSprinkle
@@ -146,7 +185,7 @@ class CoreStub extends TestSprinkle
 
 class AdminStub extends TestSprinkle
 {
-    public static function getBakeryCommands(): array
+    public function getBakeryCommands(): array
     {
         return [
             CommandStub::class,
@@ -156,7 +195,7 @@ class AdminStub extends TestSprinkle
 
 class AdminNestedStub extends TestSprinkle
 {
-    public static function getSprinkles(): array
+    public function getSprinkles(): array
     {
         return [
             AccountStub::class,
@@ -170,12 +209,12 @@ class AccountStub extends TestSprinkle
 
 class MainStub extends TestSprinkle
 {
-    public static function getName(): string
+    public function getName(): string
     {
         return 'Main Sprinkle';
     }
 
-    public static function getSprinkles(): array
+    public function getSprinkles(): array
     {
         return [
             CoreStub::class,
@@ -187,7 +226,7 @@ class MainStub extends TestSprinkle
 
 class MainNestedStub extends TestSprinkle
 {
-    public static function getSprinkles(): array
+    public function getSprinkles(): array
     {
         return [
             CoreStub::class,
@@ -198,7 +237,7 @@ class MainNestedStub extends TestSprinkle
 
 class MainDuplicateStub extends TestSprinkle
 {
-    public static function getSprinkles(): array
+    public function getSprinkles(): array
     {
         return [
             CoreStub::class,
@@ -210,32 +249,30 @@ class MainDuplicateStub extends TestSprinkle
 
 class NotSprinkleStub extends TestSprinkle
 {
-    public static function getSprinkles(): array
+    public function getSprinkles(): array
     {
-        return [
-            \stdClass::class,
-        ];
+        return [\stdClass::class];
     }
 }
 
 class BadInstanceOfSprinkleStub extends TestSprinkle
 {
-    public static function getRoutes(): array
+    public function getRoutes(): array
     {
         return [\stdClass::class];
     }
 
-    public static function getServices(): array
+    public function getServices(): array
     {
         return [\stdClass::class];
     }
 
-    public static function getBakeryCommands(): array
+    public function getBakeryCommands(): array
     {
         return [\stdClass::class];
     }
 
-    public static function getMiddlewares(): array
+    public function getMiddlewares(): array
     {
         return [\stdClass::class];
     }
@@ -243,19 +280,38 @@ class BadInstanceOfSprinkleStub extends TestSprinkle
 
 class NotFoundStub extends TestSprinkle
 {
-    public static function getBakeryCommands(): array
+    public function getServices(): array
     {
+        // @phpstan-ignore-next-line
         return [NotFound::class];
     }
 
-    public static function getMiddlewares(): array
+    public function getBakeryCommands(): array
     {
+        // @phpstan-ignore-next-line
         return [NotFound::class];
+    }
+
+    public function getMiddlewares(): array
+    {
+        // @phpstan-ignore-next-line
+        return [NotFound::class];
+    }
+}
+
+class ServiceSprinkleStub extends TestSprinkle
+{
+    public function getServices(): array
+    {
+        return [
+            new TestServicesProviders(),
+        ];
     }
 }
 
 class CommandStub extends Command
 {
+    // @phpstan-ignore-next-line
     protected function configure()
     {
         $this->setName('stub');

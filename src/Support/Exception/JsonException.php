@@ -10,13 +10,11 @@
 
 namespace UserFrosting\Support\Exception;
 
+use RuntimeException;
+
 /**
- * JsonException.
- *
  * This exception should be thrown when there was a problem processing a JSON document.
- *
- * @author Alexander Weissman (https://alexanderweissman.com)
  */
-class JsonException extends \RuntimeException
+class JsonException extends RuntimeException
 {
 }
