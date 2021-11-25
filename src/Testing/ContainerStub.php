@@ -24,7 +24,7 @@ class ContainerStub
      *
      * @codeCoverageIgnore
      *
-     * @param array $definitions (default: []). See https://php-di.org/doc/php-definitions.html
+     * @param mixed[] $definitions (default: []). See https://php-di.org/doc/php-definitions.html
      *
      * @return Container
      */

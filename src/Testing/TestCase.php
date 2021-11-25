@@ -29,8 +29,6 @@ class TestCase extends BaseTestCase
 {
     /**
      * The global container object, which holds all services.
-     *
-     * @var Container
      */
     protected Container $ci;
 
@@ -78,13 +76,16 @@ class TestCase extends BaseTestCase
      *
      * @param string              $method       The HTTP method
      * @param string|UriInterface $uri          The URI
-     * @param array               $serverParams The server parameters
+     * @param mixed[]             $serverParams The server parameters
      *
      * @return ServerRequestInterface
      * @codeCoverageIgnore
      */
-    protected function createRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
-    {
+    protected function createRequest(
+        string $method,
+        string|UriInterface $uri,
+        array $serverParams = []
+    ): ServerRequestInterface {
         $request = new ServerRequestFactory();
 
         return $request->createServerRequest($method, $uri, $serverParams);
@@ -95,13 +96,16 @@ class TestCase extends BaseTestCase
      *
      * @param string              $method The HTTP method
      * @param string|UriInterface $uri    The URI
-     * @param array|null          $data   The json data
+     * @param mixed[]|null        $data   The json data
      *
      * @return ServerRequestInterface
      * @codeCoverageIgnore
      */
-    protected function createJsonRequest(string $method, $uri, array $data = null): ServerRequestInterface
-    {
+    protected function createJsonRequest(
+        string $method,
+        string|UriInterface $uri,
+        ?array $data = null
+    ): ServerRequestInterface {
         $request = $this->createRequest($method, $uri);
 
         if ($data !== null) {
@@ -114,12 +118,12 @@ class TestCase extends BaseTestCase
     /**
      * Handle request and returns the response.
      *
-     * @param RequestInterface $request
+     * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
      * @codeCoverageIgnore
      */
-    protected function handleRequest(RequestInterface $request): ResponseInterface
+    protected function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
         return $this->app->handle($request);
     }
@@ -139,7 +143,7 @@ class TestCase extends BaseTestCase
     /**
      * Verify that the given array is an exact match for the JSON returned.
      *
-     * @param array             $expected The expected array
+     * @param mixed[]           $expected The expected array
      * @param ResponseInterface $response The response
      *
      * @throws JsonException

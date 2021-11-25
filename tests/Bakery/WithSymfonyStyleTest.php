@@ -39,6 +39,7 @@ class WithSymfonyStyleStub extends Command
 {
     use WithSymfonyStyle;
 
+    // @phpstan-ignore-next-line
     protected function configure()
     {
         $this->setName('WithSymfonyStyleStub');
@@ -47,12 +48,13 @@ class WithSymfonyStyleStub extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $ask = $this->io->ask('String');
-        $this->io->write($ask);
+        $this->io->write(strval($ask));
 
         return self::SUCCESS;
     }
 
-    public function getIO(): SymfonyStyle
+    // @phpstan-ignore-next-line (Done on purpose)
+    public function getIO()
     {
         return $this->io;
     }
