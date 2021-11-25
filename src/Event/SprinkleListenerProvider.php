@@ -67,7 +67,7 @@ final class SprinkleListenerProvider implements ListenerProviderInterface
                 continue;
             }
 
-            $sprinkleListeners = $sprinkle::getEventListeners();
+            $sprinkleListeners = $sprinkle->getEventListeners();
             $listeners = array_merge_recursive($listeners, $sprinkleListeners);
         }
 

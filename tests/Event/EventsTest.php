@@ -165,7 +165,7 @@ class LogPizza
 /* Stub Sprinkle A */
 class SprinkleAStub extends TestSprinkle implements EventListenerRecipe
 {
-    public static function getEventListeners(): array
+    public function getEventListeners(): array
     {
         return [
             PizzaArrived::class => [
@@ -193,7 +193,7 @@ class SprinkleAStub extends TestSprinkle implements EventListenerRecipe
 /* Stub Sprinkle B */
 class SprinkleBStub extends TestSprinkle implements EventListenerRecipe
 {
-    public static function getEventListeners(): array
+    public function getEventListeners(): array
     {
         return [
             PizzaArrived::class => [
@@ -211,10 +211,11 @@ class SprinkleBStub extends TestSprinkle implements EventListenerRecipe
 /* Stub Sprinkle C => Not implementing EventListenerRecipe, won' be picked up */
 class SprinkleCStub extends TestSprinkle
 {
-    public static function getEventListeners(): array
+    // @phpstan-ignore-next-line
+    public function getEventListeners(): array
     {
         return [
-            PizzaIsLate::class => [
+            Pizza::class => [
                 HandlePizza::class,
                 [LogPizza::class, 'onPizzaLate'],
             ],
