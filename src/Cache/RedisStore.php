@@ -14,7 +14,7 @@ use Illuminate\Container\Container;
 use Illuminate\Redis\RedisManager;
 
 /**
- * Setup a cache instance in a defined namespace using the `redis` driver
+ * Setup a cache instance in a defined namespace using the `redis` driver.
  */
 class RedisStore extends ArrayStore
 {
