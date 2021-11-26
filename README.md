@@ -10,7 +10,7 @@
 | ------ |:-------:|:-----:|:--------:|:-----:|
 | [master][framework] | ![][framework-version] | [![][framework-master-build]][framework-travis] | [![][framework-master-codecov]][framework-codecov] | [![][framework-style-master]][framework-style] |
 | [develop][framework-develop] | ![][framework-version-develop] | [![][framework-develop-build]][framework-travis] | [![][framework-develop-codecov]][framework-codecov] | [![][framework-style-develop]][framework-style] |
-| [develop-5.0][framework-develop5] | ![][framework-version-develop5] | [![][framework-develop5-build]][framework-travis] | [![][framework-develop5-codecov]][framework-develop5] | [![][framework-style-develop5]][framework-style] |
+| [develop-5.0][framework-develop5] | ![][framework-version-develop5] | [![][framework-develop5-build]][framework-travis] | [![][framework-develop5-codecov]][framework-codecov] | [![][framework-style-develop5]][framework-style] |
 
 <!-- Links -->
 [framework]: https://github.com/userfrosting/framework
