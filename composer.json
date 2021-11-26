@@ -56,9 +56,6 @@
         "victorjonsson/markdowndocs": "^1.3"
     },
     "autoload": {
-        "files" : [
-            "src/defines.php"
-        ],
         "psr-4": {
             "UserFrosting\\": "src"
         }

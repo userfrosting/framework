@@ -46,7 +46,8 @@ final class FrameworkService implements ServicesProviderInterface
 
             // Symfony Console Application
             ConsoleApp::class => function (RecipeExtensionLoader $extensionLoader) {
-                $app = new ConsoleApp('UserFrosting Bakery', \UserFrosting\VERSION);
+                $version = (string) \Composer\InstalledVersions::getPrettyVersion('userfrosting/framework');
+                $app = new ConsoleApp('UserFrosting Bakery', $version);
 
                 // Register commands
                 $this->loadCommands($app, $extensionLoader);
