@@ -42,11 +42,17 @@ class SprinkleManagerTest extends TestCase
      */
     public function testGetSprinklesWithNoDependentAndObject(): void
     {
-        $manager = new SprinkleManager(new CoreStub());
+        $core = new CoreStub();
+        $manager = new SprinkleManager($core);
         $sprinkles = $manager->getSprinkles();
 
         $this->assertCount(1, $sprinkles);
         $this->assertContainsOnlyInstancesOf(CoreStub::class, $sprinkles);
+
+        // Test isAvailable while at it
+        $this->assertTrue($manager->isAvailable($core));
+        $this->assertTrue($manager->isAvailable(CoreStub::class));
+        $this->assertFalse($manager->isAvailable(AdminStub::class));
     }
 
     /**

@@ -88,18 +88,21 @@ class SprinkleManager
     }
 
     /**
-     * Return if a Sprinkle is available
+     * Return if a Sprinkle class is available.
      * Can be used by other Sprinkles to test if their dependencies are met.
      *
-     * @param string $sprinkle The class of the Sprinkle
+     * @param string|SprinkleRecipe $sprinkle The class of the Sprinkle
      *
      * @return bool
      */
-    // TODO
-    // public function isAvailable(string $sprinkle): bool
-    // {
-    //     return in_array($sprinkle, $this->sprinkles);
-    // }
+    public function isAvailable(string|SprinkleRecipe $sprinkle): bool
+    {
+        if (!is_string($sprinkle)) {
+            $sprinkle = $sprinkle::class;
+        }
+
+        return array_key_exists($sprinkle, $this->sprinkles);
+    }
 
     /**
      * Returns a list of all PHP-DI services/container definitions, from all sprinkles.
