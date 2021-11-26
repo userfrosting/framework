@@ -137,11 +137,7 @@ class SprinkleManager
         }
 
         // Add top sprinkle to return
-        $sprinkles[] = $sprinkle;
-
-        // Remove duplicate and re-index
-        // $sprinkles = array_unique($sprinkles); // TODO
-        $sprinkles = array_values($sprinkles);
+        $sprinkles[$sprinkle::class] = $sprinkle;
 
         return $sprinkles;
     }

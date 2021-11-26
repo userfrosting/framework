@@ -30,7 +30,7 @@ class SprinkleManagerTest extends TestCase
 
         $this->assertCount(1, $sprinkles);
         $this->assertContainsOnlyInstancesOf(CoreStub::class, $sprinkles);
-        $this->assertSame('Test Sprinkle', $sprinkles[0]->getName());
+        $this->assertSame('Test Sprinkle', $sprinkles[CoreStub::class]->getName());
 
         // Test getMainSprinkle while at it
         $this->assertInstanceOf(CoreStub::class, $manager->getMainSprinkle());
@@ -57,20 +57,24 @@ class SprinkleManagerTest extends TestCase
         $manager = new SprinkleManager(MainStub::class);
         $sprinkles = $manager->getSprinkles();
 
-        // TODO : Change to key array comparison once enabled
-        $this->assertCount(4, $sprinkles);
-        $this->assertInstanceOf(CoreStub::class, $sprinkles[0]);
-        $this->assertInstanceOf(AdminStub::class, $sprinkles[1]);
-        $this->assertInstanceOf(AccountStub::class, $sprinkles[2]);
-        $this->assertInstanceOf(MainStub::class, $sprinkles[3]);
+        $this->assertSame([
+            CoreStub::class,
+            AdminStub::class,
+            AccountStub::class,
+            MainStub::class,
+        ], array_keys($sprinkles));
+        $this->assertInstanceOf(CoreStub::class, array_shift($sprinkles));
+        $this->assertInstanceOf(AdminStub::class, array_shift($sprinkles));
+        $this->assertInstanceOf(AccountStub::class, array_shift($sprinkles));
+        $this->assertInstanceOf(MainStub::class, array_shift($sprinkles));
         $this->assertInstanceOf(MainStub::class, $manager->getMainSprinkle());
 
         // Test getSprinkleNames while at it
         $this->assertSame([
-            'Test Sprinkle',
-            'Test Sprinkle',
-            'Test Sprinkle',
-            'Main Sprinkle',
+            CoreStub::class    => 'Test Sprinkle',
+            AdminStub::class   => 'Test Sprinkle',
+            AccountStub::class => 'Test Sprinkle',
+            MainStub::class    => 'Main Sprinkle',
         ], $manager->getSprinklesNames());
     }
 
@@ -82,30 +86,27 @@ class SprinkleManagerTest extends TestCase
         $manager = new SprinkleManager(MainNestedStub::class);
         $sprinkles = $manager->getSprinkles();
 
-        // TODO : Change to key array comparison once enabled
         $this->assertCount(4, $sprinkles);
-        $this->assertInstanceOf(CoreStub::class, $sprinkles[0]);
-        $this->assertInstanceOf(AccountStub::class, $sprinkles[1]);
-        $this->assertInstanceOf(AdminNestedStub::class, $sprinkles[2]);
-        $this->assertInstanceOf(MainNestedStub::class, $sprinkles[3]);
+        $this->assertInstanceOf(CoreStub::class, array_shift($sprinkles));
+        $this->assertInstanceOf(AccountStub::class, array_shift($sprinkles));
+        $this->assertInstanceOf(AdminNestedStub::class, array_shift($sprinkles));
+        $this->assertInstanceOf(MainNestedStub::class, array_shift($sprinkles));
     }
 
     /**
      * @depends testGetSprinklesWithNestedDependent
      */
-    // TODO : Make list <:class => instance>
-    /*public function testGetSprinklesWithDuplicateSprinkles(): void
+    public function testGetSprinklesWithDuplicateSprinkles(): void
     {
         $manager = new SprinkleManager(MainDuplicateStub::class);
         $sprinkles = $manager->getSprinkles();
 
-        // TODO : Change to key array comparison once enabled
         $this->assertCount(4, $sprinkles);
-        $this->assertInstanceOf(CoreStub::class, $sprinkles[0]);
-        $this->assertInstanceOf(AccountStub::class, $sprinkles[1]);
-        $this->assertInstanceOf(AdminNestedStub::class, $sprinkles[2]);
-        $this->assertInstanceOf(MainDuplicateStub::class, $sprinkles[3]);
-    }*/
+        $this->assertInstanceOf(CoreStub::class, array_shift($sprinkles));
+        $this->assertInstanceOf(AccountStub::class, array_shift($sprinkles));
+        $this->assertInstanceOf(AdminNestedStub::class, array_shift($sprinkles));
+        $this->assertInstanceOf(MainDuplicateStub::class, array_shift($sprinkles));
+    }
 
     /**
      * __construct & Exceptions
