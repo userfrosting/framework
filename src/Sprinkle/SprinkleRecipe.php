@@ -22,47 +22,47 @@ interface SprinkleRecipe
      *
      * @return string
      */
-    public static function getName(): string;
+    public function getName(): string;
 
     /**
      * Return the Sprinkle dir path.
      *
      * @return string
      */
-    public static function getPath(): string;
+    public function getPath(): string;
 
     /**
      * Return an array of all registered Bakery Commands.
      *
-     * @return array[string]SprinkleRecipe
+     * @return string[]|\Symfony\Component\Console\Command\Command[]
      */
-    public static function getBakeryCommands(): array;
+    public function getBakeryCommands(): array;
 
     /**
      * Return dependent sprinkles.
      *
-     * @return array[string]SprinkleRecipe
+     * @return string[]|SprinkleRecipe[]
      */
-    public static function getSprinkles(): array;
+    public function getSprinkles(): array;
 
     /**
      * Returns a list of routes definition in PHP files.
      *
-     * @return \UserFrosting\Routes\RouteDefinitionInterface[]
+     * @return string[]|\UserFrosting\Routes\RouteDefinitionInterface[]
      */
-    public static function getRoutes(): array;
+    public function getRoutes(): array;
 
     /**
-     * Returns a list of all PHP-DI services/container definitions files.
+     * Returns a list of all PHP-DI services/container definitions class.
      *
-     * @return \UserFrosting\ServicesProvider\ServicesProviderInterface[]
+     * @return string[]|\UserFrosting\ServicesProvider\ServicesProviderInterface[]
      */
-    public static function getServices(): array;
+    public function getServices(): array;
 
     /**
      * Returns a list of all Middlewares classes.
      *
-     * @return \Psr\Http\Server\MiddlewareInterface[]
+     * @return string[]|\Psr\Http\Server\MiddlewareInterface[]
      */
-    public static function getMiddlewares(): array;
+    public function getMiddlewares(): array;
 }

@@ -10,12 +10,12 @@
 
 namespace UserFrosting\Support\Exception;
 
+use LogicException;
+
 /**
  * Bad class name exception.  Used when a class name is dynamically invoked, but the class does not exist.
- *
- * @author Alex Weissman (https://alexanderweissman.com)
  */
-class BadClassNameException extends \LogicException
+class BadClassNameException extends LogicException
 {
     //
 }

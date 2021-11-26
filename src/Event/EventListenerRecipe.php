@@ -18,7 +18,7 @@ interface EventListenerRecipe
     /**
      * Return a map of all registered event listener.
      *
-     * @return array
+     * @return mixed[]
      */
-    public static function getEventListeners(): array;
+    public function getEventListeners(): array;
 }

@@ -10,13 +10,11 @@
 
 namespace UserFrosting\Support\Exception;
 
+use RuntimeException;
+
 /**
- * FileNotFoundException.
- *
  * This exception should be thrown when a requested file could not be found.
- *
- * @author Alexander Weissman (https://alexanderweissman.com)
  */
-class FileNotFoundException extends \RuntimeException
+class FileNotFoundException extends RuntimeException
 {
 }
