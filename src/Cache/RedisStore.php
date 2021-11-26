@@ -14,23 +14,19 @@ use Illuminate\Container\Container;
 use Illuminate\Redis\RedisManager;
 
 /**
- * RedisStore Class.
- *
  * Setup a cache instance in a defined namespace using the `redis` driver
- *
- * @author    Louis Charette
  */
 class RedisStore extends ArrayStore
 {
     /**
-     * Extend the `ArrayStore` contructor to accept the redis server and
-     * port configuraton.
+     * Extend the `ArrayStore` constructor to accept the redis server and
+     * port configuration.
      *
-     * @param mixed          $redisServer (default: [])
+     * @param mixed[]        $redisServer (default: [])
      * @param string         $storeName   (default: "default")
      * @param Container|null $app
      */
-    public function __construct($redisServer = [], $storeName = 'default', Container $app = null)
+    public function __construct($redisServer = [], string $storeName = 'default', Container $app = null)
     {
 
         // Run the parent function to build base $app and $config
@@ -60,11 +56,7 @@ class RedisStore extends ArrayStore
 
         // Register redis manager
         $this->app->singleton('redis', function ($app) use ($redisConfig) {
-            try {
-                return new RedisManager('predis', $redisConfig);
-            } catch (\ArgumentCountError $e) {
-                return new RedisManager($app, 'predis', $redisConfig);
-            }
+            return new RedisManager($app, 'predis', $redisConfig);
         });
     }
 }
