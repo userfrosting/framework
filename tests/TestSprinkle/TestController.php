@@ -34,7 +34,7 @@ class TestController
         $msg[] = $request->getAttribute('foo');
 
         // Add both messages to body
-        $payload = json_encode($msg);
+        $payload = json_encode($msg, JSON_THROW_ON_ERROR);
         $response->getBody()->write($payload);
 
         return $response;

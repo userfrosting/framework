@@ -23,39 +23,21 @@ use UserFrosting\Tests\TestSprinkle\TestSprinkle;
  */
 class BakeryTest extends TestCase
 {
-    public function testConstructor(): Bakery
+    public function testGetters(): void
     {
         $bakery = new Bakery(TestSprinkle::class);
-        $this->assertInstanceOf(Bakery::class, $bakery);
-
-        return $bakery;
-    }
-
-    /**
-     * @depends testConstructor
-     */
-    public function testGetters(Bakery $bakery): void
-    {
-        $this->assertInstanceOf(Application::class, $bakery->getApp());
+        $this->assertInstanceOf(Application::class, $bakery->getApp()); // @phpstan-ignore-line
         $this->assertSame(TestSprinkle::class, $bakery->getMainSprinkle());
-        $this->assertInstanceOf(ContainerInterface::class, $bakery->getContainer());
+        $this->assertInstanceOf(ContainerInterface::class, $bakery->getContainer()); // @phpstan-ignore-line
     }
 
-    /**
-     * @depends testConstructor
-     */
     public function testCommandRegistration(): void
     {
         $bakery = new Bakery(SprinkleStub::class);
-        $this->assertInstanceOf(Bakery::class, $bakery);
-
         $command = $bakery->getApp()->get('stub');
         $this->assertInstanceOf(CommandStub::class, $command);
     }
 
-    /**
-     * @depends testConstructor
-     */
     public function testBadCommandException(): void
     {
         $this->expectException(BadInstanceOfException::class);
@@ -85,6 +67,7 @@ class BadCommandSprinkleStub extends TestSprinkle
 
 class CommandStub extends Command
 {
+    // @phpstan-ignore-next-line
     protected function configure()
     {
         $this->setName('stub');

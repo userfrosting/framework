@@ -24,29 +24,18 @@ class UserFrostingTest extends TestCase
 {
     protected string $mainSprinkle = TestSprinkle::class;
 
-    public function testConstructor(): UserFrosting
+    public function testGetters(): void
     {
-        $this->assertInstanceOf(UserFrosting::class, $this->userfrosting);
-
-        return $this->userfrosting;
-    }
-
-    /**
-     * @depends testConstructor
-     */
-    public function testGetters(UserFrosting $userfrosting): void
-    {
-        $this->assertInstanceOf(App::class, $userfrosting->getApp());
-        $this->assertInstanceOf(ContainerInterface::class, $userfrosting->getContainer());
-        $this->assertSame(TestSprinkle::class, $userfrosting->getMainSprinkle());
-        $this->assertInstanceOf(SprinkleManager::class, $userfrosting->getContainer()->get(SprinkleManager::class));
+        $this->assertInstanceOf(App::class, $this->userfrosting->getApp()); // @phpstan-ignore-line
+        $this->assertInstanceOf(ContainerInterface::class, $this->userfrosting->getContainer()); // @phpstan-ignore-line
+        $this->assertSame(TestSprinkle::class, $this->userfrosting->getMainSprinkle());
+        $this->assertInstanceOf(SprinkleManager::class, $this->userfrosting->getContainer()->get(SprinkleManager::class));
     }
 
     /**
      * Test a basic Hello World Page
-     * @depends testConstructor
      */
-    public function testFullRoute(UserFrosting $userfrosting): void
+    public function testFullRoute(): void
     {
         // Create request with method and url and fetch response
         $request = $this->createRequest('GET', '/foo');
