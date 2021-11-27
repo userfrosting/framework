@@ -13,8 +13,6 @@ namespace UserFrosting\Support\Exception;
 use Exception;
 
 /**
- * BadClassNameException.
- *
  * This exception should be thrown when a requested class could not be found.
  */
 class ClassNotFoundException extends Exception

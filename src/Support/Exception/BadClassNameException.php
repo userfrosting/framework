@@ -17,5 +17,4 @@ use LogicException;
  */
 class BadClassNameException extends LogicException
 {
-    //
 }

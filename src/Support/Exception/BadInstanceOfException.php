@@ -17,5 +17,4 @@ use LogicException;
  */
 class BadInstanceOfException extends LogicException
 {
-    //
 }
