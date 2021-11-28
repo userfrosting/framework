@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace UserFrosting;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
 use UserFrosting\Event\AppInitiatedEvent;
 use UserFrosting\Event\EventDispatcher;
@@ -59,6 +60,9 @@ final class UserFrosting extends Cupcake
      */
     public function run(): void
     {
-        $this->app->run();
+        /** @var ServerRequestInterface $request */
+        $request = $this->ci->get(ServerRequestInterface::class);
+
+        $this->app->run($request);
     }
 }

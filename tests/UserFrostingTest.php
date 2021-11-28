@@ -11,6 +11,7 @@
 namespace UserFrosting\Tests;
 
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
 use UserFrosting\Sprinkle\SprinkleManager;
 use UserFrosting\Testing\TestCase;
@@ -30,6 +31,14 @@ class UserFrostingTest extends TestCase
         $this->assertInstanceOf(ContainerInterface::class, $this->userfrosting->getContainer()); // @phpstan-ignore-line
         $this->assertSame(TestSprinkle::class, $this->userfrosting->getMainSprinkle());
         $this->assertInstanceOf(SprinkleManager::class, $this->userfrosting->getContainer()->get(SprinkleManager::class));
+    }
+
+    /**
+     * Test ServerRequestInterface is properly created.
+     */
+    public function testService(): void
+    {
+        $this->assertInstanceOf(ServerRequestInterface::class, $this->ci->get(ServerRequestInterface::class));
     }
 
     /**

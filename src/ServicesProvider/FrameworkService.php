@@ -16,8 +16,10 @@ use DI\Bridge\Slim\Bridge;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Slim\App as SlimApp;
+use Slim\Factory\ServerRequestCreatorFactory;
 use Symfony\Component\Console\Application as ConsoleApp;
 use Symfony\Component\Console\Command\Command;
 use UserFrosting\Event\EventDispatcher;
@@ -53,6 +55,14 @@ final class FrameworkService implements ServicesProviderInterface
                 $this->loadCommands($app, $extensionLoader);
 
                 return $app;
+            },
+
+            // Request
+            ServerRequestInterface::class => function () {
+                $serverRequestCreator = ServerRequestCreatorFactory::create();
+                $request = $serverRequestCreator->createServerRequestFromGlobals();
+
+                return $request;
             },
 
             // Events
