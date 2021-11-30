@@ -1,0 +1,110 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * UserFrosting Framework (http://www.userfrosting.com)
+ *
+ * @link      https://github.com/userfrosting/framework
+ * @copyright Copyright (c) 2013-2021 Alexander Weissman, Louis Charette, Jordan Mele
+ * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
+ */
+
+namespace UserFrosting\Tests\Unit\Testing;
+
+use InvalidArgumentException;
+use Mockery;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use UserFrosting\Testing\WithCustomAssertions;
+
+/**
+ * Tests for WithCustomAssertions Trait.
+ *
+ * Run each assertions with code we know is equals to make sure assertions are
+ * rights.
+ */
+class WithCustomAssertionsTest extends TestCase
+{
+    use MockeryPHPUnitIntegration;
+    use WithCustomAssertions;
+
+    protected string $json = '{"result": {"foo":true,"bar":false,"list":["foo","bar"]}}';
+
+    public function testAssertResponse(): void
+    {
+        /** @var ResponseInterface $response */
+        $response = Mockery::mock(ResponseInterface::class)
+            ->shouldReceive('getBody')->once()->andReturn('foo bar')
+            ->getMock();
+
+        $this->assertResponse('foo bar', $response);
+    }
+
+    public function testAssertResponseStatus(): void
+    {
+        /** @var ResponseInterface $response */
+        $response = Mockery::mock(ResponseInterface::class)
+            ->shouldReceive('getStatusCode')->once()->andReturn(123)
+            ->getMock();
+
+        $this->assertResponseStatus(123, $response);
+    }
+
+    /** @depends testAssertJsonEquals */
+    public function testAssertJsonResponse(): void
+    {
+        /** @var ResponseInterface $response */
+        $response = Mockery::mock(ResponseInterface::class)
+            ->shouldReceive('getBody')->times(2)->andReturn($this->json)
+            ->getMock();
+
+        $array = ['result' => ['foo' => true, 'bar' => false, 'list' => ['foo', 'bar']]];
+        $this->assertJsonResponse($array, $response);
+        $this->assertJsonResponse(['foo', 'bar'], $response, 'result.list');
+    }
+
+    public function testAssertJsonEquals(): void
+    {
+        $array = ['result' => ['foo' => true, 'bar' => false, 'list' => ['foo', 'bar']]];
+
+        $this->assertJsonEquals($array, $this->json);
+        $this->assertJsonEquals(['foo', 'bar'], $this->json, 'result.list');
+        $this->assertJsonEquals(true, $this->json, 'result.foo');
+    }
+
+    public function testAssertJsonStructure(): void
+    {
+        $this->assertJsonStructure(['result'], $this->json);
+        $this->assertJsonStructure(['foo', 'bar', 'list'], $this->json, 'result');
+    }
+
+    public function testAssertJsonStructureWithError(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->assertJsonStructure([true], $this->json, 'result.foo');
+    }
+
+    public function testAssertJsonCount(): void
+    {
+        $this->assertJsonCount(1, $this->json);
+        $this->assertJsonCount(3, $this->json, 'result');
+        $this->assertJsonCount(2, $this->json, 'result.list');
+    }
+
+    public function testAssertJsonCountWithError(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->assertJsonCount(10, $this->json, 'result.foo');
+    }
+
+    public function testAssertHtmlTagCount(): void
+    {
+        $html = '<html><div>One</div><div>Two</div><span>Not You</span><div>Three</div></html>';
+        $this->assertHtmlTagCount(3, $html, 'div');
+        $this->assertHtmlTagCount(1, $html, 'html');
+        $this->assertHtmlTagCount(1, $html, 'span');
+        $this->assertHtmlTagCount(0, $html, 'p');
+    }
+}

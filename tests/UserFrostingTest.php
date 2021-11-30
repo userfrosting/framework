@@ -51,7 +51,7 @@ class UserFrostingTest extends TestCase
         $response = $this->handleRequest($request);
 
         // Asserts
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertResponseJson(['Great work! Keep going!', 'Great work! Keep going!', 'bar'], $response);
+        $this->assertResponseStatus(200, $response);
+        $this->assertJsonResponse(['Great work! Keep going!', 'Great work! Keep going!', 'bar'], $response);
     }
 }

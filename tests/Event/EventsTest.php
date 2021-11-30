@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Tests\Unit;
+namespace UserFrosting\Tests\Unit\Event;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;

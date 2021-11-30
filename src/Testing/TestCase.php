@@ -11,7 +11,6 @@
 namespace UserFrosting\Testing;
 
 use DI\Container;
-use JsonException;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,6 +25,8 @@ use UserFrosting\UserFrosting;
  */
 class TestCase extends BaseTestCase
 {
+    use WithCustomAssertions;
+
     /**
      * The global container object, which holds all services.
      */
@@ -125,32 +126,5 @@ class TestCase extends BaseTestCase
     protected function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
         return $this->app->handle($request);
-    }
-
-    /**
-     * Verify that the given string is an exact match for the body returned.
-     *
-     * @param string            $expected The expected string
-     * @param ResponseInterface $response The response
-     * @codeCoverageIgnore
-     */
-    protected function assertResponse(string $expected, ResponseInterface $response): void
-    {
-        $this->assertSame($expected, (string) $response->getBody());
-    }
-
-    /**
-     * Verify that the given array is an exact match for the JSON returned.
-     *
-     * @param mixed[]           $expected The expected array
-     * @param ResponseInterface $response The response
-     *
-     * @throws JsonException
-     * @codeCoverageIgnore
-     */
-    protected function assertResponseJson(array $expected, ResponseInterface $response): void
-    {
-        $actual = (string) $response->getBody();
-        $this->assertSame($expected, (array) json_decode($actual, true, 512, JSON_THROW_ON_ERROR));
     }
 }
