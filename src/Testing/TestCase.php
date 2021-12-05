@@ -112,7 +112,7 @@ class TestCase extends BaseTestCase
             $request = $request->withParsedBody($data);
         }
 
-        return $request->withHeader('Content-Type', 'application/json');
+        return $request->withHeader('Accept', 'application/json');
     }
 
     /**

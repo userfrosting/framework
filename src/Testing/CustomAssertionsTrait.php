@@ -70,6 +70,7 @@ trait CustomAssertionsTrait
             $json = (string) $json->getBody();
         }
 
+        $this->assertJson($json);
         $this->assertSame($expected, $this->decodeJson($json, $key));
     }
 
@@ -86,6 +87,7 @@ trait CustomAssertionsTrait
             $json = (string) $json->getBody();
         }
 
+        $this->assertJson($json);
         $data = $this->decodeJson($json, $key);
 
         if (!is_array($data)) {
@@ -108,6 +110,7 @@ trait CustomAssertionsTrait
             $json = (string) $json->getBody();
         }
 
+        $this->assertJson($json);
         $data = $this->decodeJson($json, $key);
 
         if (!is_countable($data)) {
