@@ -20,7 +20,7 @@ use Slim\App;
  * Case for test that requires the full App instance.
  * This can be used for HTTP testing against the real deal.
  */
-trait WithCustomAssertions
+trait CustomAssertionsTrait
 {
     /**
      * Verify that the given string is an exact match for the body returned.
@@ -60,24 +60,32 @@ trait WithCustomAssertions
     /**
      * Asserts json is equals to something.
      *
-     * @param mixed       $expected Expected structure
-     * @param string      $json     The json string
-     * @param string|null $key      Scope to the key if required. Support dot notation.
+     * @param mixed                    $expected Expected structure
+     * @param string|ResponseInterface $json     The json string
+     * @param string|null              $key      Scope to the key if required. Support dot notation.
      */
-    protected function assertJsonEquals(mixed $expected, string $json, ?string $key = null): void
+    protected function assertJsonEquals(mixed $expected, string|ResponseInterface $json, ?string $key = null): void
     {
+        if ($json instanceof ResponseInterface) {
+            $json = (string) $json->getBody();
+        }
+
         $this->assertSame($expected, $this->decodeJson($json, $key));
     }
 
     /**
      * Asserts Json equals the passed structure.
      *
-     * @param array       $expected Expected structure
-     * @param string      $json     The json string
-     * @param string|null $key      Scope to the key if required. Support dot notation.
+     * @param array                    $expected Expected structure
+     * @param string|ResponseInterface $json     The json string
+     * @param string|null              $key      Scope to the key if required. Support dot notation.
      */
-    protected function assertJsonStructure(array $expected, string $json, ?string $key = null): void
+    protected function assertJsonStructure(array $expected, string|ResponseInterface $json, ?string $key = null): void
     {
+        if ($json instanceof ResponseInterface) {
+            $json = (string) $json->getBody();
+        }
+
         $data = $this->decodeJson($json, $key);
 
         if (!is_array($data)) {
@@ -90,12 +98,16 @@ trait WithCustomAssertions
     /**
      * Asserts the json has the expected count of items at the given key.
      *
-     * @param int         $expected Expected count
-     * @param string      $json     The json string
-     * @param string|null $key      Scope to the key if required. Support dot notation.
+     * @param int                      $expected Expected count
+     * @param string|ResponseInterface $json     The json string
+     * @param string|null              $key      Scope to the key if required. Support dot notation.
      */
-    protected function assertJsonCount(int $expected, string $json, ?string $key = null): void
+    protected function assertJsonCount(int $expected, string|ResponseInterface $json, ?string $key = null): void
     {
+        if ($json instanceof ResponseInterface) {
+            $json = (string) $json->getBody();
+        }
+
         $data = $this->decodeJson($json, $key);
 
         if (!is_countable($data)) {
@@ -108,12 +120,16 @@ trait WithCustomAssertions
     /**
      * Asserts the number of time the $tag is found in $html.
      *
-     * @param int    $expected Expected count
-     * @param string $html     The HTML data string
-     * @param string $tag      The tag to count
+     * @param int                      $expected Expected count
+     * @param string|ResponseInterface $html     The HTML data string
+     * @param string                   $tag      The tag to count
      */
-    protected function assertHtmlTagCount(int $expected, string $html, string $tag): void
+    protected function assertHtmlTagCount(int $expected, string|ResponseInterface $html, string $tag): void
     {
+        if ($html instanceof ResponseInterface) {
+            $html = (string) $html->getBody();
+        }
+
         $doc = new DOMDocument();
         $doc->loadHTML($html);
         $this->assertCount($expected, $doc->getElementsByTagName($tag));

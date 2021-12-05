@@ -25,7 +25,7 @@ use UserFrosting\UserFrosting;
  */
 class TestCase extends BaseTestCase
 {
-    use WithCustomAssertions;
+    use CustomAssertionsTrait;
 
     /**
      * The global container object, which holds all services.
