@@ -7,3 +7,4 @@ includes:
   - vendor/phpstan/phpstan-deprecation-rules/rules.neon
   - vendor/phpstan/phpstan-mockery/extension.neon
   - vendor/phpstan/phpstan-phpunit/extension.neon
+  - vendor/slam/phpstan-extensions/conf/slam-rules.neon

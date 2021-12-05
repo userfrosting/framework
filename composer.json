@@ -51,7 +51,8 @@
         "phpstan/phpstan-deprecation-rules": "^1.0",
         "phpstan/phpstan-mockery": "^1.0",
         "phpstan/phpstan-phpunit": "^1.0",
-        "phpstan/phpstan-strict-rules": "^1.0",  
+        "phpstan/phpstan-strict-rules": "^1.0",
+        "slam/phpstan-extensions": "^6.0",
         "mockery/mockery": "^1.2",
         "victorjonsson/markdowndocs": "^1.3"
     },
