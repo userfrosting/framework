@@ -13,6 +13,7 @@ namespace UserFrosting\Assets;
 use UserFrosting\Assets\AssetBundles\AssetBundlesInterface;
 use UserFrosting\Support\Exception\FileNotFoundException;
 use UserFrosting\Support\Util\Util;
+use UserFrosting\UniformResourceLocator\Normalizer;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 /**
@@ -223,7 +224,7 @@ class Assets
     public function urlPathToStreamUri($urlPath)
     {
         // Normalize path to prevent directory traversal.
-        $urlPath = Util::normalizePath($urlPath);
+        $urlPath = Normalizer::normalize($urlPath);
 
         // Remove any query string.
         $urlPath = preg_replace('/\?.*/', '', $urlPath);
