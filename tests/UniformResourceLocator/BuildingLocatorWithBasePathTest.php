@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -16,5 +18,5 @@ namespace UserFrosting\Tests\UniformResourceLocator;
 class BuildingLocatorWithBasePathTest extends BuildingLocatorTest
 {
     /** @var string */
-    protected $basePath = __DIR__.'/Building';  // No trailling slash
+    protected $basePath = __DIR__.'/Building';  // No trailing slash
 }

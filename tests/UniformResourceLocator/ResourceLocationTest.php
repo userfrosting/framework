@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -19,49 +21,29 @@ use UserFrosting\UniformResourceLocator\ResourceLocationInterface;
  */
 class ResourceLocationTest extends TestCase
 {
-    /**
-     * Test ResourceLocation class.
-     */
     public function testResourceLocation(): void
     {
         // Test instance & default values
         $location = new ResourceLocation('');
-        $this->assertInstanceOf(ResourceLocationInterface::class, $location);
         $this->assertEquals('', $location->getName());
         $this->assertEquals('', $location->getPath());
-
-        // Set/get name & path properties
-        $location->setName('foo');
-        $this->assertEquals('foo', $location->getName());
-
-        $location->setPath('/bar');
-        $this->assertEquals('/bar/', $location->getPath());
     }
 
-    /**
-     * Now try again with the info in the constructor.
-     */
-    public function testResourceLocation_ctor(): void
+    public function testResourceLocationComplete(): void
     {
         $location = new ResourceLocation('bar', '/foo');
         $this->assertEquals('bar', $location->getName());
         $this->assertEquals('/foo/', $location->getPath());
     }
 
-    /**
-     * @depends testResourceLocation_ctor
-     */
-    public function testResourceLocation_ctorWithSupressesRightSlashe(): void
+    public function testResourceLocationWithSupressesRightSlashe(): void
     {
         $location = new ResourceLocation('bar', '/foo/');
         $this->assertEquals('bar', $location->getName());
         $this->assertEquals('/foo/', $location->getPath());
     }
 
-    /**
-     * @depends testResourceLocation_ctor
-     */
-    public function testResourceLocation_ctoOmittedPathEqualsName(): void
+    public function testResourceLocationOmittedPathEqualsName(): void
     {
         $location = new ResourceLocation('bar');
         $this->assertEquals('bar', $location->getName());

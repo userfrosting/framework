@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -11,7 +13,7 @@
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * Resource Class.
+ * The representation of a resource.
  *
  * Resources are used to represent a file with info regarding the stream and
  * Location used to find it. When a resource is created, we save the stream used
@@ -21,51 +23,25 @@ namespace UserFrosting\UniformResourceLocator;
  * the stream and location inside the filesystem, this information will be
  * removed to recreate the relative 'basepath' of the file, allowing the
  * recreation of the uri (scheme://basePath).
- *
- * @author Louis Charette
  */
 class Resource implements ResourceInterface
 {
     /**
-     * @var ResourceLocationInterface|null
-     */
-    protected $location;
-
-    /**
-     * @var string Relative path to the resource, above the locator base path
-     */
-    protected $path;
-
-    /**
-     * @var string Relative path to the resource, above the locator base path
-     */
-    protected $locatorBasePath;
-
-    /**
-     * @var ResourceStreamInterface
-     */
-    protected $stream;
-
-    /**
-     * Constructor.
-     *
      * @param ResourceStreamInterface        $stream          ResourceStream used to locate this resource
      * @param ResourceLocationInterface|null $location        ResourceLocation used to locate this resource
      * @param string                         $path            Resource path, relative to the locator base path, and containing the stream and location path
      * @param string                         $locatorBasePath Locator base Path (default to '')
      */
-    // TODO : Use PHP 8 constructor
-    public function __construct(ResourceStreamInterface $stream, ResourceLocationInterface $location = null, string $path, string $locatorBasePath = '')
-    {
-        $this->setStream($stream);
-        $this->setLocation($location);
-        $this->setPath($path);
-        $this->setLocatorBasePath($locatorBasePath);
+    public function __construct(
+        protected ResourceStreamInterface $stream, 
+        protected ?ResourceLocationInterface $location = null, 
+        protected string $path, 
+        protected string $locatorBasePath = ''
+    ) {
     }
 
     /**
      * Get Resource URI
-     * Also adds the prefix stream prefix if it exist.
      *
      * @return string
      */
@@ -73,11 +49,6 @@ class Resource implements ResourceInterface
     {
         // Using parts so the separator is added only if both parts are not empty
         $parts = [];
-
-        // Adds the stream prefix
-        if ($this->stream->getPrefix() != '') {
-            $parts[] = $this->stream->getPrefix();
-        }
 
         // Add resource base path if not empty
         if ($this->getBasePath() != '') {
@@ -107,7 +78,7 @@ class Resource implements ResourceInterface
     public function getBasePath(): string
     {
         // Start with the stream relative path as a search path.
-        $searchPattern = preg_replace('#^' . preg_quote($this->getLocatorBasePath()) . '#', '', $this->stream->getPath());
+        $searchPattern = preg_replace('#^' . preg_quote($this->getLocatorBasePath()) . '#', '', $this->stream->getPath()) ?? '';
 
         // Add the location path to the search path if there's a location
         if (!is_null($this->getLocation())) {
@@ -118,12 +89,12 @@ class Resource implements ResourceInterface
             $searchPattern = Normalizer::normalize($locatorPath . '/' . $searchPattern);
         }
 
-        // Remove any `/` from the search pattern, as any locator/stream path will have a trailling slash
+        // Remove any `/` from the search pattern, as any locator/stream path will have a trailing slash
         $searchPattern = rtrim($searchPattern, '/');
 
         // Remove the search path from the beginning of the resource path
         // then trim any beginning slashes from the resulting path
-        $result = preg_replace('#^' . preg_quote($searchPattern) . '#', '', $this->getPath());
+        $result = preg_replace('#^' . preg_quote($searchPattern) . '#', '', $this->getPath()) ?? '';
         $result = ltrim($result, '/');
 
         return $result;
@@ -168,20 +139,6 @@ class Resource implements ResourceInterface
     }
 
     /**
-     * Set the value of location.
-     *
-     * @param ResourceLocationInterface|null $location
-     *
-     * @return self
-     */
-    public function setLocation(?ResourceLocationInterface $location): self
-    {
-        $this->location = $location;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getAbsolutePath(): string
@@ -204,21 +161,7 @@ class Resource implements ResourceInterface
      */
     public function getPath(): string
     {
-        return $this->path;
-    }
-
-    /**
-     * Set relative path to the resource, above the locator base path.
-     *
-     * @param string $path Relative path to the resource, above the locator base path. Can be a directory or a file.
-     *
-     * @return self
-     */
-    public function setPath(string $path): self
-    {
-        $this->path = Normalizer::normalize($path);
-
-        return $this;
+        return Normalizer::normalize($this->path);
     }
 
     /**
@@ -226,19 +169,7 @@ class Resource implements ResourceInterface
      */
     public function getLocatorBasePath(): string
     {
-        return $this->locatorBasePath;
-    }
-
-    /**
-     * @param string $locatorBasePath Path to the locator. Will be a directory.
-     *
-     * @return static
-     */
-    public function setLocatorBasePath(string $locatorBasePath): ResourceInterface
-    {
-        $this->locatorBasePath = Normalizer::normalizePath($locatorBasePath);
-
-        return $this;
+        return Normalizer::normalizePath($this->locatorBasePath);
     }
 
     /**
@@ -247,19 +178,5 @@ class Resource implements ResourceInterface
     public function getStream(): ResourceStreamInterface
     {
         return $this->stream;
-    }
-
-    /**
-     * Set the value of stream.
-     *
-     * @param ResourceStreamInterface $stream
-     *
-     * @return self
-     */
-    public function setStream(ResourceStreamInterface $stream): self
-    {
-        $this->stream = $stream;
-
-        return $this;
     }
 }

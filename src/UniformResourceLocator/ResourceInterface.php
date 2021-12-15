@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -11,9 +13,7 @@
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * Resource Interface.
- *
- * @author Louis Charette
+ * The representation of a resource.
  */
 interface ResourceInterface
 {

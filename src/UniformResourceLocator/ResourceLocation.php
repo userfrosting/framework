@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -11,39 +13,19 @@
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * ResourceLocation Class.
- *
  * The representation of a location
- *
- * @author    Louis Charette
  */
 class ResourceLocation implements ResourceLocationInterface
 {
     /**
-     * @var string The name of the location
-     */
-    protected $name;
-
-    /**
-     * @var string The base path of the location
-     */
-    protected $path;
-
-    /**
-     * Constructor.
-     *
      * @param string      $name
      * @param string|null $path
      */
-    // TODO : Use PHP 8 constructor
-    public function __construct(string $name, ?string $path = null)
-    {
-        if (is_null($path)) {
-            $path = $name;
-        }
-
-        $this->setName($name);
-        $this->setPath($path);
+    public function __construct(
+        protected string $name, 
+        protected ?string $path = null
+    ) {
+        
     }
 
     /**
@@ -55,34 +37,14 @@ class ResourceLocation implements ResourceLocationInterface
     }
 
     /**
-     * @param string $name
-     *
-     * @return static
-     */
-    public function setName(string $name): ResourceLocationInterface
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getPath(): string
     {
-        return $this->path;
-    }
+        if ($this->path === null) {
+            return Normalizer::normalizePath($this->getName());
+        }
 
-    /**
-     * @param string $path
-     *
-     * @return static
-     */
-    public function setPath(string $path): ResourceLocationInterface
-    {
-        $this->path = Normalizer::normalizePath($path);
-
-        return $this;
+        return Normalizer::normalizePath($this->path);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -36,7 +38,7 @@ class DocTest extends TestCase
 
         // Register Streams
         $locator->registerStream('config');
-        $locator->registerStream('upload', '', 'uploads/', true);
+        $locator->registerStream('upload', 'uploads/', true);
 
         // Finding Files
         // 1) Find Resource
@@ -64,10 +66,8 @@ class DocTest extends TestCase
 
         // 4) GetStream
         $defaultResourceStream = $defaultResource->getStream();
-        $this->assertInstanceOf(ResourceStreamInterface::class, $defaultResourceStream);
 
         $this->assertSame('config/', $defaultResourceStream->getPath());
-        $this->assertSame('', $defaultResourceStream->getPrefix());
         $this->assertSame('config', $defaultResourceStream->getScheme());
         $this->assertSame(false, $defaultResourceStream->isShared());
 
@@ -83,7 +83,7 @@ class DocTest extends TestCase
         $upload = $locator->findResource('upload://profile');
         $this->assertSame($this->getBasePath().'app/uploads/profile', $upload);
 
-        // 2) getRerouce
+        // 2) getResource
         $uploadResource = $locator->getResource('upload://profile');
         $this->assertInstanceOf(ResourceInterface::class, $uploadResource);
 

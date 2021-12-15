@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,65 +12,94 @@
 
 namespace UserFrosting\UniformResourceLocator;
 
+use BadMethodCallException;
+
 class Normalizer
 {
     /**
-     * Returns the canonicalized URI on success.
+     * Returns the canonicalize URI on success.
      * The resulting path will have no '/./' or '/../' components. Trailing delimiter `/` is kept.
-     * Can also split the `scheme` for the `path` part of the uri if $splitStream parameter is set to true
-     * By default (if $throwException parameter is not set to true) returns false on failure.
      *
      * @param string $uri
-     * @param bool   $throwException
-     * @param bool   $splitStream
      *
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException On failure to process uri
      *
-     * @return string|array|bool Return false if path is invalid
+     * @return string Canonicalize URI as "scheme://path" or "path" if no scheme is present.
      */
-    public static function normalize($uri, $throwException = false, $splitStream = false)
+    public static function normalize(string $uri): string
     {
-        if (!is_string($uri)) {
-            if ($throwException) {
-                throw new \BadMethodCallException("Invalid parameter $uri.");
-            } else {
-                return false;
-            }
+        list($scheme, $path) = self::normalizeParts($uri);
+
+        return ($scheme !== '') ? "{$scheme}://{$path}" : $path;
+    }
+
+    /**
+     * Returns the canonicalize URI on success.
+     * The resulting path will have no '/./' or '/../' components. Trailing delimiter `/` is kept.
+     *
+     * @param string $uri
+     *
+     * @throws BadMethodCallException On failure to process uri
+     *
+     * @return string[] As [scheme, path] array
+     */
+    public static function normalizeParts(string $uri): array
+    {
+        // Handle empty string
+        if ($uri === '') {
+            return ['', ''];
         }
 
         $separator = '/';
 
-        $uri = preg_replace('|\\\|u', $separator, $uri);
+        // Parse $uri
+        $uri = preg_replace('|\\\|u', $separator, $uri) ?? '';
+        
+        // Split `scheme://path` into each var
         $segments = explode('://', $uri, 2);
         $path = array_pop($segments);
-        $scheme = array_pop($segments) ?: '';
-        if ($path) {
-            $path = preg_replace('|\\\|u', $separator, $path);
-            $parts = explode($separator, $path);
-            $list = [];
-            foreach ($parts as $i => $part) {
-                if ($part === '..') {
-                    $part = array_pop($list);
-                    if ($part === null || $part === '' || (!$list && strpos($part, ':'))) {
-                        if ($throwException) {
-                            throw new \BadMethodCallException('Invalid parameter $uri.');
-                        } else {
-                            return false;
-                        }
-                    }
-                } elseif (($i && $part === '') || $part === '.') {
-                    continue;
-                } else {
-                    $list[] = $part;
+        $scheme = array_pop($segments) ?? '';
+
+        // Split each part of the path
+        $parts = explode($separator, $path);
+
+        // Parse each parts to handle relative portion of paths
+        $list = [];
+        foreach ($parts as $i => $part) {
+
+            // If parts point to same directory, skip.
+            // Also skip if part is empty, except for the first one.
+            if (($part === '' && $i !== 0) || $part === '.') {
+                continue;
+            }
+
+            // Handle when part point to parent dir.
+            if ($part === '..') {
+
+                // Remove parent from list
+                $part = array_pop($list);
+
+                // If removed part is null (out of score), part is empty, or
+                // has ':' in it (out of scope, back to 'C://'), throw exception
+                if ($part === null || $part === '' || strpos($part, ':') !== false) {
+                    throw new BadMethodCallException('Invalid parameter $uri.');
                 }
+
+                continue;
             }
-            if (($l = end($parts)) === '' || $l === '.' || $l === '..') {
-                $list[] = '';
-            }
-            $path = implode($separator, $list);
+
+            // Add to list
+            $list[] = $part;
         }
 
-        return $splitStream ? [$scheme, $path] : ($scheme !== '' ? "{$scheme}://{$path}" : $path);
+        // Get last part
+        if (end($parts) === '') {
+            $list[] = '';
+        }
+
+        $path = implode($separator, $list);
+
+        return [$scheme, $path];
     }
 
     /**
@@ -79,11 +110,11 @@ class Normalizer
      *
      * @param string $path
      *
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      *
-     * @return string|false Return false if path is invalid
+     * @return string Return false if path is invalid
      */
-    public static function normalizePath(string $path)
+    public static function normalizePath(string $path): string
     {
         $path = self::normalize($path);
 
