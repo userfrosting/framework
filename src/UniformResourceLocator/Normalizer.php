@@ -54,7 +54,7 @@ class Normalizer
 
         // Parse $uri
         $uri = preg_replace('|\\\|u', $separator, $uri) ?? '';
-        
+
         // Split `scheme://path` into each var
         $segments = explode('://', $uri, 2);
         $path = array_pop($segments);

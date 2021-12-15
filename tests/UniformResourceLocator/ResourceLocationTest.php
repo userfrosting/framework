@@ -14,7 +14,6 @@ namespace UserFrosting\Tests\UniformResourceLocator;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
-use UserFrosting\UniformResourceLocator\ResourceLocationInterface;
 
 /**
  * Tests for ResourceLocator.

@@ -33,7 +33,7 @@ class NormalizerTest extends TestCase
 
     /**
      * Data provider for testNormalize.
-     * 
+     *
      * @return string[][]
      */
     public function normalizeProvider(): array
@@ -71,7 +71,6 @@ class NormalizerTest extends TestCase
         ];
     }
 
-
     /**
      * @dataProvider normalizeWithExceptionProvider
      *
@@ -85,7 +84,7 @@ class NormalizerTest extends TestCase
 
     /**
      * Data provider for testNormalizeThrowExceptionOnBadUriPart.
-     * 
+     *
      * @return string[][]
      */
     public function normalizeWithExceptionProvider(): array
@@ -112,7 +111,7 @@ class NormalizerTest extends TestCase
 
     /**
      * Data provider for testNormalize.
-     * 
+     *
      * @return string[][]
      */
     public function normalizePathProvider(): array

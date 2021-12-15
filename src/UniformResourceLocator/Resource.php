@@ -33,9 +33,9 @@ class Resource implements ResourceInterface
      * @param string                         $locatorBasePath Locator base Path (default to '')
      */
     public function __construct(
-        protected ResourceStreamInterface $stream, 
-        protected ?ResourceLocationInterface $location = null, 
-        protected string $path, 
+        protected ResourceStreamInterface $stream,
+        protected ?ResourceLocationInterface $location,
+        protected string $path,
         protected string $locatorBasePath = ''
     ) {
     }

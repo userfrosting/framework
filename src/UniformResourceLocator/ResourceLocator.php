@@ -38,11 +38,6 @@ class ResourceLocator implements ResourceLocatorInterface
     protected $locations = [];
 
     /**
-     * @var array<ResourceInterface[]|ResourceInterface|false> Locale cache store of found resources
-     */
-    protected array $cache = [];
-
-    /**
      * @var string The location base path
      */
     protected string $basePath;
@@ -69,8 +64,8 @@ class ResourceLocator implements ResourceLocatorInterface
     protected array $reservedStreams = ['file'];
 
     /**
-     * @param string $basePath
-     * @param Filesystem|null $filesystem
+     * @param string             $basePath
+     * @param Filesystem|null    $filesystem
      * @param StreamBuilder|null $streamBuilder
      */
     public function __construct(
@@ -81,9 +76,9 @@ class ResourceLocator implements ResourceLocatorInterface
         $this->basePath = $basePath;
         $this->filesystem = $filesystem ?? new Filesystem();
         $this->streamBuilder = $streamBuilder ?? new StreamBuilder();
-        
+
         // Setup stream
-        Stream::setLocator($this);        
+        Stream::setLocator($this);
     }
 
     /**
@@ -265,7 +260,7 @@ class ResourceLocator implements ResourceLocatorInterface
         if (!$this->locationExist($name)) {
             throw new LocationNotFoundException();
         }
-        
+
         return $this->locations[$name];
     }
 
@@ -296,19 +291,29 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    // TODO : Update findCache to allow strict type
     public function getResource(string $uri, bool $first = false): ResourceInterface|bool
     {
-        return $this->findCached($uri, false, $first);
+        try {
+            list($scheme, $file) = Normalizer::normalizeParts($uri);
+
+            return $this->findFirst($scheme, $file, $first);
+        } catch (BadMethodCallException $e) {
+            return false;
+        }
     }
 
     /**
      * {@inheritdoc}
      */
-    // TODO : Update findCache to allow strict type
     public function getResources(string $uri, bool $all = false): array
     {
-        return $this->findCached($uri, true, $all);
+        try {
+            list($scheme, $file) = Normalizer::normalizeParts($uri);
+
+            return $this->find($scheme, $file, $all);
+        } catch (BadMethodCallException $e) {
+            return [];
+        }
     }
 
     /**
@@ -405,7 +410,6 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    // TODO : Split Absolute into two methods
     public function findResource(string $uri, bool $absolute = true, bool $first = false): string|bool
     {
         $resource = $this->getResource($uri, $first);
@@ -424,7 +428,6 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    // TODO : Split Absolute into two methods
     public function findResources(string $uri, bool $absolute = true, bool $all = false): array
     {
         $resources = $this->getResources($uri, $all);
@@ -439,34 +442,6 @@ class ResourceLocator implements ResourceLocatorInterface
         }
 
         return $paths;
-    }
-
-    /**
-     * Find a resource from the cached properties.
-     *
-     * @param string $uri   Input URI to be searched (file or directory)
-     * @param bool   $array Return an array or a single path
-     * @param bool   $all   Whether to return all paths even if they don't exist.
-     *
-     * @return ResourceInterface[]|ResourceInterface|false The resource path or an array of all the resources path or false if not resource can be found
-     */
-    protected function findCached(string $uri, bool $array, bool $all)
-    {
-        // Local caching: make sure that the function gets only called at once for each file.
-        // We create a key based on the submitted arguments
-        $key = $uri . '@' . (int) $array . (int) $all;
-
-        if (!isset($this->cache[$key])) {
-            try {
-                list($scheme, $file) = Normalizer::normalizeParts($uri);
-                $this->cache[$key] = $this->find($scheme, $file, $array, $all);
-            } catch (BadMethodCallException $e) {
-                // If something couldn't be found, return false or empty array
-                $this->cache[$key] = $array ? [] : false;
-            }
-        }
-
-        return $this->cache[$key];
     }
 
     /**
@@ -502,18 +477,17 @@ class ResourceLocator implements ResourceLocatorInterface
     }
 
     /**
-     * Returns path of a file (or directory) based on a search uri.
+     * Returns all Resource for given scheme and file.
      *
      * @param string $scheme The scheme to search in
      * @param string $file   The file to search for
-     * @param bool   $array  Return an array or a single path
      * @param bool   $all    Whether to return all paths even if they don't exist.
      *
      * @throws InvalidArgumentException
      *
-     * @return ResourceInterface|ResourceInterface[]|false
+     * @return ResourceInterface[]
      */
-    protected function find(string $scheme, string $file, bool $array, bool $all): ResourceInterface|array|false
+    protected function find(string $scheme, string $file, bool $all): array
     {
         // Make sure stream exist
         if (!$this->schemeExists($scheme)) {
@@ -521,7 +495,7 @@ class ResourceLocator implements ResourceLocatorInterface
         }
 
         // Prepare result depending on $array parameter
-        $results = $array ? [] : false;
+        $results = [];
 
         foreach ($this->streams[$scheme] as $stream) {
 
@@ -560,15 +534,34 @@ class ResourceLocator implements ResourceLocatorInterface
                         $currentResource = new Resource($stream, $location, $relPath, $basePath);
                     }
 
-                    if (!$array) {
-                        return $currentResource;
-                    }
                     $results[] = $currentResource;
                 }
             }
         }
 
         return $results;
+    }
+
+    /**
+     * Returns first found Resource for given scheme and file.
+     *
+     * @param string $scheme The scheme to search in
+     * @param string $file   The file to search for
+     * @param bool   $all    Whether to return all paths even if they don't exist.
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return ResourceInterface|false Return false if no match found
+     */
+    protected function findFirst(string $scheme, string $file, bool $all): ResourceInterface|false
+    {
+        $resources = $this->find($scheme, $file, $all);
+
+        if (count($resources) === 0) {
+            return false;
+        }
+
+        return $resources[0];
     }
 
     /**

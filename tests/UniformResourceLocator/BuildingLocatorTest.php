@@ -94,92 +94,6 @@ class BuildingLocatorTest extends TestCase
         self::$locator->registerSharedStream('absCars', $this->getBasePath().'Garage/cars/'); // Search path -> Building/Garage/cars (Stream shared, no prefix, using absolute path)
     }
 
-    /**
-     * @dataProvider resourceProvider
-     * @dataProvider sharedResourceProvider
-     *
-     * @param string      $scheme
-     * @param string      $file
-     * @param string|null $location
-     * @param string[]    $expectedPaths
-     */
-    public function testFind(string $scheme, string $file, ?string $location, array $expectedPaths): void
-    {
-        // find($scheme, $file, $array, $all)
-        $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, false, false]);
-
-        $this->assertInstanceOf(ResourceInterface::class, $resource);
-        $this->assertEquals($this->getBasePath().$expectedPaths[0], $resource->getAbsolutePath());
-    }
-
-    /**
-     * @dataProvider resourceProvider
-     * @dataProvider sharedResourceProvider
-     * @depends testFind
-     *
-     * @param string      $scheme
-     * @param string      $file
-     * @param string|null $location
-     * @param string[]    $expectedPaths
-     */
-    public function testFindWithArray(string $scheme, string $file, ?string $location, array $expectedPaths): void
-    {
-        // find($scheme, $file, $array, $all)
-        $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, true, false]);
-
-        $this->assertIsArray($resource);
-        $this->assertEquals($this->relativeToAbsolutePaths($expectedPaths), $resource);
-    }
-
-    /**
-     * @dataProvider resourceProvider
-     * @dataProvider sharedResourceProvider
-     * @depends testFind
-     *
-     * @param string      $scheme
-     * @param string      $file
-     * @param string|null $location
-     * @param string[]    $expectedPaths
-     * @param string[]    $expectedAllPaths
-     */
-    public function testFindWithAll(string $scheme, string $file, ?string $location, array $expectedPaths, array $expectedAllPaths): void
-    {
-        // find($scheme, $file, $array, $all)
-        $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, false, true]);
-
-        $this->assertInstanceOf(ResourceInterface::class, $resource);
-        $this->assertEquals($this->getBasePath().$expectedAllPaths[0], $resource->getAbsolutePath());
-    }
-
-    /**
-     * @dataProvider resourceProvider
-     * @dataProvider sharedResourceProvider
-     * @depends testFind
-     *
-     * @param string      $scheme
-     * @param string      $file
-     * @param string|null $location
-     * @param string[]    $expectedPaths
-     * @param string[]    $expectedAllPaths
-     */
-    public function testFindWithArrayAndAll(string $scheme, string $file, ?string $location, array $expectedPaths, array $expectedAllPaths): void
-    {
-        // find($scheme, $file, $array, $all)
-        $resource = $this->invokeMethod(self::$locator, 'find', [$scheme, $file, true, true]);
-
-        $this->assertIsArray($resource);
-        $this->assertEquals($this->relativeToAbsolutePaths($expectedAllPaths), $resource);
-    }
-
-    /**
-     * @depends testFind
-     */
-    public function testFindThrowExceptionWhenSchemaDontExist(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->invokeMethod(self::$locator, 'find', ['foo', 'foo', false, false]);
-    }
-
     public function testGetResourceThrowExceptionIfShemeNotExist(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -642,24 +556,6 @@ class BuildingLocatorTest extends TestCase
         }
 
         return $pathsWithAbsolute;
-    }
-
-    /**
-     * Call protected/private method of a class.
-     *
-     * @param object  &$object    Instantiated object that we will run method on.
-     * @param string  $methodName Method name to call
-     * @param mixed[] $parameters Array of parameters to pass into method.
-     *
-     * @return mixed Method return.
-     */
-    protected function invokeMethod(object &$object, string $methodName, array $parameters = []): mixed
-    {
-        $reflection = new \ReflectionClass(get_class($object));
-        $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
-
-        return $method->invokeArgs($object, $parameters);
     }
 
     /**

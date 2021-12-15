@@ -15,7 +15,6 @@ namespace UserFrosting\Tests\UniformResourceLocator;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\Normalizer;
 use UserFrosting\UniformResourceLocator\Resource;
-use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceStream;
 use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
@@ -38,7 +37,7 @@ class ResourceTest extends TestCase
     protected string $locationName = 'bar';
     protected string $locationPath = 'bar/';
 
-    /** @var Resource */
+    /** @var resource */
     protected Resource $resource;
 
     public function setUp(): void
@@ -94,7 +93,7 @@ class ResourceTest extends TestCase
      * Return a list of basepath to test. The rela rel path will be constructed by the
      * test according to the stream used, so we'll assume the rel path are always
      * correct. Also mix and match three provider : path, basePath and useLocation (true/false)
-     * 
+     *
      * @return mixed[]
      */
     public function resourcesProvider(): array
@@ -161,7 +160,7 @@ class ResourceTest extends TestCase
      *
      * Test different placement of slashes to make sure getUri and getBasePath
      * returns the correct path
-     * 
+     *
      * @return string[][]
      */
     public function sharedResourceStreamProvider(): array
@@ -187,12 +186,11 @@ class ResourceTest extends TestCase
      * @param string $expectedExtension
      */
     public function testFilePropertiesGetters(
-        string $path, 
-        string $expectedBasename, 
-        string $expectedFilename, 
+        string $path,
+        string $expectedBasename,
+        string $expectedFilename,
         string $expectedExtension
-    ): void
-    {
+    ): void {
         $resource = new Resource($this->stream, $this->location, $this->locationPath.$this->streamPath.$path);
 
         $this->assertSame($expectedBasename, $resource->getBasename());
@@ -206,7 +204,7 @@ class ResourceTest extends TestCase
      * Return a list of relPath to test. The abs path will be constructed by the
      * test according to the stream used, so we'll assume the abs path are always
      * correct. In any case, relPath == basePath (always).
-     * 
+     *
      * @return string[][]
      */
     public function FilesProvider(): array

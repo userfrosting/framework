@@ -23,7 +23,7 @@ interface ResourceLocatorInterface
 {
     /**
      * Alias for findResource()
-     * 
+     *
      * @param string $uri
      *
      * @throws BadMethodCallException
@@ -45,7 +45,7 @@ interface ResourceLocatorInterface
      * Returns true if uri is resolvable by using locator.
      *
      * @param string $uri
-     * 
+     *
      * @return bool
      */
     public function isStream(string $uri): bool;

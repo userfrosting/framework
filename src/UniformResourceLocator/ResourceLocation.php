@@ -22,10 +22,9 @@ class ResourceLocation implements ResourceLocationInterface
      * @param string|null $path
      */
     public function __construct(
-        protected string $name, 
+        protected string $name,
         protected ?string $path = null
     ) {
-        
     }
 
     /**
