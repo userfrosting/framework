@@ -373,4 +373,17 @@ class ResourceLocatorTest extends TestCase
 
         $this->assertSame(Normalizer::normalizePath(__DIR__).'Building/Garage/files/blah.json', $resources[0]->getAbsolutePath());
     }
+
+    public function testMultipleStreamWithSameScheme(): void
+    {
+        $locator = new ResourceLocator(__DIR__);
+        $locator->registerSharedStream('sprinkles', 'Building/Floors/Floor/');
+        $locator->registerSharedStream('sprinkles', 'Building/Floors/Floor3');
+
+        $result = $locator->findResources('sprinkles://files/test.json');
+
+        // We don't care (yet) about the actual result, we just want to make
+        // sure the two streams are picked up.
+        $this->assertCount(2, $result);
+    }
 }
