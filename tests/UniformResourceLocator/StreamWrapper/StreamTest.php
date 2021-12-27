@@ -107,7 +107,7 @@ class StreamTest extends TestCase
         while ($entry = readdir($dir)) {
             $entries[] = $entry;
         }
-        $this->assertSame(['.', '..', '.gitkeep', 'bar'], $entries);
+        $this->assertContains('bar', $entries);
 
         $this->assertTrue(rename($this->stream . 'bar', $this->stream . 'foo'));
         $this->assertTrue(rmdir($this->stream . 'foo'));
