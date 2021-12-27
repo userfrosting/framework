@@ -2,7 +2,7 @@
     "bundle": {
         "test": {
             "scripts": false,
-            "styles": "vendor/bootstrap/css/bootstrap.css"
+            "styles": "bootstrap/css/bootstrap.css"
         }
     }
 }

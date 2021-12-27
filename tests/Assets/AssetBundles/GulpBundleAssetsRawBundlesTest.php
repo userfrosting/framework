@@ -101,7 +101,7 @@ class GulpBundleAssetsRawBundlesTest extends TestCase
     public function testGetCssBundleAssets(GulpBundleAssetsRawBundles $bundles)
     {
         $this->assertEquals($bundles->getCssBundleAssets('test'), [
-            'vendor/bootstrap/css/bootstrap.css',
+            'bootstrap/css/bootstrap.css',
         ]);
     }
 
@@ -130,8 +130,8 @@ class GulpBundleAssetsRawBundlesTest extends TestCase
     public function testGetJsBundleAssets(GulpBundleAssetsRawBundles $bundles)
     {
         $this->assertEquals($bundles->getJsBundleAssets('test'), [
-            'vendor/bootstrap/js/bootstrap.js',
-            'vendor/bootstrap/js/npm.js',
+            'bootstrap/js/bootstrap.js',
+            'bootstrap/js/npm.js',
         ]);
     }
 

@@ -10,6 +10,7 @@
 
 namespace UserFrosting\Assets;
 
+use BadMethodCallException;
 use UserFrosting\Assets\AssetBundles\AssetBundlesInterface;
 use UserFrosting\Support\Exception\FileNotFoundException;
 use UserFrosting\Support\Util\Util;
@@ -153,8 +154,8 @@ class Assets
     /**
      * Get Asset url.
      * Transform a locator uri to a url accessible to a browser
-     * In other words, transform `assets://vendor/bootstrap/js/bootstrap.js` to
-     * `http://example.com/vendor/bootstrap/js/bootstrap.js`, replacing the `://` with the base url
+     * In other words, transform `assets://bootstrap/js/bootstrap.js` to
+     * `http://example.com/bootstrap/js/bootstrap.js`, replacing the `://` with the base url
      * Make sure the ressource exist in the process.
      *
      * @param string|array $streamPath The asset uri
@@ -202,15 +203,8 @@ class Assets
         // Get resource from stream uri
         $resource = $this->locator->getResource($uri);
 
-        // Make path absolute (and normalise)
-        $absolutePath = realpath($resource->getAbsolutePath());
-
-        // Return path or null depending on existence.
-        if ($absolutePath && is_file($absolutePath)) {
-            return $absolutePath;
-        } else {
-            return;
-        }
+        // Return absolute path
+        return $resource->getAbsolutePath();
     }
 
     /**
@@ -219,12 +213,16 @@ class Assets
      *
      * @param string $urlPath
      *
-     * @return string
+     * @return string|null
      */
     public function urlPathToStreamUri($urlPath)
     {
         // Normalize path to prevent directory traversal.
-        $urlPath = Normalizer::normalize($urlPath);
+        try {
+            $urlPath = Normalizer::normalize($urlPath);
+        } catch (BadMethodCallException $e) {
+            return;
+        }
 
         // Remove any query string.
         $urlPath = preg_replace('/\?.*/', '', $urlPath);
@@ -235,7 +233,7 @@ class Assets
         // Add back the stream scheme
         $uri = $this->getLocatorScheme() . $urlPath;
 
-        // Make sure ressource path exist
+        // Make sure resource path exist
         if (!$this->locator->getResource($uri)) {
             return;
         }

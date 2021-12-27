@@ -40,8 +40,8 @@ class AssetsTest extends TestCase
         $this->baseUrl = 'https://assets.userfrosting.com/';
         $this->locatorScheme = 'assets';
         $this->locator = new ResourceLocator($this->basePath);
-        $this->locator->registerStream($this->locatorScheme, '', 'assets');
-        $this->locator->registerStream($this->locatorScheme, 'vendor', 'assets', true);
+        $this->locator->registerStream($this->locatorScheme, 'assets');
+        $this->locator->registerSharedStream($this->locatorScheme, 'assets');
         $this->locator->registerLocation('hawks', 'sprinkles/hawks/');
         $this->locator->registerLocation('owls', 'sprinkles/owls/');
     }
@@ -70,13 +70,13 @@ class AssetsTest extends TestCase
      */
     public function testGetAbsoluteUrlWithString(Assets $assets)
     {
-        $url = $assets->getAbsoluteUrl('assets://vendor/bootstrap/js/bootstrap.js');
+        $url = $assets->getAbsoluteUrl('assets://bootstrap/js/bootstrap.js');
 
         // URL
-        $this->assertEquals($this->baseUrl.'vendor/bootstrap/js/bootstrap.js', $url);
+        $this->assertEquals($this->baseUrl.'bootstrap/js/bootstrap.js', $url);
 
         // Stream URI
-        $this->assertEquals('assets://vendor/bootstrap/js/bootstrap.js', $assets->urlPathToStreamUri($url));
+        $this->assertEquals('assets://bootstrap/js/bootstrap.js', $assets->urlPathToStreamUri($url));
 
         // Absolute path
         $this->assertEquals(realpath(__DIR__.'/data/assets/bootstrap/js/bootstrap.js'), $assets->urlPathToAbsolutePath($url));
@@ -108,8 +108,8 @@ class AssetsTest extends TestCase
     {
         $this->assertEquals($assets->getAbsoluteUrl([
             'assets',
-            'vendor/bootstrap/js/bootstrap.js',
-        ]), $this->baseUrl.'vendor/bootstrap/js/bootstrap.js');
+            'bootstrap/js/bootstrap.js',
+        ]), $this->baseUrl.'bootstrap/js/bootstrap.js');
     }
 
     /**
@@ -125,7 +125,7 @@ class AssetsTest extends TestCase
         $this->expectException(\BadMethodCallException::class);
         $assets->getAbsoluteUrl([
             'assets',
-            'vendor/bootstrap/js/bootstrap.js',
+            'bootstrap/js/bootstrap.js',
             'extra-invalid-entry',
         ]);
     }
@@ -141,7 +141,7 @@ class AssetsTest extends TestCase
     public function testGetAbsoluteUrlWithNonExistentFile(Assets $assets)
     {
         $this->expectException(FileNotFoundException::class);
-        $assets->getAbsoluteUrl('assets://vendor/bootstrap/js/faker.js');
+        $assets->getAbsoluteUrl('assets://bootstrap/js/faker.js');
     }
 
     /**
@@ -172,8 +172,8 @@ class AssetsTest extends TestCase
     public function testGetJsBundleAssets(Assets $assets)
     {
         $this->assertEquals($assets->getJsBundleAssets('test'), [
-            $this->baseUrl.'vendor/bootstrap/js/bootstrap.js',
-            $this->baseUrl.'vendor/bootstrap/js/npm.js',
+            $this->baseUrl.'bootstrap/js/bootstrap.js',
+            $this->baseUrl.'bootstrap/js/npm.js',
         ]);
     }
 
@@ -202,7 +202,7 @@ class AssetsTest extends TestCase
     public function testGetCssBundleAssets(Assets $assets)
     {
         $this->assertEquals($assets->getCssBundleAssets('test'), [
-            $this->baseUrl.'vendor/bootstrap/css/bootstrap.css',
+            $this->baseUrl.'bootstrap/css/bootstrap.css',
         ]);
     }
 
