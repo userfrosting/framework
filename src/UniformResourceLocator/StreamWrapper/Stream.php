@@ -19,7 +19,7 @@ use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
  */
 class Stream implements StreamInterface
 {
-    /** @var resource $context */
+    /** @var resource */
     public $context;
 
     /** @var resource A generic resource handle. */
@@ -355,7 +355,7 @@ class Stream implements StreamInterface
             return false;
         }
 
-        return $path . '/' .  implode('/', array_reverse($filename));
+        return $path . '/' . implode('/', array_reverse($filename));
     }
 
     /**

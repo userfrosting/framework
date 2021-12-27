@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * The representation of a stream
+ * The representation of a stream.
  */
 class ResourceStream implements ResourceStreamInterface
 {

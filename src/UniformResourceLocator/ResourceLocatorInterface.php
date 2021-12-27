@@ -22,7 +22,7 @@ use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
 interface ResourceLocatorInterface
 {
     /**
-     * Alias for findResource()
+     * Alias for findResource().
      *
      * @param string $uri
      *

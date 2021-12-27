@@ -15,7 +15,7 @@ namespace UserFrosting\UniformResourceLocator\StreamWrapper;
 use InvalidArgumentException;
 
 /**
- * Class StreamBuilder
+ * Class StreamBuilder.
  */
 class StreamBuilder
 {

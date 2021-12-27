@@ -41,7 +41,7 @@ class Resource implements ResourceInterface
     }
 
     /**
-     * Get Resource URI
+     * Get Resource URI.
      *
      * @return string
      */

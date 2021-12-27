@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * The representation of a location
+ * The representation of a location.
  */
 interface ResourceLocationInterface
 {
