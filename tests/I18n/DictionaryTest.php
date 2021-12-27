@@ -31,7 +31,7 @@ class DictionaryTest extends TestCase
         $this->basePath = __DIR__.'/data/dictionary';
         $this->locator = new ResourceLocator($this->basePath);
 
-        $this->locator->registerStream('locale', '', null, true);
+        $this->locator->registerSharedStream('locale');
     }
 
     public function tearDown(): void
