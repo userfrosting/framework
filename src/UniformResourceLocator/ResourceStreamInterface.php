@@ -31,4 +31,11 @@ interface ResourceStreamInterface
      * @return bool
      */
     public function isShared(): bool;
+
+    /**
+     * Is the stream read only.
+     * 
+     * @return bool
+     */
+    public function isReadonly(): bool;
 }

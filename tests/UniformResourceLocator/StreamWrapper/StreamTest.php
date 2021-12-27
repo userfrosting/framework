@@ -28,7 +28,7 @@ class StreamTest extends TestCase
     protected string $bad_file;
     protected string $bad_dir;
     protected StreamBuilder $builder;
-    protected ResourceLocatorInterface $locator;
+    protected ResourceLocator $locator;
 
     public function setUp(): void
     {
@@ -52,9 +52,6 @@ class StreamTest extends TestCase
         // Setup test locator
         $this->locator = new ResourceLocator(__DIR__ . '/data', streamBuilder: $this->builder);
         $this->locator->registerSharedStream('foo', '');
-
-        // Assign locator
-        Stream::setLocator($this->locator);
     }
 
     public function tearDown(): void

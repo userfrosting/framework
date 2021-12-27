@@ -21,11 +21,13 @@ class ResourceStream implements ResourceStreamInterface
      * @param string $scheme
      * @param string $path
      * @param bool   $shared
+     * @param bool   $readonly
      */
     public function __construct(
         protected string $scheme,
         protected ?string $path = null,
-        protected bool $shared = false
+        protected bool $shared = false,
+        protected bool $readonly = false,
     ) {
     }
 
@@ -57,5 +59,13 @@ class ResourceStream implements ResourceStreamInterface
     public function isShared(): bool
     {
         return $this->shared;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isReadonly(): bool
+    {
+        return $this->readonly;
     }
 }

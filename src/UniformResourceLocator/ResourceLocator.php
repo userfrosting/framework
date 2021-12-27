@@ -19,6 +19,7 @@ use InvalidArgumentException;
 use SplFileInfo;
 use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
 use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
+use UserFrosting\UniformResourceLocator\StreamWrapper\ReadOnlyStream;
 use UserFrosting\UniformResourceLocator\StreamWrapper\Stream;
 use UserFrosting\UniformResourceLocator\StreamWrapper\StreamBuilder;
 
@@ -76,9 +77,6 @@ class ResourceLocator implements ResourceLocatorInterface
         $this->basePath = $basePath;
         $this->filesystem = $filesystem ?? new Filesystem();
         $this->streamBuilder = $streamBuilder ?? new StreamBuilder();
-
-        // Setup stream
-        Stream::setLocator($this);
     }
 
     /**
@@ -99,7 +97,7 @@ class ResourceLocator implements ResourceLocatorInterface
         }
 
         $this->streams[$stream->getScheme()][] = $stream;
-        $this->setupStreamWrapper($stream->getScheme());
+        $this->setupStreamWrapper($stream->getScheme(), $stream->isReadonly());
 
         return $this;
     }
@@ -107,15 +105,22 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * Register the scheme as a php stream wrapper.
      *
-     * @param string $scheme The stream scheme
+     * @param string $scheme   The stream scheme
+     * @param bool   $readonly Should the stream be instantiate as readonly
      */
-    protected function setupStreamWrapper(string $scheme): void
+    protected function setupStreamWrapper(string $scheme, bool $readonly = false): void
     {
         // First unset the scheme. Prevent issue if someone else already registered it
         $this->unsetStreamWrapper($scheme);
 
+        // Select stream based on readonly status
+        $stream = ($readonly) ? ReadOnlyStream::class : Stream::class;
+
         // register the scheme as a stream wrapper
-        $this->streamBuilder->add($scheme, Stream::class);
+        $this->streamBuilder->add($scheme, $stream);
+
+        // Setup stream
+        $stream::setLocator($this);
     }
 
     /**
@@ -131,7 +136,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function registerStream(string $scheme, string|array|null $paths = null, bool $shared = false): static
+    public function registerStream(string $scheme, string|array|null $paths = null, bool $shared = false, bool $readonly = false): static
     {
         // Handle string or null argument
         if (!is_array($paths)) {
@@ -140,7 +145,7 @@ class ResourceLocator implements ResourceLocatorInterface
 
         // Invert arrays list. Last path has priority
         foreach (array_reverse($paths) as $path) {
-            $stream = new ResourceStream($scheme, $path, $shared);
+            $stream = new ResourceStream($scheme, $path, $shared, $readonly);
             $this->addStream($stream);
         }
 
@@ -152,13 +157,14 @@ class ResourceLocator implements ResourceLocatorInterface
      * Shortcut for registerStream with $shared flag set to true.
      *
      * @param string               $scheme
-     * @param string|string[]|null $paths  (default null). When using null path, the scheme will be used as a path
+     * @param string|string[]|null $paths    (default null). When using null path, the scheme will be used as a path
+     * @param bool                 $readonly
      *
      * @return static
      */
-    public function registerSharedStream(string $scheme, string|array|null $paths = null): static
+    public function registerSharedStream(string $scheme, string|array|null $paths = null, bool $readonly = false): static
     {
-        $this->registerStream($scheme, $paths, true);
+        $this->registerStream($scheme, $paths, true, $readonly);
 
         return $this;
     }

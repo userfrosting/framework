@@ -1,5 +1,6 @@
 parameters:
   level: max
+  reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     - '#Dynamic call to static method PHPUnit\\Framework\\.*#'
     - '#Call to an undefined method Mockery\\Expectation::.*#'
