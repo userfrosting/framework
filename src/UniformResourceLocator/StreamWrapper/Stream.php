@@ -224,6 +224,10 @@ class Stream implements StreamInterface
             return false;
         }
 
+        // Fix paths on Windows
+        // @see https://www.php.net/manual/fr/function.mkdir.php#71880
+        str_replace('/', DIRECTORY_SEPARATOR, $path); 
+
         return @mkdir($path, $mode, $recursive);
     }
 

@@ -97,7 +97,7 @@ class StreamTest extends TestCase
         // With new dir
         $this->assertFalse(file_exists($this->stream . 'bar'));
         $this->assertFalse(is_dir($this->stream . 'bar'));
-        $this->assertTrue(mkdir($this->stream . 'bar'));
+        $this->assertTrue(mkdir($this->stream . 'bar', recursive: true));
         $this->assertTrue(file_exists($this->stream . 'bar'));
         $this->assertTrue(is_dir($this->stream . 'bar'));
 
