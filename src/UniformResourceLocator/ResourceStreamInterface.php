@@ -34,7 +34,7 @@ interface ResourceStreamInterface
 
     /**
      * Is the stream read only.
-     * 
+     *
      * @return bool
      */
     public function isReadonly(): bool;

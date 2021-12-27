@@ -14,7 +14,6 @@ namespace UserFrosting\Tests\UniformResourceLocator\StreamWrapper;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
-use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 use UserFrosting\UniformResourceLocator\StreamWrapper\Stream;
 use UserFrosting\UniformResourceLocator\StreamWrapper\StreamBuilder;
 
@@ -80,6 +79,8 @@ class StreamTest extends TestCase
         $this->assertSame('', file_get_contents($this->file));
         $this->assertSame(3, file_put_contents($this->file, 'bar')); //@phpstan-ignore-line
         $this->assertSame('bar', file_get_contents($this->file));
+        $this->assertSame(3, fwrite(fopen($this->file, 'r+'), 'foo')); // @phpstan-ignore-line
+        $this->assertSame('foo', file_get_contents($this->file));
         $this->assertTrue(unlink($this->file));
         $this->assertFileDoesNotExist(__DIR__ . '/data/test.txt');
     }
@@ -117,7 +118,7 @@ class StreamTest extends TestCase
      */
     public function testDirectoryRewind(): void
     {
-        $this->assertTrue(touch($this->file));
+        $this->assertTrue(touch($this->file)); // Touch basic file
         $directoryResource = opendir($this->stream);
         $this->assertIsResource($directoryResource);
         $entry = readdir($directoryResource);
@@ -131,7 +132,7 @@ class StreamTest extends TestCase
      */
     public function testChmod(): void
     {
-        $this->assertTrue(touch($this->file)); // Touch basic file
+        touch($this->file); // Touch basic file
         $this->assertTrue(is_readable($this->file));
 
         $stat = stat($this->file);
@@ -153,7 +154,7 @@ class StreamTest extends TestCase
         $this->assertIsInt($group);
         $this->assertTrue(chgrp($this->file, $group));
 
-        $this->assertTrue(unlink($this->file));  // Reset state
+        unlink($this->file);  // Reset state
     }
 
     /**
@@ -165,9 +166,9 @@ class StreamTest extends TestCase
         set_error_handler(function ($no, $str, $file, $line) { // @phpstan-ignore-line
         });
 
-        $this->assertTrue(touch($this->file)); // Touch basic file
+        touch($this->file); // Touch basic file
         $this->assertFalse(fopen($this->file, 'x'));
-        $this->assertTrue(unlink($this->file));  // Reset state
+        unlink($this->file);  // Reset state
     }
 
     /**
