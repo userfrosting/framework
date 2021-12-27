@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use UserFrosting\Assets\AssetBundles\GulpBundleAssetsRawBundles;
 use UserFrosting\Assets\Assets;
 use UserFrosting\Support\Exception\FileNotFoundException;
+use UserFrosting\UniformResourceLocator\Normalizer;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
 
 /**
@@ -79,7 +80,7 @@ class AssetsTest extends TestCase
         $this->assertEquals('assets://bootstrap/js/bootstrap.js', $assets->urlPathToStreamUri($url));
 
         // Absolute path
-        $this->assertEquals(realpath(__DIR__.'/data/assets/bootstrap/js/bootstrap.js'), $assets->urlPathToAbsolutePath($url));
+        $this->assertEquals(Normalizer::normalizePath(__DIR__).'data/assets/bootstrap/js/bootstrap.js', $assets->urlPathToAbsolutePath($url));
     }
 
     /**
