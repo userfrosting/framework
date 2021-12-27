@@ -220,9 +220,9 @@ interface ResourceLocatorInterface
      *
      * @throws BadMethodCallException
      *
-     * @return string|bool The resource path, or false if not found resource
+     * @return string|false The resource path, or false if not found resource
      */
-    public function findResource(string $uri, bool $absolute = true, bool $first = false): string|bool;
+    public function findResource(string $uri, bool $absolute = true, bool $first = false): string|false;
 
     /**
      * Find all instances from a resource. Return an array of paths for said resource

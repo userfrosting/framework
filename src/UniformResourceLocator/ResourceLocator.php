@@ -15,12 +15,12 @@ namespace UserFrosting\UniformResourceLocator;
 use BadMethodCallException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
-use SplFileInfo;
 use InvalidArgumentException;
-use RocketTheme\Toolbox\StreamWrapper\Stream;
-use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
+use SplFileInfo;
 use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
 use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
+use UserFrosting\UniformResourceLocator\StreamWrapper\Stream;
+use UserFrosting\UniformResourceLocator\StreamWrapper\StreamBuilder;
 
 /**
  * The locator is used to find resources.
@@ -111,11 +111,6 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     protected function setupStreamWrapper(string $scheme): void
     {
-        // Make sure stream does not already exist
-        if ($this->streamBuilder->isStream($scheme)) {
-            return;
-        }
-
         // First unset the scheme. Prevent issue if someone else already registered it
         $this->unsetStreamWrapper($scheme);
 
@@ -131,10 +126,6 @@ class ResourceLocator implements ResourceLocatorInterface
     protected function unsetStreamWrapper(string $scheme): void
     {
         $this->streamBuilder->remove($scheme);
-
-        if (in_array($scheme, stream_get_wrappers(), true)) {
-            stream_wrapper_unregister($scheme);
-        }
     }
 
     /**
@@ -410,7 +401,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function findResource(string $uri, bool $absolute = true, bool $first = false): string|bool
+    public function findResource(string $uri, bool $absolute = true, bool $first = false): string|false
     {
         $resource = $this->getResource($uri, $first);
 
