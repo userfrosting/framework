@@ -84,7 +84,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function __invoke(string $uri): string|bool
+    public function __invoke(string $uri): string|false
     {
         return $this->findResource($uri, true);
     }
@@ -282,7 +282,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function getResource(string $uri, bool $first = false): ResourceInterface|bool
+    public function getResource(string $uri, bool $first = false): ResourceInterface|false
     {
         try {
             list($scheme, $file) = Normalizer::normalizeParts($uri);

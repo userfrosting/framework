@@ -28,9 +28,9 @@ interface ResourceLocatorInterface
      *
      * @throws BadMethodCallException
      *
-     * @return string|bool
+     * @return string|false
      */
-    public function __invoke(string $uri): string|bool;
+    public function __invoke(string $uri): string|false;
 
     /**
      * Add an existing ResourceStream to the stream list.
@@ -182,9 +182,9 @@ interface ResourceLocatorInterface
      * @param string $uri   Input URI to be searched (can be a file/path)
      * @param bool   $first Whether to return first path even if it doesn't exist.
      *
-     * @return ResourceInterface|bool Returns false if resource is not found
+     * @return ResourceInterface|false Returns false if resource is not found
      */
-    public function getResource(string $uri, bool $first = false): ResourceInterface|bool;
+    public function getResource(string $uri, bool $first = false): ResourceInterface|false;
 
     /**
      * Return a list of resources instances.
