@@ -358,7 +358,7 @@ class Stream implements StreamInterface
 
     /**
      * @param string $uri
-     * @param bool   $all 
+     * @param bool   $all
      *
      * @return string|false
      */
