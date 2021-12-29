@@ -105,7 +105,7 @@ class ReadOnlyStreamTest extends TestCase
 
         // Permissions
         $stat = stat($this->file);
-        $pwuid = posix_getpwuid($stat['uid']); // @phpstan-ignore-line
+        $this->assertIsArray($stat);
         $this->assertIsInt(fileperms($this->file));
         $this->assertIsInt(fileowner($this->file));
         $this->assertIsInt(filegroup($this->file));
