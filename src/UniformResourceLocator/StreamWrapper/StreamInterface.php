@@ -172,11 +172,11 @@ interface StreamInterface
      *
      * @see http://php.net/manual/streamwrapper.stream-read.php
      *
-     * @param int $count How many bytes of data from the current position should be returned.
+     * @param int<0, max> $count How many bytes of data from the current position should be returned.
      *
-     * @return string If there are less than count bytes available, return as many as are available. If no more data is available, return either false or an empty string.
+     * @return string|false If there are less than count bytes available, return as many as are available. If no more data is available, return either false or an empty string.
      */
-    public function stream_read(int $count): string;
+    public function stream_read(int $count): string|false;
 
     /**
      * Support for fseek().

@@ -36,7 +36,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * @var ResourceLocationInterface[] The list of registered locations
      */
-    protected $locations = [];
+    protected array $locations = [];
 
     /**
      * @var string The location base path

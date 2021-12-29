@@ -24,21 +24,13 @@ use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
  */
 class ResourceTest extends TestCase
 {
-    /** @var ResourceStream */
     protected ResourceStream $stream;
-
     protected string $streamScheme = 'foo';
     protected string $streamPath = 'foo/';
     protected bool $streamShared = false;
-
-    /** @var ResourceLocation */
     protected ResourceLocation $location;
-
     protected string $locationName = 'bar';
     protected string $locationPath = 'bar/';
-
-    /** @var resource */
-    protected Resource $resource;
 
     public function setUp(): void
     {

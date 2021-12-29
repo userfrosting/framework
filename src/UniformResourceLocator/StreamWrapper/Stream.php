@@ -120,10 +120,8 @@ class Stream implements StreamInterface
     /**
      * {@inheritDoc}
      */
-    // SEE https://github.com/php/doc-en/issues/1220
-    public function stream_read(int $count): string
+    public function stream_read(int $count): string|false
     {
-        // @phpstan-ignore-next-line
         $bytes = fread($this->handle, $count);
 
         return ($bytes === false) ? '' : $bytes;
