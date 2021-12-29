@@ -150,7 +150,7 @@ class StreamTest extends TestCase
         $owner = fileowner($this->file);
         $this->assertIsInt($owner);
         $this->assertIsBool(chown($this->file, $owner));
-        $this->assertIsBool(chown($this->file, 'root'));
+        $this->assertIsBool(chown($this->file, get_current_user()));
 
         // chgrp
         $group = filegroup($this->file);

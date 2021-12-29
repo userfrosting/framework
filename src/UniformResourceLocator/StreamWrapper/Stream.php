@@ -222,7 +222,7 @@ class Stream implements StreamInterface
             return false;
         }
 
-        return @mkdir($path, $mode, $recursive);
+        return mkdir($path, $mode, $recursive);
     }
 
     /**
@@ -236,7 +236,7 @@ class Stream implements StreamInterface
             return false;
         }
 
-        return @rmdir($path);
+        return rmdir($path);
     }
 
     /**
@@ -266,7 +266,7 @@ class Stream implements StreamInterface
             return false;
         }
 
-        $handle = @opendir($path);
+        $handle = opendir($path);
 
         // opendir can return false when trying to open a file for example
         if ($handle === false) {
@@ -358,6 +358,7 @@ class Stream implements StreamInterface
 
     /**
      * @param string $uri
+     * @param bool   $all 
      *
      * @return string|false
      */
