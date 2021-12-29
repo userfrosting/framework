@@ -216,15 +216,11 @@ class Stream implements StreamInterface
     public function mkdir(string $path, int $mode, int $options): bool
     {
         $recursive = (bool) ($options & STREAM_MKDIR_RECURSIVE);
-        $path = $this->getPath($path, 'd');
+        $path = $this->findPath($path, true);
 
         if ($path === false) {
             return false;
         }
-
-        // Fix paths on Windows
-        // @see https://www.php.net/manual/fr/function.mkdir.php#71880
-        str_replace('/', DIRECTORY_SEPARATOR, $path); 
 
         return @mkdir($path, $mode, $recursive);
     }

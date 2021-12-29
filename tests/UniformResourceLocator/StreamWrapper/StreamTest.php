@@ -97,7 +97,7 @@ class StreamTest extends TestCase
         // With new dir
         $this->assertFalse(file_exists($this->stream . 'bar'));
         $this->assertFalse(is_dir($this->stream . 'bar'));
-        $this->assertTrue(mkdir($this->stream . 'bar', recursive: true));
+        $this->assertTrue(mkdir($this->stream . 'bar'));
         $this->assertTrue(file_exists($this->stream . 'bar'));
         $this->assertTrue(is_dir($this->stream . 'bar'));
 
@@ -108,6 +108,7 @@ class StreamTest extends TestCase
             $entries[] = $entry;
         }
         $this->assertContains('bar', $entries);
+        closedir($dir); // Close dir to remove lock on Windows
 
         $this->assertTrue(rename($this->stream . 'bar', $this->stream . 'foo'));
         $this->assertTrue(rmdir($this->stream . 'foo'));
@@ -124,6 +125,7 @@ class StreamTest extends TestCase
         $entry = readdir($directoryResource);
         rewinddir($directoryResource);
         $this->assertSame($entry, readdir($directoryResource));
+        closedir($directoryResource); // Close dir to remove lock on Windows
         $this->assertTrue(unlink($this->file)); // Reset state
     }
 

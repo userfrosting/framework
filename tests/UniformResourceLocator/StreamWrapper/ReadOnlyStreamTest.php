@@ -102,6 +102,7 @@ class ReadOnlyStreamTest extends TestCase
             $entries[] = $entry;
         }
         $this->assertSame(['.', '..'], $entries);
+        closedir($dir); // Close dir to remove lock on Windows
 
         // Permissions
         $stat = stat($this->file);
