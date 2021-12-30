@@ -96,15 +96,6 @@ interface StreamInterface
     public function rmdir(string $path, int $options): bool;
 
     /**
-     * Support for stream_cast().
-     *
-     * @param int $cast_as Can be STREAM_CAST_FOR_SELECT when stream_select() is calling stream_cast() or STREAM_CAST_AS_STREAM when stream_cast() is called for other uses.
-     *
-     * @return resource
-     */
-    // public function stream_cast(int $cast_as): resource;
-
-    /**
      * Support for fclose().
      *
      * @see http://php.net/manual/streamwrapper.stream-close.php
@@ -207,15 +198,6 @@ interface StreamInterface
      * @return int The current position of the stream.
      */
     public function stream_tell(): int;
-
-    /**
-     * Support for ftruncate().
-     *
-     * @param int $new_size The new size.
-     *
-     * @return bool Returns true on success or false on failure.
-     */
-    // public function stream_truncate(int $new_size): bool;
 
     /**
      * Support for fwrite(), file_put_contents() etc.
