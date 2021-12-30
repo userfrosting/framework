@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -11,9 +13,7 @@
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * ResourceStreamInterface Interface.
- *
- * @author    Louis Charette
+ * The representation of a stream.
  */
 interface ResourceStreamInterface
 {
@@ -23,35 +23,9 @@ interface ResourceStreamInterface
     public function getScheme(): string;
 
     /**
-     * @param string $scheme
-     *
-     * @return static
-     */
-    public function setScheme($scheme);
-
-    /**
      * @return string
      */
     public function getPath(): string;
-
-    /**
-     * @param string $path (default null)
-     *
-     * @return static
-     */
-    public function setPath($path);
-
-    /**
-     * @return string
-     */
-    public function getPrefix(): string;
-
-    /**
-     * @param string $prefix
-     *
-     * @return static
-     */
-    public function setPrefix($prefix);
 
     /**
      * @return bool
@@ -59,9 +33,9 @@ interface ResourceStreamInterface
     public function isShared(): bool;
 
     /**
-     * @param bool $shared
+     * Is the stream read only.
      *
-     * @return static
+     * @return bool
      */
-    public function setShared($shared);
+    public function isReadonly(): bool;
 }

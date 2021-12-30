@@ -40,8 +40,8 @@ class AssetsTemplatePluginTest extends TestCase
         $this->baseUrl = 'https://assets.userfrosting.com/assets/';
         $this->locatorScheme = 'assets';
         $this->locator = new ResourceLocator($this->basePath);
-        $this->locator->registerStream($this->locatorScheme, '', 'assets');
-        $this->locator->registerStream($this->locatorScheme, 'vendor', 'assets', true);
+        $this->locator->registerStream($this->locatorScheme, 'assets');
+        $this->locator->registerSharedStream($this->locatorScheme, 'assets');
         $this->locator->registerLocation('hawks', 'sprinkles/hawks/');
         $this->locator->registerLocation('owls', 'sprinkles/owls/');
         $this->assets = new Assets($this->locator, $this->locatorScheme, $this->baseUrl);
@@ -72,7 +72,7 @@ class AssetsTemplatePluginTest extends TestCase
      */
     public function testJsBundle(AssetsTemplatePlugin $plugin)
     {
-        $this->assertEquals($plugin->js('test'), '<script src="https://assets.userfrosting.com/assets/vendor/bootstrap/js/bootstrap.js"></script><script src="https://assets.userfrosting.com/assets/vendor/bootstrap/js/npm.js"></script>');
+        $this->assertEquals($plugin->js('test'), '<script src="https://assets.userfrosting.com/assets/bootstrap/js/bootstrap.js"></script><script src="https://assets.userfrosting.com/assets/bootstrap/js/npm.js"></script>');
     }
 
     /**
@@ -85,7 +85,7 @@ class AssetsTemplatePluginTest extends TestCase
      */
     public function testJsBundleWithAttributes(AssetsTemplatePlugin $plugin)
     {
-        $this->assertEquals($plugin->js('test', ['async', 'data-test' => 'value']), '<script src="https://assets.userfrosting.com/assets/vendor/bootstrap/js/bootstrap.js" async data-test="value"></script><script src="https://assets.userfrosting.com/assets/vendor/bootstrap/js/npm.js" async data-test="value"></script>');
+        $this->assertEquals($plugin->js('test', ['async', 'data-test' => 'value']), '<script src="https://assets.userfrosting.com/assets/bootstrap/js/bootstrap.js" async data-test="value"></script><script src="https://assets.userfrosting.com/assets/bootstrap/js/npm.js" async data-test="value"></script>');
     }
 
     /**
@@ -98,7 +98,7 @@ class AssetsTemplatePluginTest extends TestCase
      */
     public function testCssBundle(AssetsTemplatePlugin $plugin)
     {
-        $this->assertEquals($plugin->css('test'), '<link href="https://assets.userfrosting.com/assets/vendor/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />');
+        $this->assertEquals($plugin->css('test'), '<link href="https://assets.userfrosting.com/assets/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />');
     }
 
     /**
@@ -111,7 +111,7 @@ class AssetsTemplatePluginTest extends TestCase
      */
     public function testCssBundleWithAttributes(AssetsTemplatePlugin $plugin)
     {
-        $this->assertEquals($plugin->css('test', ['want-async', 'data-test' => 'value']), '<link href="https://assets.userfrosting.com/assets/vendor/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" want-async data-test="value" />');
+        $this->assertEquals($plugin->css('test', ['want-async', 'data-test' => 'value']), '<link href="https://assets.userfrosting.com/assets/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" want-async data-test="value" />');
     }
 
     /**
@@ -124,6 +124,6 @@ class AssetsTemplatePluginTest extends TestCase
      */
     public function testUrl(AssetsTemplatePlugin $plugin)
     {
-        $this->assertEquals($plugin->url('assets://vendor/bootstrap/fonts/glyphicons-halflings-regular.eot'), 'https://assets.userfrosting.com/assets/vendor/bootstrap/fonts/glyphicons-halflings-regular.eot');
+        $this->assertEquals($plugin->url('assets://bootstrap/fonts/glyphicons-halflings-regular.eot'), 'https://assets.userfrosting.com/assets/bootstrap/fonts/glyphicons-halflings-regular.eot');
     }
 }

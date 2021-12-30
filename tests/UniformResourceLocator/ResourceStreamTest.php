@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -12,7 +14,6 @@ namespace UserFrosting\Tests\UniformResourceLocator;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceStream;
-use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
 
 /**
  * Tests for ResourceLocator.
@@ -26,28 +27,17 @@ class ResourceStreamTest extends TestCase
     {
         // Test instance & default values
         $stream = new ResourceStream('');
-        $this->assertInstanceOf(ResourceStreamInterface::class, $stream);
         $this->assertEquals('', $stream->getScheme());
         $this->assertEquals('', $stream->getPath());
         $this->assertFalse($stream->isShared());
-
-        // Set/get scheme, path and shared properties
-        $stream->setScheme('foo');
-        $this->assertEquals('foo', $stream->getScheme());
-
-        $stream->setPath('/bar');
-        $this->assertEquals('/bar/', $stream->getPath());
-
-        $stream->setShared(true);
-        $this->assertTrue($stream->isShared());
     }
 
     /**
      * Now try again with the info in the constructor.
      */
-    public function testResourceStream_ctor(): void
+    public function testResourceStreamComplete(): void
     {
-        $stream = new ResourceStream('bar', '', '/foo', true);
+        $stream = new ResourceStream('bar', '/foo', true);
         $this->assertEquals('bar', $stream->getScheme());
         $this->assertEquals('/foo/', $stream->getPath());
         $this->assertTrue($stream->isShared());
@@ -56,7 +46,7 @@ class ResourceStreamTest extends TestCase
     /**
      * When no path is defined, the name should be used.
      */
-    public function testResourceStream_noPath(): void
+    public function testResourceStreamNoPath(): void
     {
         $stream = new ResourceStream('etc');
         $this->assertEquals('etc', $stream->getScheme());

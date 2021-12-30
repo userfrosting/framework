@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,109 +12,69 @@
 
 namespace UserFrosting\Tests\UniformResourceLocator;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use RocketTheme\Toolbox\ResourceLocator\ResourceLocatorInterface as BaseResourceLocatorInterface;
-use RocketTheme\Toolbox\StreamWrapper\StreamBuilder;
 use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
 use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
 use UserFrosting\UniformResourceLocator\Normalizer;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceLocationInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
-use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 use UserFrosting\UniformResourceLocator\ResourceStream;
 use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
+use UserFrosting\UniformResourceLocator\StreamWrapper\StreamBuilder;
 
 /**
  * Tests for ResourceLocator.
  */
 class ResourceLocatorTest extends TestCase
 {
-    /**
-     * Test instance & default values.
-     */
-    public function testConstructor(): ResourceLocator
-    {
-        $locator = new ResourceLocator();
-        $this->assertInstanceOf(ResourceLocatorInterface::class, $locator);
-        $this->assertInstanceOf(BaseResourceLocatorInterface::class, $locator);
-
-        return $locator;
-    }
-
-    /**
-     * @depends testConstructor
-     */
     public function testGetStreamBuilder(): void
     {
         $locator = new ResourceLocator();
         $streamBuilder = $locator->getStreamBuilder();
-        $this->assertInstanceOf(StreamBuilder::class, $streamBuilder);
+        $this->assertInstanceOf(StreamBuilder::class, $streamBuilder); // @phpstan-ignore-line
     }
 
-    /**
-     * @depends testConstructor
-     */
     public function testGetBasePathWithEmptyConstructorArgument(): void
     {
         $locator = new ResourceLocator();
         $this->assertEquals('', $locator->getBasePath());
     }
 
-    /**
-     * @depends testConstructor
-     */
     public function testSetBasePathWithConstructorArgument(): void
     {
         $locator = new ResourceLocator(__DIR__.'/Building');
         $this->assertEquals(Normalizer::normalizePath(__DIR__.'/Building'), $locator->getBasePath());
     }
 
-    /**
-     * @depends testConstructor
-     */
-    public function testSetBasePath(): void
-    {
-        $locator = new ResourceLocator();
-        $locator->setBasePath(__DIR__.'/Building');
-        $this->assertEquals(Normalizer::normalizePath(__DIR__.'/Building'), $locator->getBasePath());
-    }
-
-    /**
-     * @depends testConstructor
-     */
     public function testAddStream(): void
     {
         $locator = new ResourceLocator();
         $this->assertFalse($locator->schemeExists('bar'));
 
-        $stream = new ResourceStream('bar', '', 'foo');
+        $stream = new ResourceStream('bar', 'foo');
         $locator->addStream($stream);
 
         $this->assertTrue($locator->schemeExists('bar'));
 
         $barStream = $locator->getStream('bar');
-        $this->assertIsArray($barStream);
-        $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
-        $this->assertEquals('foo/', $barStream[''][0]->getPath());
+        $this->assertContainsOnlyInstancesOf(ResourceStreamInterface::class, $barStream);
     }
 
-    /**
-     * @depends testConstructor
-     */
     public function testRegisterStream(): void
     {
         $locator = new ResourceLocator();
         $this->assertFalse($locator->schemeExists('bar'));
 
-        $locator->registerStream('bar', '', 'foo');
+        $locator->registerStream('bar', 'foo');
 
         $this->assertTrue($locator->schemeExists('bar'));
 
         $barStream = $locator->getStream('bar');
-        $this->assertIsArray($barStream);
-        $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
-        $this->assertEquals('foo/', $barStream[''][0]->getPath());
+        $this->assertContainsOnlyInstancesOf(ResourceStreamInterface::class, $barStream);
+        $this->assertCount(1, $barStream);
+        $this->assertEquals('foo/', $barStream[0]->getPath());
     }
 
     /**
@@ -123,15 +85,15 @@ class ResourceLocatorTest extends TestCase
         $locator = new ResourceLocator();
         $this->assertFalse($locator->schemeExists('bar'));
 
-        $locator->registerStream('bar', '', 'foo', true);
+        $locator->registerStream('bar', 'foo', true);
 
         $this->assertTrue($locator->schemeExists('bar'));
 
         $barStream = $locator->getStream('bar');
-        $this->assertIsArray($barStream);
-        $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
-        $this->assertEquals('foo/', $barStream[''][0]->getPath());
-        $this->assertTrue($barStream[''][0]->isShared());
+        $this->assertContainsOnlyInstancesOf(ResourceStreamInterface::class, $barStream);
+        $this->assertCount(1, $barStream);
+        $this->assertEquals('foo/', $barStream[0]->getPath());
+        $this->assertTrue($barStream[0]->isShared());
     }
 
     /**
@@ -142,35 +104,15 @@ class ResourceLocatorTest extends TestCase
         $locator = new ResourceLocator();
         $this->assertFalse($locator->schemeExists('bar'));
 
-        $locator->registerSharedStream('bar', '', 'foo');
+        $locator->registerSharedStream('bar', 'foo');
 
         $this->assertTrue($locator->schemeExists('bar'));
 
         $barStream = $locator->getStream('bar');
-        $this->assertIsArray($barStream);
-        $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
-        $this->assertEquals('foo/', $barStream[''][0]->getPath());
-        $this->assertTrue($barStream[''][0]->isShared());
-    }
-
-    /**
-     * @depends testRegisterStream
-     */
-    public function testRegisterStreamWithPrefix(): void
-    {
-        $locator = new ResourceLocator();
-        $this->assertFalse($locator->schemeExists('bar'));
-
-        $locator->registerStream('bar', '', 'foo');
-        $locator->registerStream('bar', 'prefix', 'oof');
-
-        $this->assertTrue($locator->schemeExists('bar'));
-
-        $barStream = $locator->getStream('bar');
-        $this->assertIsArray($barStream);
-        $this->assertInstanceOf(ResourceStreamInterface::class, $barStream['prefix'][0]);
-        $this->assertEquals('foo/', $barStream[''][0]->getPath());
-        $this->assertEquals('oof/', $barStream['prefix'][0]->getPath());
+        $this->assertContainsOnlyInstancesOf(ResourceStreamInterface::class, $barStream);
+        $this->assertCount(1, $barStream);
+        $this->assertEquals('foo/', $barStream[0]->getPath());
+        $this->assertTrue($barStream[0]->isShared());
     }
 
     /**
@@ -186,9 +128,9 @@ class ResourceLocatorTest extends TestCase
         $this->assertTrue($locator->schemeExists('bar'));
 
         $barStream = $locator->getStream('bar');
-        $this->assertIsArray($barStream);
-        $this->assertInstanceOf(ResourceStreamInterface::class, $barStream[''][0]);
-        $this->assertEquals('bar/', $barStream[''][0]->getPath());
+        $this->assertContainsOnlyInstancesOf(ResourceStreamInterface::class, $barStream);
+        $this->assertCount(1, $barStream);
+        $this->assertEquals('bar/', $barStream[0]->getPath());
     }
 
     /**
@@ -207,7 +149,7 @@ class ResourceLocatorTest extends TestCase
     public function testAddStreamThrowExceptionOnRestrictedScheme(): void
     {
         $locator = new ResourceLocator();
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $locator->registerStream('file');
     }
 
@@ -223,40 +165,6 @@ class ResourceLocatorTest extends TestCase
         $this->assertFalse($locator->schemeExists('bar'));
     }
 
-    /**
-     * @dataProvider addPathProvider
-     *
-     * @param string       $scheme
-     * @param string       $path
-     * @param string|array $lookup
-     */
-    public function testAddPath($scheme, $path, $lookup): void
-    {
-        $locator = new ResourceLocator();
-
-        $this->assertFalse($locator->schemeExists($scheme));
-
-        $locator->addPath($scheme, $path, $lookup);
-
-        $this->assertTrue($locator->schemeExists($scheme));
-    }
-
-    /**
-     * Data provider for testAddPath.
-     */
-    public function addPathProvider(): array
-    {
-        return [
-            ['base', '', 'base'],
-            ['local', '', 'local'],
-            ['override', '', 'override'],
-            ['all', '', ['override://all', 'local://all', 'base://all']],
-        ];
-    }
-
-    /**
-     * @depends testConstructor
-     */
     public function testGetStreams(): void
     {
         $locator = new ResourceLocator();
@@ -264,15 +172,12 @@ class ResourceLocatorTest extends TestCase
         $locator->registerStream('foo');
 
         $streams = $locator->getStreams();
-        $this->assertIsArray($streams);
         $this->assertCount(2, $streams);
-        $this->assertInstanceOf(ResourceStreamInterface::class, $streams['bar'][''][0]);
-        $this->assertEquals('bar/', $streams['bar'][''][0]->getPath());
+        $this->assertContainsOnlyInstancesOf(ResourceStreamInterface::class, $streams['bar']);
+        $this->assertCount(1, $streams['bar']);
+        $this->assertEquals('bar/', $streams['bar'][0]->getPath());
     }
 
-    /**
-     * @depends testConstructor
-     */
     public function testListStreams(): void
     {
         $locator = new ResourceLocator();
@@ -282,9 +187,6 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals(['bar', 'foo'], $locator->listStreams());
     }
 
-    /**
-     * @depends testConstructor
-     */
     public function testIsStream(): void
     {
         $locator = new ResourceLocator();
@@ -303,9 +205,6 @@ class ResourceLocatorTest extends TestCase
         $this->assertFalse($locator->isStream('path/to/../../../file.txt'));
     }
 
-    /**
-     * @depends testConstructor
-     */
     public function testAddLocation(): void
     {
         $locator = new ResourceLocator();
@@ -314,7 +213,6 @@ class ResourceLocatorTest extends TestCase
         $locator->addLocation($location);
 
         $barLocation = $locator->getLocation('bar');
-        $this->assertInstanceOf(ResourceLocationInterface::class, $barLocation);
         $this->assertEquals('/foo/', $barLocation->getPath());
     }
 
@@ -328,7 +226,6 @@ class ResourceLocatorTest extends TestCase
         $locator->registerLocation('bar', '/foo');
 
         $barLocation = $locator->getLocation('bar');
-        $this->assertInstanceOf(ResourceLocationInterface::class, $barLocation);
         $this->assertEquals('/foo/', $barLocation->getPath());
     }
 
@@ -342,7 +239,6 @@ class ResourceLocatorTest extends TestCase
         $locator->registerLocation('blah');
 
         $barLocation = $locator->getLocation('blah');
-        $this->assertInstanceOf(ResourceLocationInterface::class, $barLocation);
         $this->assertEquals('blah/', $barLocation->getPath());
     }
 
@@ -366,9 +262,8 @@ class ResourceLocatorTest extends TestCase
         $locator->registerLocation('foo', '/bar');
 
         $locations = $locator->getLocations();
-        $this->assertIsArray($locations);
         $this->assertCount(2, $locations);
-        $this->assertInstanceOf(ResourceLocationInterface::class, $locations['bar']);
+        $this->assertContainsOnlyInstancesOf(ResourceLocationInterface::class, $locations);
         $this->assertEquals('/foo/', $locations['bar']->getPath());
     }
 
@@ -404,7 +299,7 @@ class ResourceLocatorTest extends TestCase
      * @depends testGetLocations
      * @depends testGetStreams
      */
-    public function testResourceLocator_reset(): void
+    public function testResourceLocatorReset(): void
     {
         $locator = new ResourceLocator();
         $locator->registerLocation('bar');
@@ -428,14 +323,13 @@ class ResourceLocatorTest extends TestCase
     public function testStreamWithEmptyPath(): void
     {
         $locator = new ResourceLocator(__DIR__);
-        $locator->registerStream('sprinkles', '', '');
+        $locator->registerStream('sprinkles', '');
         $locator->registerLocation('uploads', 'app/uploads/profile');
 
         $result = $locator->findResource('sprinkles://header.json', false);
 
         //NB.: __DIR__ doesn't end with a '/'.
         $this->assertSame('app/uploads/profile/header.json', $result);
-        $this->assertNotSame('app/uploads/profile//header.json', $result);
     }
 
     /**
@@ -444,7 +338,7 @@ class ResourceLocatorTest extends TestCase
     public function testFindResourceWithBackPath(): void
     {
         $locator = new ResourceLocator(__DIR__);
-        $locator->registerStream('sprinkles', '', '');
+        $locator->registerStream('sprinkles', '');
         $locator->registerLocation('uploads', 'app/uploads/profile');
 
         $result = $locator->findResource('sprinkles://'.'../MyFile.txt');
@@ -478,5 +372,18 @@ class ResourceLocatorTest extends TestCase
         $resources = $locator->listResources('files://', true);
 
         $this->assertSame(Normalizer::normalizePath(__DIR__).'Building/Garage/files/blah.json', $resources[0]->getAbsolutePath());
+    }
+
+    public function testMultipleStreamWithSameScheme(): void
+    {
+        $locator = new ResourceLocator(__DIR__);
+        $locator->registerSharedStream('sprinkles', 'Building/Floors/Floor/');
+        $locator->registerSharedStream('sprinkles', 'Building/Floors/Floor3');
+
+        $result = $locator->findResources('sprinkles://files/test.json');
+
+        // We don't care (yet) about the actual result, we just want to make
+        // sure the two streams are picked up.
+        $this->assertCount(2, $result);
     }
 }

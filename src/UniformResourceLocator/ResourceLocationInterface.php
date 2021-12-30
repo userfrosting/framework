@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -11,9 +13,7 @@
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * ResourceLocationInterface Interface.
- *
- * @author    Louis Charette
+ * The representation of a location.
  */
 interface ResourceLocationInterface
 {
@@ -23,21 +23,7 @@ interface ResourceLocationInterface
     public function getName(): string;
 
     /**
-     * @param string $name
-     *
-     * @return static
-     */
-    public function setName(string $name);
-
-    /**
      * @return string
      */
     public function getPath(): string;
-
-    /**
-     * @param string $path
-     *
-     * @return static
-     */
-    public function setPath(string $path);
 }

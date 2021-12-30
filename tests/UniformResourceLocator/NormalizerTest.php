@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,6 +12,7 @@
 
 namespace UserFrosting\Tests\UniformResourceLocator;
 
+use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\Normalizer;
 
@@ -30,6 +33,8 @@ class NormalizerTest extends TestCase
 
     /**
      * Data provider for testNormalize.
+     *
+     * @return string[][]
      */
     public function normalizeProvider(): array
     {
@@ -37,7 +42,6 @@ class NormalizerTest extends TestCase
             ['', ''],
             ['./', ''],
             ['././/./', ''],
-            ['././/../', false],
             ['/', '/'],
             ['//', '/'],
             ['///', '/'],
@@ -50,42 +54,49 @@ class NormalizerTest extends TestCase
             ['path/to/file.txt', 'path/to/file.txt'],
             ['path/to/../file.txt', 'path/file.txt'],
             ['path/to/../../file.txt', 'file.txt'],
-            ['path/to/../../../file.txt', false],
             ['/path/to/file.txt', '/path/to/file.txt'],
             ['/path/to/../file.txt', '/path/file.txt'],
             ['/path/to/../../file.txt', '/file.txt'],
-            ['/path/to/../../../file.txt', false],
             ['c:\\', 'c:/'],
             ['c:\\bar\\foo', 'c:/bar/foo'],
             ['c:\\bar/foo', 'c:/bar/foo'],
             ['c:\\path\\to\file.txt', 'c:/path/to/file.txt'],
             ['c:\\path\\to\../file.txt', 'c:/path/file.txt'],
             ['c:\\path\\to\../../file.txt', 'c:/file.txt'],
-            ['c:\\path\\to\../../../file.txt', false],
             ['\\path\\to\file.txt', '/path/to/file.txt'],
             ['\\path/to\file.txt', '/path/to/file.txt'],
             ['stream://path/to/file.txt', 'stream://path/to/file.txt'],
             ['stream://path/to/../file.txt', 'stream://path/file.txt'],
             ['stream://path/to/../../file.txt', 'stream://file.txt'],
-            ['stream://path/to/../../../file.txt', false],
         ];
     }
 
-    public function testNormalizeReturnFalseOnSuppressedException(): void
+    /**
+     * @dataProvider normalizeWithExceptionProvider
+     *
+     * @param string $uri
+     */
+    public function testNormalizeThrowExceptionOnBadUriPart(string $uri): void
     {
-        $this->assertFalse(Normalizer::normalize(123));
+        $this->expectException(BadMethodCallException::class);
+        Normalizer::normalize($uri);
     }
 
-    public function testNormalizeThrowExceptionOnBadUri(): void
+    /**
+     * Data provider for testNormalizeThrowExceptionOnBadUriPart.
+     *
+     * @return string[][]
+     */
+    public function normalizeWithExceptionProvider(): array
     {
-        $this->expectException(\BadMethodCallException::class);
-        Normalizer::normalize(123, true);
-    }
-
-    public function testNormalizeThrowExceptionOnBadUriPart(): void
-    {
-        $this->expectException(\BadMethodCallException::class);
-        Normalizer::normalize('path/to/../../../file.txt', true);
+        return [
+            ['path/to/../../../file.txt'],
+            ['././/../'],
+            ['/path/to/../../../file.txt'],
+            ['path/to/../../../file.txt'],
+            ['c:\\path\\to\../../../file.txt'],
+            ['stream://path/to/../../../file.txt'],
+        ];
     }
 
     /**
@@ -100,6 +111,8 @@ class NormalizerTest extends TestCase
 
     /**
      * Data provider for testNormalize.
+     *
+     * @return string[][]
      */
     public function normalizePathProvider(): array
     {

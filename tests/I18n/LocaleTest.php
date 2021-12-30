@@ -252,7 +252,7 @@ class LocaleTest extends TestCase
     public function testWithSharedLocation(string $path): void
     {
         $locator = new ResourceLocator(__DIR__);
-        $locator->registerStream('locale', '', $path, true);
+        $locator->registerSharedStream('locale', $path);
 
         $locale = new Locale('fr_FR');
         $this->assertInstanceOf(LocaleInterface::class, $locale);

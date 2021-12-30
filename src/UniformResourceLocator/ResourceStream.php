@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -11,53 +13,22 @@
 namespace UserFrosting\UniformResourceLocator;
 
 /**
- * ResourceStream Class.
- *
- * The representation of a stream
- *
- * @author    Louis Charette
+ * The representation of a stream.
  */
 class ResourceStream implements ResourceStreamInterface
 {
     /**
-     * @var string The path scheme
-     */
-    protected $scheme;
-
-    /**
-     * @var string The base path
-     */
-    protected $path;
-
-    /**
-     * @var string The stream prefix
-     */
-    protected $prefix;
-
-    /**
-     * @var bool Is the path shared? If yes, it won't be affected by locations
-     */
-    protected $shared;
-
-    /**
-     * Constructor.
-     *
      * @param string $scheme
-     * @param string $prefix
      * @param string $path
      * @param bool   $shared
+     * @param bool   $readonly
      */
-    // TODO : Use names arguments for prefix + type hint
-    public function __construct($scheme, $prefix = '', $path = null, $shared = false)
-    {
-        if (is_null($path)) {
-            $path = $scheme;
-        }
-
-        $this->setScheme($scheme);
-        $this->setPrefix($prefix);
-        $this->setPath($path);
-        $this->setShared($shared);
+    public function __construct(
+        protected string $scheme,
+        protected ?string $path = null,
+        protected bool $shared = false,
+        protected bool $readonly = false,
+    ) {
     }
 
     /**
@@ -69,55 +40,17 @@ class ResourceStream implements ResourceStreamInterface
     }
 
     /**
-     * @param string $scheme
+     * Path default to scheme when null.
      *
-     * @return static
-     */
-    public function setScheme($scheme): self
-    {
-        $this->scheme = $scheme;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getPath(): string
     {
-        return $this->path;
-    }
+        if ($this->path === null) {
+            return Normalizer::normalizePath($this->getScheme());
+        }
 
-    /**
-     * @param string $path (default null)
-     *
-     * @return static
-     */
-    public function setPath($path): self
-    {
-        $this->path = Normalizer::normalizePath($path);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPrefix(): string
-    {
-        return $this->prefix;
-    }
-
-    /**
-     * @param string $prefix
-     *
-     * @return static
-     */
-    public function setPrefix($prefix): self
-    {
-        $this->prefix = $prefix;
-
-        return $this;
+        return Normalizer::normalizePath($this->path);
     }
 
     /**
@@ -129,14 +62,10 @@ class ResourceStream implements ResourceStreamInterface
     }
 
     /**
-     * @param bool $shared
-     *
-     * @return static
+     * {@inheritDoc}
      */
-    public function setShared($shared): self
+    public function isReadonly(): bool
     {
-        $this->shared = $shared;
-
-        return $this;
+        return $this->readonly;
     }
 }

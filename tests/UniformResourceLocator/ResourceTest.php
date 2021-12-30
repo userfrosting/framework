@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -13,7 +15,6 @@ namespace UserFrosting\Tests\UniformResourceLocator;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\Normalizer;
 use UserFrosting\UniformResourceLocator\Resource;
-use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceStream;
 use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
@@ -23,60 +24,27 @@ use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
  */
 class ResourceTest extends TestCase
 {
-    /** @var ResourceStream */
-    protected $stream;
-
-    protected $streamScheme = 'foo';
-    protected $streamPrefix = '';
-    protected $streamPath = 'foo/';
-    protected $streamShared = false;
-
-    /** @var ResourceLocation */
-    protected $location;
-
-    protected $locationName = 'bar';
-    protected $locationPath = 'bar/';
+    protected ResourceStream $stream;
+    protected string $streamScheme = 'foo';
+    protected string $streamPath = 'foo/';
+    protected bool $streamShared = false;
+    protected ResourceLocation $location;
+    protected string $locationName = 'bar';
+    protected string $locationPath = 'bar/';
 
     public function setUp(): void
     {
-        parent::setup();
+        parent::setUp();
 
-        $this->stream = new ResourceStream($this->streamScheme, $this->streamPrefix, $this->streamPath, $this->streamShared);
+        $this->stream = new ResourceStream($this->streamScheme, $this->streamPath, $this->streamShared);
         $this->location = new ResourceLocation($this->locationName, $this->locationPath);
     }
 
-    /**
-     * @return \UserFrosting\UniformResourceLocator\Resource
-     */
-    public function testConstructor(): Resource
+    public function testGetStreamAndGetLocation(): void
     {
         $resource = new Resource($this->stream, $this->location, $this->streamPath.'test.txt', 'basePath/');
-        $this->assertInstanceOf(ResourceInterface::class, $resource);
-
-        return $resource;
-    }
-
-    /**
-     * @depends testConstructor
-     *
-     * @param \UserFrosting\UniformResourceLocator\Resource $resource
-     */
-    public function testGetStreamAndGetLocation(Resource $resource): void
-    {
         $this->assertEquals($this->stream, $resource->getStream());
         $this->assertEquals($this->location, $resource->getLocation());
-    }
-
-    /**
-     * @depends testConstructor
-     *
-     * @param \UserFrosting\UniformResourceLocator\Resource $resource
-     */
-    public function testGetSetLocatorBasePath(Resource $resource): void
-    {
-        $this->assertSame('basePath/', $resource->getLocatorBasePath());
-        $resource->setLocatorBasePath('pathBase/');
-        $this->assertSame('pathBase/', $resource->getLocatorBasePath());
     }
 
     /**
@@ -86,7 +54,7 @@ class ResourceTest extends TestCase
      * @param string $path
      * @param string $basePath
      */
-    public function testGetBasePath($useLocation, $path, $basePath): void
+    public function testGetBasePath(bool $useLocation, string $path, string $basePath): void
     {
         // Can't be done in resourcesProvider, as `setUp` is called after
         if ($useLocation) {
@@ -115,8 +83,10 @@ class ResourceTest extends TestCase
      * Data provider for testGetBasePath.
      *
      * Return a list of basepath to test. The rela rel path will be constructed by the
-     * test according to the stream used, so we'll asume the rel path are always
+     * test according to the stream used, so we'll assume the rel path are always
      * correct. Also mix and match three provider : path, basePath and useLocation (true/false)
+     *
+     * @return mixed[]
      */
     public function resourcesProvider(): array
     {
@@ -165,17 +135,16 @@ class ResourceTest extends TestCase
      *
      * @param string $path
      */
-    public function testSharedResourceStream($path): void
+    public function testSharedResourceStream(string $path): void
     {
-        $stream = new ResourceStream('cars', '', $path, true);
+        $stream = new ResourceStream('cars', $path, true);
         $resource = new Resource($stream, null, $path);
 
-        $this->assertInstanceOf(ResourceInterface::class, $resource);
         $this->assertEquals($path, $resource);
         $this->assertEquals($path, $resource->getPath());
         $this->assertNull($resource->getLocation());
         $this->assertEquals('cars://', $resource->getUri());
-        $this->assertInstanceOf(ResourceStreamInterface::class, $resource->getStream());
+        $this->assertInstanceOf(ResourceStreamInterface::class, $resource->getStream()); // @phpstan-ignore-line
     }
 
     /**
@@ -183,6 +152,8 @@ class ResourceTest extends TestCase
      *
      * Test different placement of slashes to make sure getUri and getBasePath
      * returns the correct path
+     *
+     * @return string[][]
      */
     public function sharedResourceStreamProvider(): array
     {
@@ -206,8 +177,12 @@ class ResourceTest extends TestCase
      * @param string $expectedFilename
      * @param string $expectedExtension
      */
-    public function testFilePropertiesGetters($path, $expectedBasename, $expectedFilename, $expectedExtension): void
-    {
+    public function testFilePropertiesGetters(
+        string $path,
+        string $expectedBasename,
+        string $expectedFilename,
+        string $expectedExtension
+    ): void {
         $resource = new Resource($this->stream, $this->location, $this->locationPath.$this->streamPath.$path);
 
         $this->assertSame($expectedBasename, $resource->getBasename());
@@ -219,8 +194,10 @@ class ResourceTest extends TestCase
      * Data provider for testFilePropertiesGetters.
      *
      * Return a list of relPath to test. The abs path will be constructed by the
-     * test according to the stream used, so we'll asume the abs path are always
+     * test according to the stream used, so we'll assume the abs path are always
      * correct. In any case, relPath == basePath (always).
+     *
+     * @return string[][]
      */
     public function FilesProvider(): array
     {

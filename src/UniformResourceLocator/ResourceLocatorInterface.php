@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,46 +12,54 @@
 
 namespace UserFrosting\UniformResourceLocator;
 
-use RocketTheme\Toolbox\ResourceLocator\ResourceLocatorInterface as BaseResourceLocatorInterface;
+use BadMethodCallException;
 use UserFrosting\UniformResourceLocator\Exception\LocationNotFoundException;
 use UserFrosting\UniformResourceLocator\Exception\StreamNotFoundException;
 
 /**
- * ResourceLocatorInterface Class.
- *
- * @author    Louis Charette
+ * The locator is used to find resources.
  */
-interface ResourceLocatorInterface extends BaseResourceLocatorInterface
+interface ResourceLocatorInterface
 {
     /**
+     * Alias for findResource().
+     *
      * @param string $uri
      *
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      *
-     * @return string|bool
+     * @return string|false
      */
-    public function __invoke($uri);
+    public function __invoke(string $uri): string|false;
 
     /**
-     * Add an exisitng ResourceStream to the stream list.
+     * Add an existing ResourceStream to the stream list.
      *
      * @param ResourceStreamInterface $stream
      *
      * @return static
      */
-    public function addStream(ResourceStreamInterface $stream);
+    public function addStream(ResourceStreamInterface $stream): static;
+
+    /**
+     * Returns true if uri is resolvable by using locator.
+     *
+     * @param string $uri
+     *
+     * @return bool
+     */
+    public function isStream(string $uri): bool;
 
     /**
      * Register a new stream.
      *
      * @param string               $scheme
-     * @param string               $prefix (default '')
      * @param string|string[]|null $paths  (default null). When using null path, the scheme will be used as a path
      * @param bool                 $shared (default false) Shared resources are not affected by locations
      *
      * @return static
      */
-    public function registerStream(string $scheme, string $prefix = '', $paths = null, bool $shared = false);
+    public function registerStream(string $scheme, string|array|null $paths = null, bool $shared = false): static;
 
     /**
      * Unregister the specified stream.
@@ -58,39 +68,33 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function removeStream(string $scheme);
+    public function removeStream(string $scheme): static;
 
     /**
-     * Return information about a specific stream.
-     * Return value is an array of ResourceStreamInterface, for each prefix
-     * For example :
-     *   $array = array(
-     *      ''       => ResourceStreamInterface,
-     *      'prefix' => ResourceStreamInterface
-     *   );.
+     * Return all registered Streams for a specific scheme.
+     * Return value is an array of ResourceStreamInterface.
      *
      * @param string $scheme The stream scheme
      *
      * @throws StreamNotFoundException If stream is not registered
      *
-     * @return array<string,array<ResourceStreamInterface>>
+     * @return ResourceStreamInterface[]
      */
     public function getStream(string $scheme): array;
 
     /**
      * Return information about a all registered stream.
-     * Return value is an array of array of ResourceStreamInterface, for each prefix
+     * Return value is an array of array of ResourceStreamInterface
      * For example :
      *   'bar' => array(
-     *      ''       => ResourceStreamInterface,
-     *      'prefix' => ResourceStreamInterface
+     *      ResourceStreamInterfaceA
+     *      ResourceStreamInterfaceB
      *   ),
      *   'foo' => array(
-     *      ''       => ResourceStreamInterface,
-     *      'blah'   => ResourceStreamInterface
+     *      ResourceStreamInterfaceC
      *   );.
      *
-     * @return array<string,array<string,array<ResourceStreamInterface>>>
+     * @return ResourceStreamInterface[][]
      */
     public function getStreams(): array;
 
@@ -99,7 +103,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return string[] An array of registered scheme => location
      */
-    public function listStreams();
+    public function listStreams(): array;
 
     /**
      * Returns true if a stream has been defined.
@@ -117,7 +121,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function addLocation(ResourceLocationInterface $location);
+    public function addLocation(ResourceLocationInterface $location): static;
 
     /**
      * Register a new location.
@@ -127,7 +131,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function registerLocation(string $name, ?string $path = null);
+    public function registerLocation(string $name, ?string $path = null): static;
 
     /**
      * Unregister the specified location.
@@ -136,7 +140,7 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return static
      */
-    public function removeLocation(string $name);
+    public function removeLocation(string $name): static;
 
     /**
      * Get a location instance based on it's name.
@@ -147,21 +151,21 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return ResourceLocationInterface
      */
-    public function getLocation(string $name);
+    public function getLocation(string $name): ResourceLocationInterface;
 
     /**
      * Get a a list of all registered locations.
      *
      * @return ResourceLocationInterface[]
      */
-    public function getLocations();
+    public function getLocations(): array;
 
     /**
      * Return a list of all the locations registered by name.
      *
      * @return string[] An array of registered name => location
      */
-    public function listLocations();
+    public function listLocations(): array;
 
     /**
      * Returns true if a location has been defined.
@@ -178,9 +182,9 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      * @param string $uri   Input URI to be searched (can be a file/path)
      * @param bool   $first Whether to return first path even if it doesn't exist.
      *
-     * @return ResourceInterface|bool Returns false if resource is not found
+     * @return ResourceInterface|false Returns false if resource is not found
      */
-    public function getResource(string $uri, bool $first = false);
+    public function getResource(string $uri, bool $first = false): ResourceInterface|false;
 
     /**
      * Return a list of resources instances.
@@ -203,7 +207,35 @@ interface ResourceLocatorInterface extends BaseResourceLocatorInterface
      *
      * @return ResourceInterface[] The resources list
      */
-    public function listResources(string $uri, bool $all = false, bool $sort = true);
+    public function listResources(string $uri, bool $all = false, bool $sort = true): array;
+
+    /**
+     * Find highest priority instance from a resource. Return the path for said resource
+     * For example, if looking for a `test.json` resource, only the top priority
+     * instance of `test.json` found will be returned.
+     *
+     * @param string $uri      Input URI to be searched (can be a file or directory)
+     * @param bool   $absolute Whether to return absolute path.
+     * @param bool   $first    Whether to return first path even if it doesn't exist.
+     *
+     * @throws BadMethodCallException
+     *
+     * @return string|false The resource path, or false if not found resource
+     */
+    public function findResource(string $uri, bool $absolute = true, bool $first = false): string|false;
+
+    /**
+     * Find all instances from a resource. Return an array of paths for said resource
+     * For example, if looking for a `test.json` resource, all instance
+     * of `test.json` found will be listed.
+     *
+     * @param string $uri      Input URI to be searched (can be a file or directory)
+     * @param bool   $absolute Whether to return absolute path.
+     * @param bool   $all      Whether to return all paths even if they don't exist.
+     *
+     * @return string[] An array of all the resources path
+     */
+    public function findResources(string $uri, bool $absolute = true, bool $all = false): array;
 
     /**
      * @return string
