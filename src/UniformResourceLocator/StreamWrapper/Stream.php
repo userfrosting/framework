@@ -41,7 +41,7 @@ class Stream implements StreamInterface
      */
     public function stream_open(string $uri, string $mode, int $options, ?string &$opened_path): bool
     {
-        $path = $this->getPath($uri, $mode);
+        $path = $this->findPath($uri);
 
         if ($path === false) {
             return false;
@@ -186,7 +186,7 @@ class Stream implements StreamInterface
      */
     public function unlink(string $uri): bool
     {
-        $path = $this->getPath($uri);
+        $path = $this->findPath($uri);
 
         if ($path === false) {
             return false;
@@ -200,8 +200,8 @@ class Stream implements StreamInterface
      */
     public function rename(string $path_from, string $path_to): bool
     {
-        $fromPath = $this->getPath($path_from);
-        $toPath = $this->getPath($path_to, 'w');
+        $fromPath = $this->findPath($path_from);
+        $toPath = $this->findPath($path_to, true);
 
         if ($fromPath === false || $toPath === false) {
             return false;
@@ -230,7 +230,7 @@ class Stream implements StreamInterface
      */
     public function rmdir(string $path, int $options): bool
     {
-        $path = $this->getPath($path);
+        $path = $this->findPath($path);
 
         if ($path === false) {
             return false;
@@ -244,7 +244,7 @@ class Stream implements StreamInterface
      */
     public function url_stat(string $path, int $flags): array|false
     {
-        $path = $this->getPath($path);
+        $path = $this->findPath($path);
 
         if ($path === false) {
             return false;
@@ -260,7 +260,7 @@ class Stream implements StreamInterface
      */
     public function dir_opendir(string $path, int $options): bool
     {
-        $path = $this->getPath($path);
+        $path = $this->findPath($path);
 
         if ($path === false) {
             return false;
@@ -310,50 +310,6 @@ class Stream implements StreamInterface
         closedir($this->handle);
 
         return true;
-    }
-
-    /**
-     * @param string $uri
-     * @param string $mode
-     *
-     * @return string|false
-     */
-    protected function getPath(string $uri, string $mode = 'r'): string|false
-    {
-        $path = $this->findPath($uri);
-
-        if ($path !== false && file_exists($path)) {
-            return $path;
-        }
-
-        if (strpos($mode[0], 'r') === 0) {
-            return false;
-        }
-
-        // We are either opening a file or creating directory.
-        list($scheme, $target) = explode('://', $uri, 2);
-
-        // Happens if stream exist, but points to non-existing resource ($path
-        // would be true if it would exist). We can't create dir in non-existing path.
-        if ($target === '') {
-            return false;
-        }
-
-        $target = explode('/', $target);
-        $filename = [];
-
-        do {
-            $filename[] = array_pop($target);
-
-            $path = $this->findPath($scheme . '://' . implode('/', $target));
-        } while (count($target) > 1 && $path !== false);
-
-        // Happens if ...?
-        if ($path === false) {
-            return false;
-        }
-
-        return $path . '/' . implode('/', array_reverse($filename));
     }
 
     /**
