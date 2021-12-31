@@ -176,7 +176,7 @@ class Assets
         // Get asset resource from locator.
         // Make sure an asset can be found at this uri before creating and url
         $assetResource = $this->locator->getResource($streamPath);
-        if ($assetResource === false) {
+        if ($assetResource === null) {
             throw new FileNotFoundException("No file could be resolved for the stream path '$streamPath'.");
         }
 

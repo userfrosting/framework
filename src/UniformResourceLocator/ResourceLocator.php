@@ -62,7 +62,7 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * @var string[] List of system reserved streams
      */
-    protected array $reservedStreams = ['file'];
+    protected array $reservedSchemes = ['file'];
 
     /**
      * @param string             $basePath
@@ -82,17 +82,19 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function __invoke(string $uri): string|false
+    public function __invoke(string $uri): ?string
     {
-        return $this->findResource($uri, true);
+        return $this->getResource($uri)?->getAbsolutePath();
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @throws InvalidArgumentException If stream is reserved scheme
      */
     public function addStream(ResourceStreamInterface $stream): static
     {
-        if (in_array($stream->getScheme(), $this->reservedStreams, true)) {
+        if (in_array($stream->getScheme(), $this->reservedSchemes, true)) {
             throw new InvalidArgumentException("Can't add restricted stream scheme {$stream->getScheme()}.");
         }
 
@@ -136,8 +138,12 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function registerStream(string $scheme, string|array|null $paths = null, bool $shared = false, bool $readonly = false): static
-    {
+    public function registerStream(
+        string $scheme,
+        string|array|null $paths = null,
+        bool $shared = false,
+        bool $readonly = false
+    ): static {
         // Handle string or null argument
         if (!is_array($paths)) {
             $paths = [$paths];
@@ -162,8 +168,11 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return static
      */
-    public function registerSharedStream(string $scheme, string|array|null $paths = null, bool $readonly = false): static
-    {
+    public function registerSharedStream(
+        string $scheme,
+        string|array|null $paths = null,
+        bool $readonly = false
+    ): static {
         $this->registerStream($scheme, $paths, true, $readonly);
 
         return $this;
@@ -288,15 +297,16 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function getResource(string $uri, bool $first = false): ResourceInterface|false
+    public function getResource(string $uri, bool $all = false): ?ResourceInterface
     {
         try {
             list($scheme, $file) = Normalizer::normalizeParts($uri);
-
-            return $this->findFirst($scheme, $file, $first);
+            $resources = $this->find($scheme, $file, $all);
         } catch (BadMethodCallException $e) {
-            return false;
+            return null;
         }
+
+        return (count($resources) === 0) ? null : $resources[0];
     }
 
     /**
@@ -321,9 +331,7 @@ class ResourceLocator implements ResourceLocatorInterface
         $list = [];
 
         // Get all directory where we can find this resource. Will be returned with the priority order
-        $directories = $this->getResources($uri);
-
-        foreach ($directories as $directory) {
+        foreach ($this->getResources($uri) as $directory) {
 
             // Use Filesystem to list all file in the directory
             $files = $this->filesystem->allFiles($directory->getAbsolutePath());
@@ -407,19 +415,11 @@ class ResourceLocator implements ResourceLocatorInterface
     /**
      * {@inheritdoc}
      */
-    public function findResource(string $uri, bool $absolute = true, bool $first = false): string|false
+    public function findResource(string $uri, bool $absolute = true, bool $all = false): ?string
     {
-        $resource = $this->getResource($uri, $first);
+        $resource = $this->getResource($uri, $all);
 
-        if (!$resource instanceof ResourceInterface) {
-            return false;
-        }
-
-        if ($absolute) {
-            return $resource->getAbsolutePath();
-        } else {
-            return $resource->getPath();
-        }
+        return ($absolute) ? $resource?->getAbsolutePath() : $resource?->getPath();
     }
 
     /**
@@ -429,16 +429,13 @@ class ResourceLocator implements ResourceLocatorInterface
     {
         $resources = $this->getResources($uri, $all);
 
-        $paths = [];
-        foreach ($resources as $resource) {
-            if ($absolute) {
-                $paths[] = $resource->getAbsolutePath();
-            } else {
-                $paths[] = $resource->getPath();
-            }
+        if ($absolute) {
+            $callback = fn (ResourceInterface $resource): string => $resource->getAbsolutePath();
+        } else {
+            $callback = fn (ResourceInterface $resource): string => $resource->getPath();
         }
 
-        return $paths;
+        return array_map($callback, $resources);
     }
 
     /**
@@ -537,28 +534,6 @@ class ResourceLocator implements ResourceLocatorInterface
         }
 
         return $results;
-    }
-
-    /**
-     * Returns first found Resource for given scheme and file.
-     *
-     * @param string $scheme The scheme to search in
-     * @param string $file   The file to search for
-     * @param bool   $all    Whether to return all paths even if they don't exist.
-     *
-     * @throws InvalidArgumentException
-     *
-     * @return ResourceInterface|false Return false if no match found
-     */
-    protected function findFirst(string $scheme, string $file, bool $all): ResourceInterface|false
-    {
-        $resources = $this->find($scheme, $file, $all);
-
-        if (count($resources) === 0) {
-            return false;
-        }
-
-        return $resources[0];
     }
 
     /**

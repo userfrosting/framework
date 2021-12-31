@@ -41,10 +41,10 @@ class DocTest extends TestCase
 
         // Finding Files
         // 1) Find Resource
-        $default = $locator->findResource('config://default.json');
+        $default = $locator->findResource('config://default.json'); // @phpstan-ignore-line
         $this->assertSame($this->getBasePath().'app/floors/Floor2/config/default.json', $default);
 
-        // 2) getRerouce
+        // 2) getResource
         $defaultResource = $locator->getResource('config://default.json');
         $this->assertInstanceOf(ResourceInterface::class, $defaultResource);
 
@@ -71,7 +71,7 @@ class DocTest extends TestCase
         $this->assertSame(false, $defaultResourceStream->isShared());
 
         // 5) FindResources
-        $defaults = $locator->findResources('config://default.json');
+        $defaults = $locator->findResources('config://default.json'); // @phpstan-ignore-line
         $this->assertSame([
             $this->getBasePath().'app/floors/Floor2/config/default.json',
             $this->getBasePath().'app/floors/Floor1/config/default.json',
@@ -79,7 +79,7 @@ class DocTest extends TestCase
 
         // Finding Files - upload://profile
         // 1) Find Resource
-        $upload = $locator->findResource('upload://profile');
+        $upload = $locator->findResource('upload://profile'); // @phpstan-ignore-line
         $this->assertSame($this->getBasePath().'app/uploads/profile', $upload);
 
         // 2) getResource

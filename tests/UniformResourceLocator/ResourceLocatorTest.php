@@ -326,10 +326,10 @@ class ResourceLocatorTest extends TestCase
         $locator->registerStream('sprinkles', '');
         $locator->registerLocation('uploads', 'app/uploads/profile');
 
-        $result = $locator->findResource('sprinkles://header.json', false);
+        $result = $locator->getResource('sprinkles://header.json', false);
 
         //NB.: __DIR__ doesn't end with a '/'.
-        $this->assertSame('app/uploads/profile/header.json', $result);
+        $this->assertSame('app/uploads/profile/header.json', $result?->getPath());
     }
 
     /**
@@ -341,9 +341,9 @@ class ResourceLocatorTest extends TestCase
         $locator->registerStream('sprinkles', '');
         $locator->registerLocation('uploads', 'app/uploads/profile');
 
-        $result = $locator->findResource('sprinkles://'.'../MyFile.txt');
+        $result = $locator->getResource('sprinkles://'.'../MyFile.txt');
 
-        $this->assertFalse($result);
+        $this->assertNull($result);
     }
 
     /**
@@ -355,9 +355,9 @@ class ResourceLocatorTest extends TestCase
         $locator->registerStream('files');
         $locator->registerLocation('Garage', __DIR__.'/Building/Garage');
 
-        $resource = $locator->findResource('files://blah.json');
+        $resource = $locator->getResource('files://blah.json');
 
-        $this->assertSame(Normalizer::normalizePath(__DIR__).'Building/Garage/files/blah.json', $resource);
+        $this->assertSame(Normalizer::normalizePath(__DIR__).'Building/Garage/files/blah.json', $resource?->getAbsolutePath());
     }
 
     /**
@@ -380,7 +380,7 @@ class ResourceLocatorTest extends TestCase
         $locator->registerSharedStream('sprinkles', 'Building/Floors/Floor/');
         $locator->registerSharedStream('sprinkles', 'Building/Floors/Floor3');
 
-        $result = $locator->findResources('sprinkles://files/test.json');
+        $result = $locator->getResources('sprinkles://files/test.json');
 
         // We don't care (yet) about the actual result, we just want to make
         // sure the two streams are picked up.

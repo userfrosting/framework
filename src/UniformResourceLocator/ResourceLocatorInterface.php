@@ -28,9 +28,9 @@ interface ResourceLocatorInterface
      *
      * @throws BadMethodCallException
      *
-     * @return string|false
+     * @return string|null
      */
-    public function __invoke(string $uri): string|false;
+    public function __invoke(string $uri): ?string;
 
     /**
      * Add an existing ResourceStream to the stream list.
@@ -182,9 +182,9 @@ interface ResourceLocatorInterface
      * @param string $uri   Input URI to be searched (can be a file/path)
      * @param bool   $first Whether to return first path even if it doesn't exist.
      *
-     * @return ResourceInterface|false Returns false if resource is not found
+     * @return ResourceInterface|null Returns null if resource is not found
      */
-    public function getResource(string $uri, bool $first = false): ResourceInterface|false;
+    public function getResource(string $uri, bool $first = false): ?ResourceInterface;
 
     /**
      * Return a list of resources instances.
@@ -216,13 +216,15 @@ interface ResourceLocatorInterface
      *
      * @param string $uri      Input URI to be searched (can be a file or directory)
      * @param bool   $absolute Whether to return absolute path.
-     * @param bool   $first    Whether to return first path even if it doesn't exist.
+     * @param bool   $all      Whether to include all paths, even if they don't exist.
      *
      * @throws BadMethodCallException
      *
-     * @return string|false The resource path, or false if not found resource
+     * @return string|null The resource path, or null if not found resource
+     *
+     * @deprecated Use getResource instead
      */
-    public function findResource(string $uri, bool $absolute = true, bool $first = false): string|false;
+    public function findResource(string $uri, bool $absolute = true, bool $all = false): ?string;
 
     /**
      * Find all instances from a resource. Return an array of paths for said resource
@@ -231,9 +233,11 @@ interface ResourceLocatorInterface
      *
      * @param string $uri      Input URI to be searched (can be a file or directory)
      * @param bool   $absolute Whether to return absolute path.
-     * @param bool   $all      Whether to return all paths even if they don't exist.
+     * @param bool   $all      Whether to return all paths, even if they don't exist.
      *
      * @return string[] An array of all the resources path
+     *
+     * @deprecated Use getResources instead
      */
     public function findResources(string $uri, bool $absolute = true, bool $all = false): array;
 

@@ -43,7 +43,7 @@ class Stream implements StreamInterface
     {
         $path = $this->findPath($uri);
 
-        if ($path === false) {
+        if ($path === null) {
             return false;
         }
 
@@ -86,7 +86,7 @@ class Stream implements StreamInterface
             $this->findPath($uri, true) :
             $this->findPath($uri);
 
-        if ($path !== false) {
+        if ($path !== null) {
             switch ($option) {
                 case STREAM_META_TOUCH:
                     $currentTime = \time();
@@ -188,7 +188,7 @@ class Stream implements StreamInterface
     {
         $path = $this->findPath($uri);
 
-        if ($path === false) {
+        if ($path === null) {
             return false;
         }
 
@@ -203,7 +203,7 @@ class Stream implements StreamInterface
         $fromPath = $this->findPath($path_from);
         $toPath = $this->findPath($path_to, true);
 
-        if ($fromPath === false || $toPath === false) {
+        if ($fromPath === null || $toPath === null) {
             return false;
         }
 
@@ -218,7 +218,7 @@ class Stream implements StreamInterface
         $recursive = (bool) ($options & STREAM_MKDIR_RECURSIVE);
         $path = $this->findPath($path, true);
 
-        if ($path === false) {
+        if ($path === null) {
             return false;
         }
 
@@ -232,7 +232,7 @@ class Stream implements StreamInterface
     {
         $path = $this->findPath($path);
 
-        if ($path === false) {
+        if ($path === null) {
             return false;
         }
 
@@ -246,7 +246,7 @@ class Stream implements StreamInterface
     {
         $path = $this->findPath($path);
 
-        if ($path === false) {
+        if ($path === null) {
             return false;
         }
 
@@ -262,7 +262,7 @@ class Stream implements StreamInterface
     {
         $path = $this->findPath($path);
 
-        if ($path === false) {
+        if ($path === null) {
             return false;
         }
 
@@ -316,14 +316,14 @@ class Stream implements StreamInterface
      * @param string $uri
      * @param bool   $all
      *
-     * @return string|false
+     * @return string|null
      */
-    protected function findPath(string $uri, bool $all = false): string|false
+    protected function findPath(string $uri, bool $all = false): ?string
     {
         if (!is_null(static::$locator) && static::$locator->isStream($uri)) {
-            return static::$locator->findResource($uri, first: $all);
+            return static::$locator->getResource($uri, $all)?->getAbsolutePath();
         }
 
-        return false;
+        return null;
     }
 }
