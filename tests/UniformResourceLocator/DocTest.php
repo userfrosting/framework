@@ -15,8 +15,11 @@ namespace UserFrosting\Tests\UniformResourceLocator;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\Normalizer;
 use UserFrosting\UniformResourceLocator\ResourceInterface;
+use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceLocationInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
+use UserFrosting\UniformResourceLocator\ResourceStream;
+use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
 
 /**
  * Tests for the example code in the docs/Readme.md.
@@ -32,22 +35,17 @@ class DocTest extends TestCase
         $locator = new ResourceLocator(__DIR__.'/app/');
 
         // Register Locations
-        $locator->registerLocation('Floor1', 'floors/Floor1/');
-        $locator->registerLocation('Floor2', 'floors/Floor2/');
+        $locator->addLocation(new ResourceLocation('Floor1', 'floors/Floor1/'));
+        $locator->addLocation(new ResourceLocation('Floor2', 'floors/Floor2/'));
 
         // Register Streams
-        $locator->registerStream('config');
-        $locator->registerStream('upload', 'uploads/', true);
+        $locator->addStream(new ResourceStream('config'));
+        $locator->addStream(new ResourceStream('upload', 'uploads/', true));
 
         // Finding Files
-        // 1) Find Resource
-        $default = $locator->findResource('config://default.json'); // @phpstan-ignore-line
-        $this->assertSame($this->getBasePath().'app/floors/Floor2/config/default.json', $default);
-
-        // 2) getResource
         $defaultResource = $locator->getResource('config://default.json');
+        $this->assertEquals($this->getBasePath().'app/floors/Floor2/config/default.json', $defaultResource);
         $this->assertInstanceOf(ResourceInterface::class, $defaultResource);
-
         $this->assertSame($this->getBasePath().'app/floors/Floor2/config/default.json', $defaultResource->getAbsolutePath());
         $this->assertSame('floors/Floor2/config/default.json', $defaultResource->getPath());
         $this->assertSame('default.json', $defaultResource->getBasePath());
@@ -56,49 +54,50 @@ class DocTest extends TestCase
         $this->assertSame('default', $defaultResource->getFilename());
         $this->assertSame('config://default.json', $defaultResource->getUri());
 
-        // 3) GetLocation
+        // GetLocation
         $defaultResourceLocation = $defaultResource->getLocation();
         $this->assertInstanceOf(ResourceLocationInterface::class, $defaultResourceLocation);
-
         $this->assertSame('Floor2', $defaultResourceLocation->getName());
         $this->assertSame('floors/Floor2/', $defaultResourceLocation->getPath());
 
-        // 4) GetStream
+        // GetStream
         $defaultResourceStream = $defaultResource->getStream();
-
+        $this->assertInstanceOf(ResourceStreamInterface::class, $defaultResourceStream); // @phpstan-ignore-line
         $this->assertSame('config/', $defaultResourceStream->getPath());
         $this->assertSame('config', $defaultResourceStream->getScheme());
         $this->assertSame(false, $defaultResourceStream->isShared());
+        $this->assertSame(false, $defaultResourceStream->isReadonly());
 
-        // 5) FindResources
-        $defaults = $locator->findResources('config://default.json'); // @phpstan-ignore-line
+        // GetResources
+        $defaults = $locator->getResources('config://default.json');
+        $this->assertContainsOnlyInstancesOf(ResourceInterface::class, $defaults);
         $this->assertSame([
             $this->getBasePath().'app/floors/Floor2/config/default.json',
             $this->getBasePath().'app/floors/Floor1/config/default.json',
-        ], $defaults);
+        ], array_map('strval', $defaults)); // N.B.: array_map is not required if `assertEquals` is used. But we do as the doc.
 
         // Finding Files - upload://profile
-        // 1) Find Resource
-        $upload = $locator->findResource('upload://profile'); // @phpstan-ignore-line
-        $this->assertSame($this->getBasePath().'app/uploads/profile', $upload);
-
-        // 2) getResource
-        $uploadResource = $locator->getResource('upload://profile');
+        // GetResource
+        $uploadResource = $locator->getResource('upload://profile/');
         $this->assertInstanceOf(ResourceInterface::class, $uploadResource);
-
+        $this->assertEquals($this->getBasePath().'app/uploads/profile', $uploadResource);
         $this->assertSame($this->getBasePath().'app/uploads/profile', $uploadResource->getAbsolutePath());
-        $this->assertSame('uploads/profile', $uploadResource->getPath()); // N.B.: No `/` at the end, because we didn't ask for it in `findResource`
+        $this->assertSame('uploads/profile', $uploadResource->getPath());
         $this->assertSame('profile', $uploadResource->getBasePath());
         $this->assertSame('profile', $uploadResource->getBasename());
         $this->assertSame('', $uploadResource->getExtension());
         $this->assertSame('profile', $uploadResource->getFilename());
         $this->assertSame('upload://profile', $uploadResource->getUri());
 
-        // 3) FindResources
-        $defaults = $locator->findResources('upload://profile');
+        // Side note, `getPath` doesn't add a `/` at the end, because NormalizePath normalize this behavior.
+        // In any case, `upload://profile` and `upload://profile/` are equivalent.
+        $this->assertSame('uploads/profile', $locator->getResource('upload://profile/')?->getPath());
+
+        // GetResources
+        $defaults = $locator->getResources('upload://profile');
         $this->assertSame([
             $this->getBasePath().'app/uploads/profile',
-        ], $defaults);
+        ], array_map('strval', $defaults)); // N.B.: array_map is not required if `assertEquals` is used. But we do as the doc.
 
         // ListResources
         $list = $locator->listResources('config://');
@@ -110,7 +109,7 @@ class DocTest extends TestCase
         ], $list);
 
         // ListResources - All
-        $list = $locator->listResources('config://', true);
+        $list = $locator->listResources('config://', all: true);
         $this->assertEquals([
             $this->getBasePath().'app/floors/Floor1/config/debug.json',
             $this->getBasePath().'app/floors/Floor1/config/default.json',
@@ -120,7 +119,7 @@ class DocTest extends TestCase
         ], $list);
 
         // ListResources - Sort
-        $list = $locator->listResources('config://', false, false);
+        $list = $locator->listResources('config://', sort: false);
         $this->assertEquals([
             $this->getBasePath().'app/floors/Floor2/config/default.json',
             $this->getBasePath().'app/floors/Floor2/config/foo/bar.json',
@@ -128,11 +127,17 @@ class DocTest extends TestCase
             $this->getBasePath().'app/floors/Floor1/config/debug.json',
         ], $list);
 
-        // ListReources - Folder
-        $list = $locator->listResources('config://foo/', true);
+        // ListResources - Folder
+        $list = $locator->listResources('config://foo/', all: true);
         $this->assertEquals([
             $this->getBasePath().'app/floors/Floor2/config/foo/bar.json',
         ], $list);
+
+        // GetStreams
+        $streams = $locator->getStreams();
+        $this->assertCount(2, $streams);
+        $this->assertContainsOnlyInstancesOf(ResourceStreamInterface::class, $streams['config']);
+        $this->assertContainsOnlyInstancesOf(ResourceStreamInterface::class, $streams['upload']);
 
         // listStreams
         $streams = $locator->listStreams();
@@ -141,12 +146,28 @@ class DocTest extends TestCase
             'upload',
         ], $streams);
 
+        // getStream
+        $streams = $locator->getStream('upload');
+        $this->assertContainsOnlyInstancesOf(ResourceStreamInterface::class, $streams);
+        $this->assertCount(1, $streams);
+        $this->assertSame('uploads/', $streams[0]->getPath());
+
+        // GetLocations
+        $locations = $locator->getLocations();
+        $this->assertContainsOnlyInstancesOf(ResourceLocationInterface::class, $locations);
+        $this->assertCount(2, $locations);
+        $this->assertSame('floors/Floor2/', $locations['Floor2']->getPath());
+
         // listLocations
         $locations = $locator->listLocations();
         $this->assertSame([
             'Floor2',
             'Floor1',
         ], $locations);
+
+        // GetLocation
+        $location = $locator->getLocation('Floor1');
+        $this->assertSame('floors/Floor1/', $location->getPath());
     }
 
     protected function getBasePath(): string

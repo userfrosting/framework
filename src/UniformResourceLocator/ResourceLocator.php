@@ -91,6 +91,8 @@ class ResourceLocator implements ResourceLocatorInterface
      * {@inheritdoc}
      *
      * @throws InvalidArgumentException If stream is reserved scheme
+     *
+     * @todo Separate Normal and Shared stream as two different class. Same for Readonly stream?
      */
     public function addStream(ResourceStreamInterface $stream): static
     {
@@ -137,6 +139,8 @@ class ResourceLocator implements ResourceLocatorInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @todo Deprecate in favor of addStream
      */
     public function registerStream(
         string $scheme,
@@ -167,6 +171,8 @@ class ResourceLocator implements ResourceLocatorInterface
      * @param bool                 $readonly
      *
      * @return static
+     *
+     * @todo Deprecate in favor of addStream
      */
     public function registerSharedStream(
         string $scheme,
@@ -213,6 +219,8 @@ class ResourceLocator implements ResourceLocatorInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @todo Rename ListSchemes
      */
     public function listStreams(): array
     {
@@ -239,6 +247,8 @@ class ResourceLocator implements ResourceLocatorInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @todo Deprecate in favor of addLocation
      */
     public function registerLocation(string $name, ?string $path = null): static
     {

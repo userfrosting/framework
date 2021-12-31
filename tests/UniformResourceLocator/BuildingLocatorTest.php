@@ -340,14 +340,18 @@ class BuildingLocatorTest extends TestCase
      */
     public function testListResourcesForFiles(): void
     {
-        $list = self::$locator->listResources('files://');
-        $this->assertCount(4, $list);
-        $this->assertSame([
+        $expected = [
             $this->getBasePath().'Floors/Floor/files/test/blah.json',
             $this->getBasePath().'Floors/Floor2/files/data/foo.json',
             $this->getBasePath().'Floors/Floor2/files/foo.json',
             $this->getBasePath().'Floors/Floor3/files/test.json',
-        ], array_map('strval', $list));
+        ];
+
+        $list = self::$locator->listResources('files://');
+        $this->assertContainsOnlyInstancesOf(ResourceInterface::class, $list);
+        $this->assertCount(4, $list);
+        $this->assertSame($expected, array_map('strval', $list));
+        $this->assertEquals($expected, $list); // Assert cast to string
     }
 
     /**
