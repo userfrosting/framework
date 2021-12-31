@@ -1,16 +1,16 @@
 # UserFrosting 5.0 Framework
 
 [![Latest Version](https://img.shields.io/github/release/userfrosting/framework.svg)](https://github.com/userfrosting/framework/releases)
-![PHP Version](https://img.shields.io/packagist/php-v/userfrosting/framework.svg?color=brightgreen)
+![PHP Version](https://img.shields.io/packagist/php-v/userfrosting/framework/dev-develop-5.0?color=brightgreen)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![Join the chat at https://chat.userfrosting.com/channel/framework](https://chat.userfrosting.com/api/v1/shield.svg?name=UserFrosting)](https://chat.userfrosting.com/channel/framework)
 [![Donate](https://img.shields.io/badge/Open%20Collective-Donate-blue.svg)](https://opencollective.com/userfrosting#backer)
 
-| Branch | Version | Build | Coverage | Style |
-| ------ |:-------:|:-----:|:--------:|:-----:|
+| Branch | Version | Build | Coverage | Style | PHPStan |
+| ------ |:-------:|:-----:|:--------:|:-----:|:-------:|
 | [master][framework] | ![][framework-version] | [![][framework-master-build]][framework-travis] | [![][framework-master-codecov]][framework-codecov] | [![][framework-style-master]][framework-style] |
 | [develop][framework-develop] | ![][framework-version-develop] | [![][framework-develop-build]][framework-travis] | [![][framework-develop-codecov]][framework-codecov] | [![][framework-style-develop]][framework-style] |
-| [develop-5.0][framework-develop5] | ![][framework-version-develop5] | [![][framework-develop5-build]][framework-travis] | [![][framework-develop5-codecov]][framework-codecov] | [![][framework-style-develop5]][framework-style] |
+| [develop-5.0][framework-develop5] | ![][framework-version-develop5] | [![][framework-develop5-build]][framework-travis] | [![][framework-develop5-codecov]][framework-codecov] | [![][framework-style-develop5]][framework-style] | [![][framework-phpstan-develop5]][framework-phpstan]
 
 <!-- Links -->
 [framework]: https://github.com/userfrosting/framework
@@ -32,6 +32,8 @@
 [framework-style-develop]: https://github.styleci.io/repos/360994768/shield?branch=develop&style=flat
 [framework-style-develop5]: https://github.styleci.io/repos/360994768/shield?branch=develop-5.0&style=flat
 [framework-style]: https://github.styleci.io/repos/360994768
+[framework-phpstan]: https://github.com/userfrosting/framework/actions/workflows/PHPStan.yml
+[framework-phpstan-develop5]: https://github.com/userfrosting/framework/actions/workflows/PHPStan.yml/badge.svg?branch=develop-5.0
 
 ## Installation
 ```
