@@ -103,7 +103,7 @@ interface ResourceLocatorInterface
      *
      * @return string[] An array of registered scheme => location
      */
-    public function listStreams(): array;
+    public function listSchemes(): array;
 
     /**
      * Returns true if a stream has been defined.

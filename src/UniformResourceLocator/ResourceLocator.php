@@ -219,10 +219,8 @@ class ResourceLocator implements ResourceLocatorInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @todo Rename ListSchemes
      */
-    public function listStreams(): array
+    public function listSchemes(): array
     {
         return array_keys($this->streams);
     }

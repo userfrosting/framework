@@ -139,8 +139,8 @@ class DocTest extends TestCase
         $this->assertContainsOnlyInstancesOf(ResourceStreamInterface::class, $streams['config']);
         $this->assertContainsOnlyInstancesOf(ResourceStreamInterface::class, $streams['upload']);
 
-        // listStreams
-        $streams = $locator->listStreams();
+        // listSchemes
+        $streams = $locator->listSchemes();
         $this->assertSame([
             'config',
             'upload',

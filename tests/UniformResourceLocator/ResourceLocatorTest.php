@@ -178,13 +178,13 @@ class ResourceLocatorTest extends TestCase
         $this->assertEquals('bar/', $streams['bar'][0]->getPath());
     }
 
-    public function testListStreams(): void
+    public function testListSchemes(): void
     {
         $locator = new ResourceLocator();
         $locator->registerStream('bar');
         $locator->registerStream('foo');
 
-        $this->assertEquals(['bar', 'foo'], $locator->listStreams());
+        $this->assertEquals(['bar', 'foo'], $locator->listSchemes());
     }
 
     public function testIsStream(): void
