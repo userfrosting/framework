@@ -15,8 +15,6 @@ use UserFrosting\Support\Repository\PathBuilder\PathBuilder;
 /**
  * Config path builder, which builds a list of files for a given config environment.
  *
- * @author Alexander Weissman (https://alexanderweissman.com)
- *
  * @see http://blog.madewithlove.be/post/illuminate-config-v5/
  */
 class ConfigPathBuilder extends PathBuilder
@@ -24,15 +22,15 @@ class ConfigPathBuilder extends PathBuilder
     /**
      * Add path to default.php and environment mode file, if specified.
      *
-     * @param string|null $environment [defaul: null]
+     * @param string|null $environment [default: null]
      *
-     * @return array
+     * @return string[]
      */
     public function buildPaths(?string $environment = null): array
     {
         // Get all paths from the locator that match the uri.
         // Put them in reverse order to allow later files to override earlier files.
-        $searchPaths = array_reverse($this->locator->findResources($this->uri, true, true));
+        $searchPaths = array_reverse($this->locator->getResources($this->uri, true));
 
         $filePaths = [];
         foreach ($searchPaths as $path) {

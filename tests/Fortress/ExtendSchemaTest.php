@@ -18,9 +18,9 @@ use UserFrosting\UniformResourceLocator\ResourceLocator;
 
 class ExtendSchemaTest extends TestCase
 {
-    protected $basePath;
+    protected string $basePath;
 
-    protected $locator;
+    protected ResourceLocator $locator;
 
     public function setUp(): void
     {
@@ -37,7 +37,7 @@ class ExtendSchemaTest extends TestCase
         $this->locator->registerLocation('admin');
     }
 
-    public function testExtendYamlSchema()
+    public function testExtendYamlSchema(): void
     {
         // Arrange
         $builder = new StreamPathBuilder($this->locator, 'schema://contact.yaml');

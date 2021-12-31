@@ -18,9 +18,9 @@ use UserFrosting\UniformResourceLocator\ResourceLocator;
 
 class PathBuilderTest extends TestCase
 {
-    protected $basePath;
+    protected string $basePath;
 
-    protected $locator;
+    protected ResourceLocator $locator;
 
     public function setUp(): void
     {
@@ -35,7 +35,7 @@ class PathBuilderTest extends TestCase
         $this->locator->registerLocation('admin');
     }
 
-    public function testGlobBuildPaths()
+    public function testGlobBuildPaths(): void
     {
         // Arrange
         $builder = new SimpleGlobBuilder($this->locator, 'owls://');
@@ -52,7 +52,7 @@ class PathBuilderTest extends TestCase
         ]);
     }
 
-    public function testBuildPathsToFile()
+    public function testBuildPathsToFile(): void
     {
         // Arrange
         $builder = new StreamPathBuilder($this->locator, 'owls://megascops.php');
