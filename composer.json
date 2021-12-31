@@ -53,7 +53,7 @@
         "phpstan/phpstan-strict-rules": "^1.0",
         "slam/phpstan-extensions": "^6.0",
         "mockery/mockery": "^1.2",
-        "victorjonsson/markdowndocs": "^1.3"
+        "onspli/phpdoc-markdown": "^0.3"
     },
     "autoload": {
         "psr-4": {

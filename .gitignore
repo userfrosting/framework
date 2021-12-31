@@ -4,6 +4,7 @@ composer.lock
 .php-cs-fixer.cache
 _meta
 .phpunit.result.cache
+.phpdoc
 
 # OS & Editors
 .DS_Store

@@ -18,8 +18,18 @@ It's like trying to find someone in a one story house vs. a 25 stories office bu
 
 ## Building doc
 
+First, you need to install phpDocumentor. There are multiple options how to install it, one of them is using the PHAR:
+
+```bash
+$ wget https://phpdoc.org/phpDocumentor.phar
 ```
-vendor/bin/phpdoc-md generate src/UniformResourceLocator/ > src/UniformResourceLocator/docs/api.md
+
+Read more about [installation of phpDocumentor](https://phpdoc.org/)
+
+Once installed, run phpDocumentator, using UniformResourceLocator config file.
+
+```
+php phpDocumentor.phar -c src/UniformResourceLocator/phpdoc.xml 
 ```
 
 # References

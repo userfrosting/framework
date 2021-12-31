@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdocumentor
+        configVersion="3"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://www.phpdoc.org"
+        xsi:noNamespaceSchemaLocation="https://docs.phpdoc.org/latest/phpdoc.xsd"
+>
+    <paths>
+        <output>docs/api/</output>
+    </paths>
+    <version number="latest">
+        <api>
+            <source dsn="."></source>
+        </api>
+    </version>
+    <template name="vendor/onspli/phpdoc-markdown/templates/public-onefile">
+        <!-- <parameter name="string" value="string"/> -->
+    </template>
+</phpdocumentor>

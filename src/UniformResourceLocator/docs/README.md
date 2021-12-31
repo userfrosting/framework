@@ -86,7 +86,7 @@ echo file_get_contents('config://routing/wdt.json');
 
 # General Usage
 
-See [API documentation for more information](api.md#class-userfrostinguniformresourcelocatorresourcelocator).
+See [API documentation for more information](api/#class-userfrostinguniformresourcelocatorresourcelocator).
 
 ## Creating the Locator
 
@@ -230,7 +230,7 @@ Files found using the locator are represented by the *ResourceInterface* object.
 | `getUri(): string`                          | Returns the URI that can be used to retrieve this resource.                                  |
 | `getLocatorBasePath(): string`              | Returns the base path of the global locator system.                                          |
 
-See the [API Documentation](api.md) for more information.
+See the [API Documentation](api/) for more information.
 
 
 Note that a Resource object can be cast as a string to return the absolute path. Those two method are equivalent :
@@ -257,7 +257,7 @@ The locator provides some methods to control registered streams. Since stream sc
 | `listSchemes(): string[]`                              | Return a list of all the stream scheme registered.                                                                                                                                                                             |
 | `removeStream(string $scheme): static`                 | Unregister all stream associated with the specified scheme.                                                                                                                                                                    |
 
-See the [API Documentation](api.md) for more information.
+See the [API Documentation](api/) for more information.
 
 ### Stream Object
 
@@ -271,7 +271,7 @@ Streams are represented by the *ResourceStreamInterface* object.
 | `isShared(): bool`    | Return true or false if a stream is shared.                                                                     |
 | `isReadonly(): bool`  | Return true or false if a stream register a readonly `StreamWrapper`.                                           |
 
-See the [API Documentation](api.md) for more information.
+See the [API Documentation](api/) for more information.
 
 ## Locations
 
@@ -285,7 +285,7 @@ The locator also provides methods to control registered locations. Each location
 | `locationExist(string $name): bool`                    | Returns true or false if the specified location name is registered.                                                                                                  |
 | `removeLocation(string $name): static`                 | Unregister the location associated with the specified scheme.                                                                                                        |
 
-See the [API Documentation](api.md) for more information.
+See the [API Documentation](api/) for more information.
 
 ### Location Object
 
@@ -298,4 +298,4 @@ Streams are represented by the *ResourceLocationInterface* object.
 | `getName(): string` | Return the location name.      |
 | `getPath(): string` | Return the location base path. |
 
-See the [API Documentation](api.md) for more information.
+See the [API Documentation](api/) for more information.
