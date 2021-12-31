@@ -15,16 +15,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
-    - name: Setup PHP, with composer and extensions
-      uses: shivammathur/setup-php@v2
+    - uses: php-actions/composer@v6
+    - uses: php-actions/phpstan@v3
       with:
-        php-version: '8.0'
-        extensions: mbstring, dom, fileinfo, gd
-        tools: pecl
-
-    - name: Install Dependencies
-      run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-
-    - name: Run PHPStan
-      run: vendor/bin/phpstan analyse src
+        php_version: 8.0
+        path: src/UniformResourceLocator/ src/Config
