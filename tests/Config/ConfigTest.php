@@ -15,9 +15,9 @@ use UserFrosting\UniformResourceLocator\ResourceLocator;
 
 class ConfigTest extends TestCase
 {
-    protected $basePath;
+    protected string $basePath;
 
-    protected $locator;
+    protected ResourceLocator $locator;
 
     public function setUp(): void
     {
@@ -31,7 +31,7 @@ class ConfigTest extends TestCase
         $this->locator->registerStream('config');
     }
 
-    public function testConfigDefault()
+    public function testConfigDefault(): void
     {
         // Arrange
         $builder = new ConfigPathBuilder($this->locator, 'config://');
@@ -102,7 +102,7 @@ class ConfigTest extends TestCase
         ]);
     }
 
-    public function testConfigEnvironmentMode()
+    public function testConfigEnvironmentMode(): void
     {
         // Arrange
         $builder = new ConfigPathBuilder($this->locator, 'config://');
