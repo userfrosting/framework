@@ -13,7 +13,7 @@ It's like trying to find someone in a one story house vs. a 25 stories office bu
 # Documentation
 
 * [Main Documentation](docs/)
-* [API docs](docs/api.md)
+* [API docs](docs/api/)
 * [Working example / tutorial](docs/Example.md).
 
 ## Building doc

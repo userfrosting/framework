@@ -13,11 +13,11 @@ In addition:
 
 ```
 /**
- * UserFrosting Uniform Resource Locator (http://www.userfrosting.com)
+ * UserFrosting Framework (http://www.userfrosting.com)
  *
- * @link      https://github.com/userfrosting/UniformResourceLocator
- * @copyright Copyright (c) 2013-2019 Alexander Weissman, Louis Charette
- * @license   https://github.com/userfrosting/UniformResourceLocator/blob/master/LICENSE.md (MIT License)
+ * @link      https://github.com/userfrosting/framework
+ * @copyright Copyright (c) 2013-2021 Alexander Weissman, Louis Charette, Jordan Mele
+ * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
  ```
 
@@ -41,7 +41,7 @@ In addition:
 
 ## Automatically fixing coding style with PHP-CS-Fixer
 
-[PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer) can be used to automatically fix PHP code styling. UserFrosting provides a project specific configuration file ([`.php_cs`](.php_cs)) with a set of rules reflecting our style guidelines. This tool should be used before submitting any code change to assure the style guidelines are met. Every sprinkles will also be parsed by the fixer.
+[PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer) can be used to automatically fix PHP code styling. UserFrosting provides a project specific configuration file ([`.php-cs-fixer.php`](.php-cs-fixer.php)) with a set of rules reflecting our style guidelines. This tool should be used before submitting any code change to assure the style guidelines are met. Every sprinkles will also be parsed by the fixer.
 
 PHP-CS-Fixer is automatically loaded by Composer and can be used from the UserFrosting root directory :
 
