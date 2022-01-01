@@ -4,6 +4,72 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [5.0.0](https://github.com/userfrosting/framework/compare/4.6.1...5.0.0)
+With version 5, this repo can be used as a bare bone Slim & Symfony Console application. It include the necessary routing class, [PHP-DI](https://php-di.org) as the Dependency Injection Container, a PSR EventDispatcher, etc. SprinkleManager has also been moved from Core/System Sprinkle and completely rewritten. 
+
+It's necessary for the SprinkleMAnager, Slim and Symfony (Bakery) to be outside of the Core Sprinkle so it can be properly managed. All extra feature (template, database, config, etc.) are left for the Core Sprinkle. The old `sprinkle.json` has been replace with `SprinkleRecipe` interface.
+
+Version 5 also requires PHP 8.0 and up. With that in mind, most of the code has been updated to support PHP 8 and make use of it's new features. Code quality has also been stepped up, with PHPStan analysis added to the build process.
+
+### Global
+#### Added
+- Moved Alert into Framework from Core Sprinkle
+- Added Bakery / Symfony Console app : `UserFrosting\Bakery\Bakery`
+- UserFrosting / Slim 4 Web app : `UserFrosting\UserFrosting`
+- Moved `SprinkleManager` from main repo.
+- Added custom Event Dispatcher and Listeners : `UserFrosting\Event\EventDispatcher` & `UserFrosting\Event\SprinkleListenerProvider`
+
+#### Dependencies
+- Drop PHP 7.3 & 7.4 support
+- Updated `twig/twig` to `^3.3`
+
+#### Code Quality
+- Updated PHPStan config and added Github Action for automatic code analysis for UniformResourceLocator & Config (with no issues on max level)
+- Updated PHP-CS-Fixer & StyleCI config
+
+### Assets
+#### Removed
+- `UserFrosting\Assets\ServeAsset\SlimServeAsset` has been removed. Code has been moved into Core Sprinkle
+
+### Bakery
+#### Added
+- `UserFrosting\Bakery\WithSymfonyStyle` moved to this repo from Core. 
+
+### Testing
+- Added helper class to test Bakery command, Container, CustomAssertionsTrait, HttpTester, TestCase, etc.
+
+### Support
+#### Removed
+- These HTTP exceptions have been removed and replace with new system in Core Sprinkle :
+  - `BadRequestException`
+  - `ForbiddenException`
+  - `HttpException`
+  - `NotFoundException`
+- `UserFrosting\Support\Util\Util::normalizePath` has been removed. Use `UserFrosting\UniformResourceLocator\Normalizer::normalizePath` instead.
+
+### UniformResourceLocator
+#### Changes
+- Remove dependency on `rockettheme/toolbox` by integrating our own `StreamWrapper\Stream` and `StreamBuilder`
+- `findResource` and `getResource` now return `null` if a resource is not found instead of `false`
+
+#### Added
+- Added `readonly` option for streams. Files accessed using a readonly scheme will be protected against destructive action at the streamwrapper level.
+
+#### Deprecated
+- `findResource` is deprecated. Use `getResource` instead
+- `findResources` is deprecated. Use `getResources` instead
+- `registerStream` is deprecated. Use `addStream` instead
+- `registerLocation` is deprecated. Use `addLocation` instead
+
+#### Removed
+- Scheme Prefix has been removed
+- Resource : `setLocation`, `setPath`, `setLocatorBasePath` and `setStream` methods have been removed
+- ResourceLocation : `setName` and `setPath` methods have been removed
+- ResourceStream : `setScheme`, `setPath` and `setShared` methods have been removed
+- Deprecated `ResourceLocator::addPath` method removed
+- `ResourceLocator::setBasePath` method removed
+
+
 ## [4.6.1](https://github.com/userfrosting/framework/compare/4.6.0...4.6.1)
  - Fix issue with location outside of the main path not returning  the correct relative path.
  - Update php-cs-fixer to V3
