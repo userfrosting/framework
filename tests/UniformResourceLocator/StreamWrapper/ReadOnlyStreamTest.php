@@ -14,6 +14,7 @@ namespace UserFrosting\Tests\UniformResourceLocator\StreamWrapper;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
+use UserFrosting\UniformResourceLocator\ResourceStream;
 use UserFrosting\UniformResourceLocator\StreamWrapper\StreamBuilder;
 
 /**
@@ -44,7 +45,7 @@ class ReadOnlyStreamTest extends TestCase
 
         // Setup test locator
         $this->locator = new ResourceLocator(__DIR__ . '/data', streamBuilder: $this->builder);
-        $this->locator->registerSharedStream('foo', '', true);
+        $this->locator->addStream(new ResourceStream('foo', '', true, true));
 
         // Create test file and dir
         @touch(__DIR__ . '/data/test.txt');

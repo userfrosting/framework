@@ -139,8 +139,6 @@ class ResourceLocator implements ResourceLocatorInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @todo Deprecate in favor of addStream
      */
     public function registerStream(
         string $scheme,
@@ -172,7 +170,7 @@ class ResourceLocator implements ResourceLocatorInterface
      *
      * @return static
      *
-     * @todo Deprecate in favor of addStream
+     * @deprecated Use `addStream` instead
      */
     public function registerSharedStream(
         string $scheme,
@@ -245,8 +243,6 @@ class ResourceLocator implements ResourceLocatorInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @todo Deprecate in favor of addLocation
      */
     public function registerLocation(string $name, ?string $path = null): static
     {

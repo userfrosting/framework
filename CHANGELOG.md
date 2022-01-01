@@ -58,7 +58,7 @@ Version 5 also requires PHP 8.0 and up. With that in mind, most of the code has 
 #### Deprecated
 - `findResource` is deprecated. Use `getResource` instead
 - `findResources` is deprecated. Use `getResources` instead
-- `registerStream` is deprecated. Use `addStream` instead
+- `registerStream` and `registerSharedStream` are deprecated. Use `addStream` instead
 - `registerLocation` is deprecated. Use `addLocation` instead
 
 #### Removed

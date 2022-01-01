@@ -874,6 +874,7 @@ ResourceLocator::registerSharedStream( string scheme, string|string[]|null paths
 
 Shortcut for registerStream with $shared flag set to true.
 
+* **Warning:** this method is **deprecated**. This means that this method will likely be removed in a future version.
 
 **Parameters:**
 

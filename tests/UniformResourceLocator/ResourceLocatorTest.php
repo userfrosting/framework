@@ -62,6 +62,9 @@ class ResourceLocatorTest extends TestCase
         $this->assertContainsOnlyInstancesOf(ResourceStreamInterface::class, $barStream);
     }
 
+    /**
+     * @deprecated
+     */
     public function testRegisterStream(): void
     {
         $locator = new ResourceLocator();
@@ -79,6 +82,7 @@ class ResourceLocatorTest extends TestCase
 
     /**
      * @depends testRegisterStream
+     * @deprecated
      */
     public function testRegisterSharedStream(): void
     {
@@ -98,6 +102,7 @@ class ResourceLocatorTest extends TestCase
 
     /**
      * @depends testRegisterSharedStream
+     * @deprecated
      */
     public function testRegisterSharedStreamShort(): void
     {
@@ -123,7 +128,7 @@ class ResourceLocatorTest extends TestCase
         $locator = new ResourceLocator();
         $this->assertFalse($locator->schemeExists('bar'));
 
-        $locator->registerStream('bar');
+        $locator->addStream(new ResourceStream('bar'));
 
         $this->assertTrue($locator->schemeExists('bar'));
 
@@ -150,7 +155,7 @@ class ResourceLocatorTest extends TestCase
     {
         $locator = new ResourceLocator();
         $this->expectException(InvalidArgumentException::class);
-        $locator->registerStream('file');
+        $locator->addStream(new ResourceStream('file'));
     }
 
     /**
@@ -159,7 +164,7 @@ class ResourceLocatorTest extends TestCase
     public function testRemoveStream(): void
     {
         $locator = new ResourceLocator();
-        $locator->registerStream('bar');
+        $locator->addStream(new ResourceStream('bar'));
         $this->assertTrue($locator->schemeExists('bar'));
         $locator->removeStream('bar');
         $this->assertFalse($locator->schemeExists('bar'));
@@ -168,8 +173,8 @@ class ResourceLocatorTest extends TestCase
     public function testGetStreams(): void
     {
         $locator = new ResourceLocator();
-        $locator->registerStream('bar');
-        $locator->registerStream('foo');
+        $locator->addStream(new ResourceStream('bar'));
+        $locator->addStream(new ResourceStream('foo'));
 
         $streams = $locator->getStreams();
         $this->assertCount(2, $streams);
@@ -181,8 +186,8 @@ class ResourceLocatorTest extends TestCase
     public function testListSchemes(): void
     {
         $locator = new ResourceLocator();
-        $locator->registerStream('bar');
-        $locator->registerStream('foo');
+        $locator->addStream(new ResourceStream('bar'));
+        $locator->addStream(new ResourceStream('foo'));
 
         $this->assertEquals(['bar', 'foo'], $locator->listSchemes());
     }
@@ -190,7 +195,7 @@ class ResourceLocatorTest extends TestCase
     public function testIsStream(): void
     {
         $locator = new ResourceLocator();
-        $locator->registerStream('foo');
+        $locator->addStream(new ResourceStream('foo'));
 
         $this->assertFalse($locator->isStream('cars://foo.txt'));
         $this->assertTrue($locator->isStream('foo://cars'));
@@ -218,6 +223,7 @@ class ResourceLocatorTest extends TestCase
 
     /**
      * @depends testAddLocation
+     * @deprecated
      */
     public function testRegisterLocation(): void
     {
@@ -231,6 +237,7 @@ class ResourceLocatorTest extends TestCase
 
     /**
      * @depends testAddLocation
+     * @deprecated
      */
     public function testRegisterLocationWithNoPath(): void
     {
@@ -258,8 +265,8 @@ class ResourceLocatorTest extends TestCase
     public function testGetLocations(): void
     {
         $locator = new ResourceLocator();
-        $locator->registerLocation('bar', '/foo');
-        $locator->registerLocation('foo', '/bar');
+        $locator->addLocation(new ResourceLocation('bar', '/foo'));
+        $locator->addLocation(new ResourceLocation('foo', '/bar'));
 
         $locations = $locator->getLocations();
         $this->assertCount(2, $locations);
@@ -273,8 +280,8 @@ class ResourceLocatorTest extends TestCase
     public function testListLocations(): void
     {
         $locator = new ResourceLocator();
-        $locator->registerLocation('bar', '/foo');
-        $locator->registerLocation('foo', '/bar/');
+        $locator->addLocation(new ResourceLocation('bar', '/foo'));
+        $locator->addLocation(new ResourceLocation('foo', '/bar/'));
 
         // N.B.: Locations are list with the latest one (top priority) first
         $this->assertEquals(['foo', 'bar'], $locator->listLocations());
@@ -286,8 +293,8 @@ class ResourceLocatorTest extends TestCase
     public function testRemoveLocation(): void
     {
         $locator = new ResourceLocator();
-        $locator->registerLocation('bar', '/foo/');
-        $locator->registerLocation('foo', '/bar');
+        $locator->addLocation(new ResourceLocation('bar', '/foo/'));
+        $locator->addLocation(new ResourceLocation('foo', '/bar'));
 
         $locator->removeLocation('bar');
         $this->assertCount(1, $locator->getLocations());
@@ -302,10 +309,10 @@ class ResourceLocatorTest extends TestCase
     public function testResourceLocatorReset(): void
     {
         $locator = new ResourceLocator();
-        $locator->registerLocation('bar');
-        $locator->registerLocation('foo');
-        $locator->registerStream('bar');
-        $locator->registerStream('foo');
+        $locator->addLocation(new ResourceLocation('bar'));
+        $locator->addLocation(new ResourceLocation('foo'));
+        $locator->addStream(new ResourceStream('bar'));
+        $locator->addStream(new ResourceStream('foo'));
 
         $this->assertCount(2, $locator->getStreams());
         $this->assertCount(2, $locator->getLocations());
@@ -323,8 +330,8 @@ class ResourceLocatorTest extends TestCase
     public function testStreamWithEmptyPath(): void
     {
         $locator = new ResourceLocator(__DIR__);
-        $locator->registerStream('sprinkles', '');
-        $locator->registerLocation('uploads', 'app/uploads/profile');
+        $locator->addStream(new ResourceStream('sprinkles', ''));
+        $locator->addLocation(new ResourceLocation('uploads', 'app/uploads/profile'));
 
         $result = $locator->getResource('sprinkles://header.json', false);
 
@@ -338,8 +345,8 @@ class ResourceLocatorTest extends TestCase
     public function testFindResourceWithBackPath(): void
     {
         $locator = new ResourceLocator(__DIR__);
-        $locator->registerStream('sprinkles', '');
-        $locator->registerLocation('uploads', 'app/uploads/profile');
+        $locator->addStream(new ResourceStream('sprinkles', ''));
+        $locator->addLocation(new ResourceLocation('uploads', 'app/uploads/profile'));
 
         $result = $locator->getResource('sprinkles://'.'../MyFile.txt');
 
@@ -352,8 +359,8 @@ class ResourceLocatorTest extends TestCase
     public function testFindResourceOutsideMainPath(): void
     {
         $locator = new ResourceLocator(__DIR__.'/Building/Floors');
-        $locator->registerStream('files');
-        $locator->registerLocation('Garage', __DIR__.'/Building/Garage');
+        $locator->addStream(new ResourceStream('files'));
+        $locator->addLocation(new ResourceLocation('Garage', __DIR__.'/Building/Garage'));
 
         $resource = $locator->getResource('files://blah.json');
 
@@ -366,8 +373,8 @@ class ResourceLocatorTest extends TestCase
     public function testListResourceOutsideMainPath(): void
     {
         $locator = new ResourceLocator(__DIR__.'/Building/Floors');
-        $locator->registerStream('files');
-        $locator->registerLocation('Garage', __DIR__.'/Building/Garage');
+        $locator->addStream(new ResourceStream('files'));
+        $locator->addLocation(new ResourceLocation('Garage', __DIR__.'/Building/Garage'));
 
         $resources = $locator->listResources('files://', true);
 
@@ -377,8 +384,8 @@ class ResourceLocatorTest extends TestCase
     public function testMultipleStreamWithSameScheme(): void
     {
         $locator = new ResourceLocator(__DIR__);
-        $locator->registerSharedStream('sprinkles', 'Building/Floors/Floor/');
-        $locator->registerSharedStream('sprinkles', 'Building/Floors/Floor3');
+        $locator->addStream(new ResourceStream('sprinkles', 'Building/Floors/Floor/', true));
+        $locator->addStream(new ResourceStream('sprinkles', 'Building/Floors/Floor3', true));
 
         $result = $locator->getResources('sprinkles://files/test.json');
 

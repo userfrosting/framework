@@ -14,6 +14,7 @@ namespace UserFrosting\Tests\UniformResourceLocator\StreamWrapper;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
+use UserFrosting\UniformResourceLocator\ResourceStream;
 use UserFrosting\UniformResourceLocator\StreamWrapper\Stream;
 use UserFrosting\UniformResourceLocator\StreamWrapper\StreamBuilder;
 
@@ -50,7 +51,7 @@ class StreamTest extends TestCase
 
         // Setup test locator
         $this->locator = new ResourceLocator(__DIR__ . '/data', streamBuilder: $this->builder);
-        $this->locator->registerSharedStream('foo', '');
+        $this->locator->addStream(new ResourceStream('foo', '', true));
     }
 
     public function tearDown(): void

@@ -15,8 +15,10 @@ namespace UserFrosting\Tests\UniformResourceLocator;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\UniformResourceLocator\Normalizer;
 use UserFrosting\UniformResourceLocator\ResourceInterface;
+use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
+use UserFrosting\UniformResourceLocator\ResourceStream;
 use UserFrosting\UniformResourceLocator\ResourceStreamInterface;
 
 /**
@@ -82,15 +84,18 @@ class BuildingLocatorTest extends TestCase
         // At the beginning, it means the locator use an absolute path, bypassing Locator base path for that locator
         // Floor2 simulate an absolute path for that location. Note it won't make any sense (and fail) if both
         // the location and the stream uses absolute paths
-        self::$locator->registerLocation('Floor1', 'Floors/Floor/');
-        self::$locator->registerLocation('Floor2', $this->getBasePath().'Floors/Floor2/');
-        self::$locator->registerLocation('Floor3', 'Floors/Floor3');
+        $floor1 = new ResourceLocation('Floor1', 'Floors/Floor/');
+        $floor2 = new ResourceLocation('Floor2', $this->getBasePath().'Floors/Floor2/');
+        $floor3 = new ResourceLocation('Floor3', 'Floors/Floor3');
+        self::$locator->addLocation($floor1)
+                      ->addLocation($floor2)
+                      ->addLocation($floor3);
 
         // Register the streams
-        self::$locator->registerStream('files');                                              // Search path -> Building/Floors/{floorX}/file (normal stream)
-        self::$locator->registerStream('conf', 'config');                                     // Search path -> Building/Floors/{floorX}/config (stream where scheme != path)
-        self::$locator->registerStream('cars', 'Garage/cars/', true);                         // Search path -> Building/Garage/cars (Stream shared, no prefix)
-        self::$locator->registerSharedStream('absCars', $this->getBasePath().'Garage/cars/'); // Search path -> Building/Garage/cars (Stream shared, no prefix, using absolute path)
+        self::$locator->addStream(new ResourceStream('files'))                                               // Search path -> Building/Floors/{floorX}/file (normal stream)
+                      ->addStream(new ResourceStream('conf', 'config'))                                      // Search path -> Building/Floors/{floorX}/config (stream where scheme != path)
+                      ->addStream(new ResourceStream('cars', 'Garage/cars/', true))                          // Search path -> Building/Garage/cars (Stream shared, no prefix)
+                      ->addStream(new ResourceStream('absCars', $this->getBasePath().'Garage/cars/', true)); // Search path -> Building/Garage/cars (Stream shared, no prefix, using absolute path)
     }
 
     public function testGetResourceThrowExceptionIfShemeNotExist(): void
@@ -278,7 +283,7 @@ class BuildingLocatorTest extends TestCase
         $locator = self::$locator;
 
         // Add a new location
-        $locator->registerLocation('Poolhouse', __DIR__.'/Poolhouse/');
+        $locator->addLocation(new ResourceLocation('Poolhouse', __DIR__.'/Poolhouse/'));
 
         // Assertions
         $resources = $locator->getResources('files://test.json');
@@ -416,7 +421,8 @@ class BuildingLocatorTest extends TestCase
         $this->assertFalse(@file_exists($filename));
 
         // Register
-        self::$locator->registerStream('test', 'Garage/cars/', true);
+        $stream = new ResourceStream('test', 'Garage/cars/', true);
+        self::$locator->addStream($stream);
         $this->assertTrue(file_exists($filename));
 
         // Unregister

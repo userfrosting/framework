@@ -26,6 +26,10 @@ See main [UserFrosting Documentation](https://learn.userfrosting.com) and docume
  - [Support](src/Support)
  - [UniformResourceLocator](src/UniformResourceLocator)
 
+## [Changelog](CHANGELOG.md)
+
+## [License](LICENSE.md)
+
 ## [Style Guide](STYLE-GUIDE.md)
 
 ## [Testing](RUNNING_TESTS.md)

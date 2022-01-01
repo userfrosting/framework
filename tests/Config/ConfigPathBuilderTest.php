@@ -11,7 +11,9 @@
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Config\ConfigPathBuilder;
 use UserFrosting\UniformResourceLocator\Normalizer;
+use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
+use UserFrosting\UniformResourceLocator\ResourceStream;
 
 class ConfigPathBuilderTest extends TestCase
 {
@@ -25,10 +27,10 @@ class ConfigPathBuilderTest extends TestCase
         $this->locator = new ResourceLocator($this->basePath);
 
         // Add them as locations to simulate how they are added in SprinkleManager
-        $this->locator->registerLocation('core');
-        $this->locator->registerLocation('account');
-        $this->locator->registerLocation('admin');
-        $this->locator->registerStream('config');
+        $this->locator->addLocation(new ResourceLocation('core'))
+                      ->addLocation(new ResourceLocation('account'))
+                      ->addLocation(new ResourceLocation('admin'))
+                      ->addStream(new ResourceStream('config'));
     }
 
     public function testDefault(): void

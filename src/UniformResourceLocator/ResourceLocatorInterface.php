@@ -58,6 +58,8 @@ interface ResourceLocatorInterface
      * @param bool                 $shared (default false) Shared resources are not affected by locations
      *
      * @return static
+     *
+     * @deprecated Use `addStream` instead
      */
     public function registerStream(string $scheme, string|array|null $paths = null, bool $shared = false): static;
 
@@ -130,6 +132,8 @@ interface ResourceLocatorInterface
      * @param string $path The location base path (default null)
      *
      * @return static
+     *
+     * @deprecated Use `addLocation` instead
      */
     public function registerLocation(string $name, ?string $path = null): static;
 
