@@ -43,7 +43,7 @@ class ServerSideValidatorTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testValidateEmail()
+    public function testValidateEmail(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([

@@ -136,48 +136,48 @@ class RequestDataTransformer implements RequestDataTransformerInterface
     /**
      * Autodetect if a field is an array or scalar, and filter appropriately.
      *
-     * @param mixed $value
+     * @param string|string[] $value
      *
-     * @return mixed
+     * @return string|string[]
      */
-    protected function escapeHtmlCharacters($value)
+    protected function escapeHtmlCharacters(string|array $value): string|array
     {
         if (is_array($value)) {
             return filter_var_array($value, FILTER_SANITIZE_SPECIAL_CHARS);
-        } else {
-            return filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
         }
+
+        return filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
     }
 
     /**
      * Autodetect if a field is an array or scalar, and filter appropriately.
      *
-     * @param mixed $value
+     * @param string|string[] $value
      *
-     * @return mixed
+     * @return string|string[]
      */
-    protected function purgeHtmlCharacters($value)
+    protected function purgeHtmlCharacters(string|array $value): string|array
     {
         if (is_array($value)) {
-            return filter_var_array($value, FILTER_SANITIZE_STRING);
-        } else {
-            return filter_var($value, FILTER_SANITIZE_STRING);
+            return array_map('strip_tags', $value);
         }
+
+        return strip_tags($value);
     }
 
     /**
      * Autodetect if a field is an array or scalar, and filter appropriately.
      *
-     * @param mixed $value
+     * @param string|string[] $value
      *
-     * @return mixed
+     * @return string|string[]
      */
-    protected function trim($value)
+    protected function trim(string|array $value): string|array
     {
         if (is_array($value)) {
             return array_map('trim', $value);
-        } else {
-            return trim($value);
         }
+
+        return trim($value);
     }
 }

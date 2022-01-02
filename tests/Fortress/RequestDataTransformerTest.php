@@ -188,7 +188,7 @@ class RequestDataTransformerTest extends TestCase
     /**
      * "Purge" transformer.
      */
-    public function testPurge()
+    public function testPurge(): void
     {
         // Act
         $rawInput = [
@@ -209,7 +209,7 @@ class RequestDataTransformerTest extends TestCase
     /**
      * @depends testPurge
      */
-    public function testPurgeWithArrayValue()
+    public function testPurgeWithArrayValue(): void
     {
         // Act
         $rawInput = [
