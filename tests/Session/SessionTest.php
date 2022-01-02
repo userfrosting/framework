@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -11,6 +13,8 @@
 namespace UserFrosting\Tests\Session;
 
 use Illuminate\Session\ExistenceAwareInterface;
+use Illuminate\Session\NullSessionHandler;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use SessionHandlerInterface;
 use UserFrosting\Session\Session;
@@ -18,80 +22,53 @@ use UserFrosting\Session\Session;
 class SessionTest extends TestCase
 {
     /**
-     * @var NullSessionHandlerStub
+     * @var SessionHandlerInterface
      */
-    protected $handler;
+    protected SessionHandlerInterface $handler;
 
     public function setUp(): void
     {
-        $this->handler = new NullSessionHandlerStub();
+        $this->handler = new NullSessionHandler();
     }
 
-    /**
-     * Test constructor.
-     *
-     * @return Session
-     */
-    public function testConstructor()
+    public function testGetHandler(): void
     {
-        $session = new Session($this->handler, $this->sessionConfig());
-        $this->assertInstanceOf(Session::class, $session);
-
-        return $session;
-    }
-
-    /**
-     * @depends testConstructor
-     *
-     * @param Session $session
-     */
-    public function testGetHandler(Session $session)
-    {
+        $session = $this->getSession();
         $this->assertEquals($this->handler, $session->getHandler());
     }
 
-    /**
-     * @depends testConstructor
-     *
-     * @param Session $session
-     */
-    public function testSessionStart(Session $session)
-    {
-        $this->assertSame(PHP_SESSION_NONE, $session->status());
-        $this->assertNull($session->start());
-        $this->assertSame(PHP_SESSION_ACTIVE, $session->status());
-
-        return $session;
-    }
-
-    /**
-     * @depends testSessionStart
-     */
-    public function testSessionDestroy()
+    public function testSessionStartAndDestroy(): void
     {
         $session = $this->getSession();
 
         $this->assertSame(PHP_SESSION_ACTIVE, $session->status());
-        $this->assertNull($session->destroy(false));
+        $session->destroy(false);
         $this->assertSame(PHP_SESSION_NONE, $session->status());
+        $session->start();
+        $this->assertSame(PHP_SESSION_ACTIVE, $session->status());
     }
 
-    /**
-     * @depends testSessionStart
-     */
-    public function testSessionDestroyWithDestroyCookie()
+    public function testSessionDestroyWithDestroyCookie(): void
     {
         $session = $this->getSession();
 
         $this->assertSame(PHP_SESSION_ACTIVE, $session->status());
-        $this->assertNull($session->destroy());
+        $session->destroy();
         $this->assertSame(PHP_SESSION_NONE, $session->status());
     }
 
-    /**
-     * @depends testSessionStart
-     */
-    public function testSessionRegenerateId()
+    public function testSessionWithArrayParam(): void
+    {
+        $session = new Session($this->handler, [
+            'cookie_parameters' => ['lifetime' => 180]
+        ]);
+        $session->start();
+        $this->assertSame(PHP_SESSION_ACTIVE, $session->status());
+        $session->destroy();
+        $this->assertSame(PHP_SESSION_NONE, $session->status());
+    }
+
+    public function testSessionRegenerateId(): void
     {
         $session = $this->getSession();
 
@@ -102,40 +79,18 @@ class SessionTest extends TestCase
         $this->assertNotSame($id, $newId);
     }
 
-    /**
-     * @depends testSessionStart
-     */
-    public function testSessionStorage()
+    public function testSessionStorage(): void
     {
         $session = $this->getSession();
 
         $this->assertFalse($session->has('foo'));
-        $this->assertNull($session->set('foo', 'bar'));
+        $session->set('foo', 'bar');
         $this->assertTrue($session->has('foo'));
         $this->assertSame('bar', $session->get('foo'));
+        $this->assertSame(['foo' => 'bar'], $session->all());
     }
 
-    /**
-     * Same as `testSessionStorage`, but for `offsetExists`, `offsetGet` & `offsetSet`.
-     *
-     * @depends testSessionStart
-     * @depends testSessionStorage
-     */
-    public function testSessionStorageWithOffset()
-    {
-        $session = $this->getSession();
-
-        $this->assertFalse($session->offsetExists('foo'));
-        $this->assertNull($session->offsetSet('foo', 'bar'));
-        $this->assertTrue($session->offsetExists('foo'));
-        $this->assertSame('bar', $session->offsetGet('foo'));
-    }
-
-    /**
-     * @depends testSessionStart
-     * @depends testSessionStorage
-     */
-    public function testSessionStorageSet()
+    public function testSessionStorageSetWithArray(): void
     {
         $session = $this->getSession();
 
@@ -148,97 +103,132 @@ class SessionTest extends TestCase
         $session->set($data);
         $this->assertTrue($session->has('foo'));
         $this->assertSame('bar', $session->get('foo'));
+        $this->assertSame($data, $session->all());
     }
 
-    /**
-     * @depends testSessionStart
-     * @depends testSessionStorageSet
-     */
-    public function testSessionStoragePush()
+    public function testSessionStoragePush(): void
     {
         $session = $this->getSession();
-
-        $data = [
-            'foo',
-            'bar',
-        ];
+        $data = ['foo', 'bar'];
 
         $session->set('data', $data);
 
+        $this->assertIsArray($session->get('data'));
         $this->assertCount(2, $session->get('data'));
-        $this->assertNull($session->push('data', 'blah'));
+        $session->push('data', 'blah');
+        $this->assertIsArray($session->get('data'));
         $this->assertCount(3, $session->get('data'));
         $this->assertSame('blah', $session->get('data')[2]);
     }
 
-    /**
-     * @depends testSessionStart
-     * @depends testSessionStorageSet
-     */
-    public function testSessionStoragePrepend()
+    public function testSessionStoragePrepend(): void
     {
         $session = $this->getSession();
+        $data = ['foo', 'bar'];
 
-        $data = [
-            'foo',
-            'bar',
-        ];
+        $session->set('data', $data);
 
-        $this->assertNull($session->set('data', $data));
-
+        $this->assertIsArray($session->get('data'));
         $this->assertCount(2, $session->get('data'));
-        $this->assertNull($session->prepend('data', 'blah'));
+        $session->prepend('data', 'blah');
+        $this->assertIsArray($session->get('data'));
         $this->assertCount(3, $session->get('data'));
         $this->assertSame('blah', $session->get('data')[0]);
     }
 
-    /**
-     * @depends testSessionStart
-     * @depends testSessionStorageSet
-     */
-    public function testSessionStorageAll()
+    public function testSessionStorageArrayAccess(): void
     {
         $session = $this->getSession();
 
-        $data = [
-            'foo' => 'bar',
-            'bar' => 'foo',
-        ];
-
-        $session->set($data);
-
-        $this->assertSame($data, $session->all());
+        $this->assertFalse(isset($session['foo']));
+        $session['foo'] = 'bar';
+        $this->assertTrue(isset($session['foo']));
+        $this->assertSame('bar', $session['foo']);
+        unset($session['foo']);
+        $this->assertFalse(isset($session['foo']));
+        $this->assertNull($session['foo']);
     }
 
-    /**
-     * @depends testSessionStorageWithOffset
-     */
-    public function testSessionStorageOffsetUnset()
+    public function testSessionStorageDotNotation(): void
     {
         $session = $this->getSession();
 
-        $session->offsetSet('foo', 'bar');
-        $this->assertTrue($session->offsetExists('foo'));
-        $this->assertNull($session->offsetUnset('foo'));
-        $this->assertNull($session->offsetGet('foo'));
+        // Set base data
+        $session->set([
+            'data' => [
+                'foo' => 'bar',
+            ],
+        ]);
+
+        // Assert basic methods
+        $this->assertTrue($session->has('data.foo'));
+        $this->assertSame('bar', $session->get('data.foo'));
+
+        // Again with ArrayAccess
+        $this->assertTrue(isset($session['data.foo']));
+        $this->assertSame('bar', $session['data.foo']);
+
+        // Assert set dot notation
+        $session->set('data.bar', 'foo');
+        $this->assertTrue($session->has('data.bar'));
+        $this->assertSame('foo', $session->get('data.bar'));
+
+        // Assert set with dot set the array properly
+        $this->assertSame([
+            'data' => [
+                'foo' => 'bar',
+                'bar' => 'foo',
+            ],
+        ], $session->all());
+
+        // Assert forget
+        $session->forget('data.bar');
+        $this->assertFalse($session->has('data.bar'));
+
+        // Again with ArrayAccess
+        $session['data.bar'] = 'foobar';
+        $this->assertTrue(isset($session['data.bar']));
+        $this->assertSame('foobar', $session['data.bar']);
+        unset($session['data.bar']);
+        $this->assertFalse(isset($session['data.bar']));
+
+        // Assert push/prepend
+        $session->set('data.config', ['foobar']);
+        $session->prepend('data.config', 'foo');
+        $session->push('data.config', 'bar');
+        $this->assertSame(['foo', 'foobar', 'bar'], $session->get('data.config'));
     }
 
-    /**
-     * @depends testSessionRegenerateId
-     */
-    public function testSetExistsWithExistenceAware()
+    public function testPrependOnNonArray(): void
+    {
+        $session = $this->getSession();
+        $session->set('foo', 'bar');
+        $this->expectException(InvalidArgumentException::class);
+        $session->prepend('foo', 'blah');
+    }
+
+    public function testPushOnNonArray(): void
+    {
+        $session = $this->getSession();
+        $session->set('foo', 'bar');
+        $this->expectException(InvalidArgumentException::class);
+        $session->push('foo', 'blah');
+    }
+
+    public function testSetExistsWithExistenceAware(): void
     {
         $handler = new ExistenceAwareNullSessionHandlerStub();
         $session = new Session($handler, $this->sessionConfig());
 
-        $this->assertNull($session->setExists(true));
+        $this->assertFalse($handler->getExists());
+        $session->setExists(true);
         $this->assertTrue($handler->getExists());
     }
 
     /**
      * @return Session
      */
-    protected function getSession()
+    protected function getSession(): Session
     {
         $session = new Session($this->handler, $this->sessionConfig());
         $session->destroy();
@@ -248,9 +238,9 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return array<string, int|bool|string>
      */
-    protected function sessionConfig()
+    protected function sessionConfig(): array
     {
         return [
             'cache_limiter'     => false,
@@ -261,66 +251,12 @@ class SessionTest extends TestCase
     }
 }
 
-/**
- * Stub Session Handler.
- */
-class NullSessionHandlerStub implements SessionHandlerInterface
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function open($savePath, $sessionName)
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function close()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function read($sessionId)
-    {
-        return '';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function write($sessionId, $data)
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function destroy($sessionId)
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function gc($lifetime)
-    {
-        return true;
-    }
-}
-
-class ExistenceAwareNullSessionHandlerStub extends NullSessionHandlerStub implements ExistenceAwareInterface
+class ExistenceAwareNullSessionHandlerStub extends NullSessionHandler implements ExistenceAwareInterface
 {
     /**
      * @var bool
      */
-    protected $exists;
+    protected bool $exists = false;
 
     public function setExists($value)
     {
@@ -332,7 +268,7 @@ class ExistenceAwareNullSessionHandlerStub extends NullSessionHandlerStub implem
     /**
      * @return bool
      */
-    public function getExists()
+    public function getExists(): bool
     {
         return $this->exists;
     }
