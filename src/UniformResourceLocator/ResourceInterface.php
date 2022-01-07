@@ -12,10 +12,12 @@ declare(strict_types=1);
 
 namespace UserFrosting\UniformResourceLocator;
 
+use Stringable;
+
 /**
  * The representation of a resource.
  */
-interface ResourceInterface
+interface ResourceInterface extends Stringable
 {
     /**
      * Get Resource URI.
@@ -56,13 +58,6 @@ interface ResourceInterface
      * @return ResourceLocationInterface|null
      */
     public function getLocation(): ?ResourceLocationInterface;
-
-    /**
-     * Magic function to convert the class into the resource absolute path.
-     *
-     * @return string The resource absolute path
-     */
-    public function __toString(): string;
 
     /**
      * @return string
