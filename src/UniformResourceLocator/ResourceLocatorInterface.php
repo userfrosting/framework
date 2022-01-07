@@ -214,7 +214,8 @@ interface ResourceLocatorInterface
     public function listResources(string $uri, bool $all = false, bool $sort = true): array;
 
     /**
-     * Find highest priority instance from a resource. Return the path for said resource
+     * Find highest priority instance from a resource. Return the path for said resource.
+     *
      * For example, if looking for a `test.json` resource, only the top priority
      * instance of `test.json` found will be returned.
      *
@@ -222,16 +223,13 @@ interface ResourceLocatorInterface
      * @param bool   $absolute Whether to return absolute path.
      * @param bool   $all      Whether to include all paths, even if they don't exist.
      *
-     * @throws BadMethodCallException
-     *
      * @return string|null The resource path, or null if not found resource
-     *
-     * @deprecated Use getResource instead
      */
     public function findResource(string $uri, bool $absolute = true, bool $all = false): ?string;
 
     /**
-     * Find all instances from a resource. Return an array of paths for said resource
+     * Find all instances from a resource. Return an array of paths for said resource.
+     *
      * For example, if looking for a `test.json` resource, all instance
      * of `test.json` found will be listed.
      *
@@ -240,8 +238,6 @@ interface ResourceLocatorInterface
      * @param bool   $all      Whether to return all paths, even if they don't exist.
      *
      * @return string[] An array of all the resources path
-     *
-     * @deprecated Use getResources instead
      */
     public function findResources(string $uri, bool $absolute = true, bool $all = false): array;
 

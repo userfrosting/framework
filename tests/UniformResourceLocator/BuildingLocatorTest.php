@@ -179,8 +179,6 @@ class BuildingLocatorTest extends TestCase
      * @param string      $file
      * @param string|null $location
      * @param string[]    $expectedPaths
-     *
-     * @deprecated
      */
     public function testFindResourceForSharedStream(string $scheme, string $file, ?string $location, array $expectedPaths): void
     {
@@ -197,9 +195,6 @@ class BuildingLocatorTest extends TestCase
         $this->assertSame($expectedPaths, $locator->findResources($uri, false)); // @phpstan-ignore-line
     }
 
-    /**
-     * @deprecated
-     */
     public function testFindResourceForSharedStreamReturnFalseIfNoResourceFalse(): void
     {
         $locator = self::$locator;
@@ -300,8 +295,6 @@ class BuildingLocatorTest extends TestCase
      * @param string      $file
      * @param string|null $location
      * @param string[]    $expectedPaths
-     *
-     * @deprecated
      */
     public function testFindResource(string $scheme, string $file, ?string $location, array $expectedPaths): void
     {
