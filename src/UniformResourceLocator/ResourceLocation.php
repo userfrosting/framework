@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace UserFrosting\UniformResourceLocator;
 
+use Illuminate\Support\Str;
+
 /**
  * The representation of a location.
  */
@@ -28,7 +30,7 @@ class ResourceLocation implements ResourceLocationInterface
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
     public function getName(): string
     {
@@ -36,7 +38,7 @@ class ResourceLocation implements ResourceLocationInterface
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
     public function getPath(): string
     {
@@ -45,5 +47,13 @@ class ResourceLocation implements ResourceLocationInterface
         }
 
         return Normalizer::normalizePath($this->path);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSlug(): string
+    {
+        return Str::slug($this->getName());
     }
 }

@@ -24,28 +24,35 @@ class ResourceLocationTest extends TestCase
     {
         // Test instance & default values
         $location = new ResourceLocation('');
-        $this->assertEquals('', $location->getName());
-        $this->assertEquals('', $location->getPath());
+        $this->assertSame('', $location->getName());
+        $this->assertSame('', $location->getPath());
     }
 
     public function testResourceLocationComplete(): void
     {
         $location = new ResourceLocation('bar', '/foo');
-        $this->assertEquals('bar', $location->getName());
-        $this->assertEquals('/foo/', $location->getPath());
+        $this->assertSame('bar', $location->getName());
+        $this->assertSame('/foo/', $location->getPath());
     }
 
     public function testResourceLocationWithSupressesRightSlashe(): void
     {
         $location = new ResourceLocation('bar', '/foo/');
-        $this->assertEquals('bar', $location->getName());
-        $this->assertEquals('/foo/', $location->getPath());
+        $this->assertSame('bar', $location->getName());
+        $this->assertSame('/foo/', $location->getPath());
     }
 
     public function testResourceLocationOmittedPathEqualsName(): void
     {
         $location = new ResourceLocation('bar');
-        $this->assertEquals('bar', $location->getName());
-        $this->assertEquals('bar/', $location->getPath());
+        $this->assertSame('bar', $location->getName());
+        $this->assertSame('bar/', $location->getPath());
+    }
+
+    public function testResourceLocationSlug(): void
+    {
+        $location = new ResourceLocation('Core Sprinkle');
+        $this->assertSame('Core Sprinkle', $location->getName());
+        $this->assertSame('core-sprinkle', $location->getSlug());
     }
 }

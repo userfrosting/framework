@@ -18,12 +18,24 @@ namespace UserFrosting\UniformResourceLocator;
 interface ResourceLocationInterface
 {
     /**
+     * Returns the display name of the Location.
+     *
      * @return string
      */
     public function getName(): string;
 
     /**
+     * Returns the path for the location.
+     * Path should be relative to the main locator path.
+     *
      * @return string
      */
     public function getPath(): string;
+
+    /**
+     * Return identifier slug for Location.
+     *
+     * @return string
+     */
+    public function getSlug(): string;
 }
