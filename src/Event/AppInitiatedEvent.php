@@ -14,7 +14,6 @@ namespace UserFrosting\Event;
 
 /**
  * AppInitiated Event. Dispatched when the Slim App is ready to be run.
- * Container can be used in the handler to access the app instance.
  */
 class AppInitiatedEvent
 {

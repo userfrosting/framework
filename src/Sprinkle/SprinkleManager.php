@@ -82,7 +82,7 @@ class SprinkleManager
      */
     public function getSprinklesNames(): array
     {
-        return array_map(function ($sprinkle) {
+        return array_map(function (SprinkleRecipe $sprinkle) {
             return $sprinkle->getName();
         }, $this->sprinkles);
     }

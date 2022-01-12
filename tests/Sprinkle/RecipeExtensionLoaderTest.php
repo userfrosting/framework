@@ -175,7 +175,7 @@ class RecipeExtensionLoaderTest extends TestCase
         $loader = new RecipeExtensionLoader($manager, $ci);
 
         $this->expectException(BadMethodNameException::class);
-        $instances = $loader->getInstances('getFooBar', throwBadInterface: true);
+        $loader->getInstances('getFooBar', throwBadInterface: true);
     }
 
     /**
@@ -222,7 +222,7 @@ class RecipeExtensionLoaderTest extends TestCase
         $loader = new RecipeExtensionLoader($manager, $ci);
 
         $this->expectException(InvalidArgumentException::class);
-        $instances = $loader->getInstances('getNonArray', throwBadInterface: true);
+        $loader->getInstances('getNonArray', throwBadInterface: true);
     }
 
     /**
@@ -401,7 +401,7 @@ class RecipeExtensionLoaderTest extends TestCase
         $loader = new RecipeExtensionLoader($manager, $ci);
 
         $this->expectException(BadMethodNameException::class);
-        $instances = $loader->getObjects('getFooBar', throwBadInterface: true);
+        $loader->getObjects('getFooBar', throwBadInterface: true);
     }
 
     /**

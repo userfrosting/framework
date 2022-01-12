@@ -120,7 +120,7 @@ class SprinkleManagerTest extends TestCase
     public function testConstructorWithBadSprinkleClass(): void
     {
         $this->expectException(BadInstanceOfException::class);
-        $manager = new SprinkleManager(\stdClass::class);
+        new SprinkleManager(\stdClass::class);
     }
 
     public function testConstructorWithNonExistingClass(): void
@@ -128,7 +128,7 @@ class SprinkleManagerTest extends TestCase
         $this->expectException(BadClassNameException::class);
 
         // @phpstan-ignore-next-line
-        $manager = new SprinkleManager(FooBar::class);
+        new SprinkleManager(FooBar::class);
     }
 
     /**
@@ -138,7 +138,7 @@ class SprinkleManagerTest extends TestCase
     public function testConstructorWithBadSprinkleClassInDependent(): void
     {
         $this->expectException(BadInstanceOfException::class);
-        $manager = new SprinkleManager(NotSprinkleStub::class);
+        new SprinkleManager(NotSprinkleStub::class);
     }
 
     /**

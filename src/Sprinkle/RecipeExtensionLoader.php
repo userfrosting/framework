@@ -35,10 +35,10 @@ class RecipeExtensionLoader
      * Get registered instances from all Sprinkles, recursively.
      * The instances will be initiated by the Dependencies Injection.
      *
-     * @param string      $method             Method used to retrieve the registered instance from the Recipes.
-     * @param string|null $recipeInterface    Interface the sprinkle recipe must (optionally) implement. Sprinkle Recipe that don't implement this interface will be ignored.
-     * @param string|null $extensionInterface Interface the registered must (optionally) implement.
-     * @param bool        $throwBadInterface  If true, will throws BadInstanceOfException if Sprinkle Recipe don't implement $recipeInterface. Sprinkle will be ignored if false (default).
+     * @param string                    $method             Method used to retrieve the registered instance from the Recipes.
+     * @param string|null               $recipeInterface    Interface the sprinkle recipe must (optionally) implement. Sprinkle Recipe that don't implement this interface will be ignored.
+     * @param class-string<object>|null $extensionInterface Interface the registered must (optionally) implement.
+     * @param bool                      $throwBadInterface  If true, will throws BadInstanceOfException if Sprinkle Recipe don't implement $recipeInterface. Sprinkle will be ignored if false (default).
      *
      * @throws BadClassNameException  If a $class is not found.
      * @throws BadInstanceOfException If a $class doesn't implement the $interface.

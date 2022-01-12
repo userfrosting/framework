@@ -14,7 +14,6 @@ namespace UserFrosting\Event;
 
 /**
  * BakeryInitiated Event. Dispatched when the Symfony Console App is ready to be run.
- * Container can be used in the handler to access the app instance.
  */
 class BakeryInitiatedEvent
 {
