@@ -45,7 +45,7 @@ class SprinkleRoutesRepository extends ClassRepository
                 }
                 $instance = $this->ci->get($routesClass);
                 if (!is_object($instance) || !is_subclass_of($instance, RouteDefinitionInterface::class)) {
-                    throw new BadInstanceOfException("Routes definition class `$routesClass` doesn't implement ".RouteDefinitionInterface::class.'.');
+                    throw new BadInstanceOfException("Routes definition class `$routesClass` doesn't implement " . RouteDefinitionInterface::class . '.');
                 }
                 $instances[] = $instance;
             }

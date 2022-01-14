@@ -46,7 +46,7 @@ class SprinkleCommandsRepository extends ClassRepository
                 }
                 $instance = $this->ci->get($commandsClass);
                 if (!is_object($instance) || !is_subclass_of($instance, Command::class)) {
-                    throw new BadInstanceOfException("Bakery command class `$commandsClass` doesn't implement ".Command::class.'.');
+                    throw new BadInstanceOfException("Bakery command class `$commandsClass` doesn't implement " . Command::class . '.');
                 }
                 $instances[] = $instance;
             }
