@@ -17,15 +17,14 @@ use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Slim\App as SlimApp;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Symfony\Component\Console\Application as ConsoleApp;
-use Symfony\Component\Console\Command\Command;
+use UserFrosting\Bakery\SprinkleCommandsRepository;
 use UserFrosting\Event\EventDispatcher;
 use UserFrosting\Event\SprinkleListenerProvider;
-use UserFrosting\Routes\RouteDefinitionInterface;
-use UserFrosting\Sprinkle\RecipeExtensionLoader;
+use UserFrosting\Routes\SprinkleRoutesRepository;
+use UserFrosting\Sprinkle\SprinkleMiddlewareRepository;
 
 /**
  * Register framework base services.
@@ -36,23 +35,27 @@ final class FrameworkService implements ServicesProviderInterface
     {
         return [
             // Slim App
-            SlimApp::class => function (ContainerInterface $ci, RecipeExtensionLoader $extensionLoader) {
+            SlimApp::class => function (
+                ContainerInterface $ci,
+                SprinkleMiddlewareRepository $middlewareRepository,
+                SprinkleRoutesRepository $routesRepository,
+            ) {
                 $app = Bridge::create($ci);
 
-                // Register routes & middlewares
-                $this->registerRoutes($app, $extensionLoader);
-                $this->registerMiddlewares($app, $extensionLoader);
+                // Register Routes & Middlewares
+                $this->registerRoutes($app, $routesRepository);
+                $this->registerMiddlewares($app, $middlewareRepository);
 
                 return $app;
             },
 
             // Symfony Console Application
-            ConsoleApp::class => function (RecipeExtensionLoader $extensionLoader) {
+            ConsoleApp::class => function (SprinkleCommandsRepository $commandsRepository) {
                 $version = (string) \Composer\InstalledVersions::getPrettyVersion('userfrosting/framework');
                 $app = new ConsoleApp('UserFrosting Bakery', $version);
 
                 // Register commands
-                $this->loadCommands($app, $extensionLoader);
+                $this->loadCommands($app, $commandsRepository);
 
                 return $app;
             },
@@ -74,61 +77,43 @@ final class FrameworkService implements ServicesProviderInterface
     /**
      * Load and register all routes.
      *
-     * @param SlimApp               $app
-     * @param RecipeExtensionLoader $extensionLoader
+     * @param SlimApp                  $app
+     * @param SprinkleRoutesRepository $routesRepository
      */
-    protected function registerRoutes(SlimApp $app, RecipeExtensionLoader $extensionLoader): void
+    protected function registerRoutes(SlimApp $app, SprinkleRoutesRepository $routesRepository): void
     {
-        /** @var RouteDefinitionInterface[] */
-        $definitions = $extensionLoader->getInstances(
-            method: 'getRoutes',
-            extensionInterface: RouteDefinitionInterface::class
-        );
-
-        foreach ($definitions as $definition) {
-            $definition->register($app);
+        foreach ($routesRepository as $routeClass) {
+            $routeClass->register($app);
         }
     }
 
     /**
      * Load and register all middlewares.
      *
-     * @param SlimApp               $app
-     * @param RecipeExtensionLoader $extensionLoader
+     * @param SlimApp                      $app
+     * @param SprinkleMiddlewareRepository $middlewareRepository
      */
-    protected function registerMiddlewares(SlimApp $app, RecipeExtensionLoader $extensionLoader): void
+    protected function registerMiddlewares(SlimApp $app, SprinkleMiddlewareRepository $middlewareRepository): void
     {
         // Add default Slim middlewares
         $app->addBodyParsingMiddleware();
         $app->addRoutingMiddleware();
 
         // Add the registered Middlewares
-        /** @var MiddlewareInterface[] */
-        $middlewares = $extensionLoader->getObjects(
-            method: 'getMiddlewares',
-            extensionInterface: MiddlewareInterface::class
-        );
-
-        foreach ($middlewares as $middleware) {
-            $app->add($middleware);
+        foreach ($middlewareRepository as $middleware) {
+            $app->addMiddleware($middleware);
         }
     }
 
     /**
      * Load and register all defined bakery commands.
      *
-     * @param ConsoleApp            $app
-     * @param RecipeExtensionLoader $extensionLoader
+     * @param ConsoleApp                 $app
+     * @param SprinkleCommandsRepository $commandsRepository
      */
-    protected function loadCommands(ConsoleApp $app, RecipeExtensionLoader $extensionLoader): void
+    protected function loadCommands(ConsoleApp $app, SprinkleCommandsRepository $commandsRepository): void
     {
-        /** @var Command[] */
-        $commands = $extensionLoader->getInstances(
-            method: 'getBakeryCommands',
-            extensionInterface: Command::class
-        );
-
-        foreach ($commands as $command) {
+        foreach ($commandsRepository as $command) {
             $app->add($command);
         }
     }

@@ -32,13 +32,6 @@ interface SprinkleRecipe
     public function getPath(): string;
 
     /**
-     * Return an array of all registered Bakery Commands.
-     *
-     * @return string[]|\Symfony\Component\Console\Command\Command[]
-     */
-    public function getBakeryCommands(): array;
-
-    /**
      * Return dependent sprinkles.
      *
      * @return string[]|SprinkleRecipe[]
@@ -46,23 +39,30 @@ interface SprinkleRecipe
     public function getSprinkles(): array;
 
     /**
+     * Return an array of all registered Bakery Commands.
+     *
+     * @return string[]
+     */
+    public function getBakeryCommands(): array;
+
+    /**
      * Returns a list of routes definition in PHP files.
      *
-     * @return string[]|\UserFrosting\Routes\RouteDefinitionInterface[]
+     * @return string[]
      */
     public function getRoutes(): array;
 
     /**
      * Returns a list of all PHP-DI services/container definitions class.
      *
-     * @return string[]|\UserFrosting\ServicesProvider\ServicesProviderInterface[]
+     * @return string[]
      */
     public function getServices(): array;
 
     /**
      * Returns a list of all Middlewares classes.
      *
-     * @return string[]|\Psr\Http\Server\MiddlewareInterface[]
+     * @return string[]
      */
     public function getMiddlewares(): array;
 }
