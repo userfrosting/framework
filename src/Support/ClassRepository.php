@@ -22,9 +22,9 @@ use UserFrosting\Support\Exception\ClassNotFoundException;
  * Handle a PHP class repository.
  *
  * @template T of object
- * @implements IteratorAggregate<int, T>
+ * @implements ClassRepositoryInterface<T>
  */
-abstract class ClassRepository implements Countable, IteratorAggregate
+abstract class ClassRepository implements ClassRepositoryInterface
 {
     /**
      * Return all classes.
