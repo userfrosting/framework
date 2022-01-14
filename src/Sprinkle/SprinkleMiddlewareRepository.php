@@ -45,7 +45,7 @@ class SprinkleMiddlewareRepository extends ClassRepository
                 }
                 $instance = $this->ci->get($commandsClass);
                 if (!is_object($instance) || !is_subclass_of($instance, MiddlewareInterface::class)) {
-                    throw new BadInstanceOfException("Middleware class `$commandsClass` doesn't implement ".MiddlewareInterface::class.'.');
+                    throw new BadInstanceOfException("Middleware class `$commandsClass` doesn't implement " . MiddlewareInterface::class . '.');
                 }
                 $instances[] = $instance;
             }
