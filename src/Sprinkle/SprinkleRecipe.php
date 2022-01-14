@@ -55,7 +55,7 @@ interface SprinkleRecipe
     /**
      * Returns a list of all PHP-DI services/container definitions class.
      *
-     * @return string[]
+     * @return string[]|\UserFrosting\ServicesProvider\ServicesProviderInterface[]
      */
     public function getServices(): array;
 

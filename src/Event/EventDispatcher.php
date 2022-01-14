@@ -29,9 +29,15 @@ final class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Provide all relevant listeners with an event to process.
+     *
+     * @template TEvent of object
+     *
+     * @param TEvent $event The object to process.
+     *
+     * @return (StoppableEventInterface&TEvent)|TEvent The Event that was passed, now modified by listeners.
      */
-    public function dispatch(object $event)
+    public function dispatch(object $event): object
     {
         // If the event is already stopped, this method becomes a no-op.
         if ($event instanceof StoppableEventInterface && $event->isPropagationStopped()) {

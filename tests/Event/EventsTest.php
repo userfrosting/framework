@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace UserFrosting\Tests\Unit\Event;
 
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
+use UserFrosting\Event\EventDispatcher;
 use UserFrosting\Event\EventListenerRecipe;
+use UserFrosting\Event\SprinkleListenerProvider;
 use UserFrosting\Testing\TestCase;
 use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
@@ -25,8 +25,8 @@ class EventsTest extends TestCase
 
     public function testGetRegisteredListeners(): void
     {
-        /** @var ListenerProviderInterface */
-        $provider = $this->ci->get(ListenerProviderInterface::class);
+        /** @var SprinkleListenerProvider */
+        $provider = $this->ci->get(SprinkleListenerProvider::class);
 
         $data = $provider->getRegisteredListeners();
         $this->assertSame([
@@ -50,8 +50,8 @@ class EventsTest extends TestCase
     /** @depends testGetRegisteredListeners */
     public function testIntegration(): void
     {
-        /** @var EventDispatcherInterface */
-        $dispatcher = $this->ci->get(EventDispatcherInterface::class);
+        /** @var EventDispatcher */
+        $dispatcher = $this->ci->get(EventDispatcher::class);
 
         $event = $dispatcher->dispatch(new PizzaArrived());
         $this->assertSame([
@@ -66,8 +66,8 @@ class EventsTest extends TestCase
     /** @depends testIntegration */
     public function testStoppableEvent(): void
     {
-        /** @var EventDispatcherInterface */
-        $dispatcher = $this->ci->get(EventDispatcherInterface::class);
+        /** @var EventDispatcher */
+        $dispatcher = $this->ci->get(EventDispatcher::class);
 
         // 'HandlePizza::isPizzaHot' is not here, as LogPizza stop execution
         $event = $dispatcher->dispatch(new Pizza());
@@ -83,8 +83,8 @@ class EventsTest extends TestCase
     /** @depends testIntegration */
     public function testUnregisteredEvent(): void
     {
-        /** @var EventDispatcherInterface */
-        $dispatcher = $this->ci->get(EventDispatcherInterface::class);
+        /** @var EventDispatcher */
+        $dispatcher = $this->ci->get(EventDispatcher::class);
 
         $pizzaIsCold = new PizzaIsCold();
         $event = $dispatcher->dispatch($pizzaIsCold);
@@ -97,11 +97,13 @@ class EventsTest extends TestCase
 /* Stub events */
 class PizzaArrived
 {
+    /** @var string[] */
     public array $passedThrough = [];
 }
 
 class PizzaHasPineapple implements StoppableEventInterface
 {
+    /** @var string[] */
     public array $passedThrough = [];
 
     public function isPropagationStopped() : bool
@@ -112,6 +114,7 @@ class PizzaHasPineapple implements StoppableEventInterface
 
 class Pizza implements StoppableEventInterface
 {
+    /** @var string[] */
     public array $passedThrough = [];
 
     public bool $stopped = false;
