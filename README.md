@@ -7,7 +7,7 @@
 [![Codecov](https://codecov.io/gh/userfrosting/framework/branch/develop-5.0/graph/badge.svg)](https://app.codecov.io/gh/userfrosting/framework/branch/develop-5.0)
 [![StyleCI](https://github.styleci.io/repos/360994768/shield?branch=develop-5.0&style=flat)](https://github.styleci.io/repos/360994768)
 [![PHPStan](https://img.shields.io/github/workflow/status/userfrosting/framework/PHPStan/develop-5.0?label=PHPStan)](https://github.com/userfrosting/framework/actions/workflows/PHPStan.yml)
-[![Join the chat](https://img.shields.io/badge/Chat-UserFrosting-brightgreen?logo=Rocket.Chat)](https://chat.userfrosting.com/channel/framework)
+[![Join the chat](https://img.shields.io/badge/Chat-UserFrosting-brightgreen?logo=Rocket.Chat)](https://chat.userfrosting.com)
 [![Donate](https://img.shields.io/badge/Open%20Collective-Donate-blue.svg)](https://opencollective.com/userfrosting#backer)
 
 ## Installation
