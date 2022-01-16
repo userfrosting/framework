@@ -13,5 +13,5 @@ return [
     'GROUP' => [
         1 => 'Mes Foo Groupe',
         2 => 'Mes Foo Groupes',
-    ]
+    ],
 ];
