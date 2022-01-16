@@ -74,7 +74,7 @@ class DictionaryTest extends TestCase
 
         // Prepare mock Locator - Return no file
         $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->with('locale://aa_bb', true)->andReturn([]);
+        $locator->shouldReceive('listResources')->with('locale://aa_bb', true, false)->andReturn([]);
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
         $fileLoader = Mockery::mock(ArrayFileLoader::class);
@@ -106,7 +106,7 @@ class DictionaryTest extends TestCase
 
         // Prepare mock Locator - Return no file
         $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->with('foo://aa_bb', true)->andReturn([]);
+        $locator->shouldReceive('listResources')->with('foo://aa_bb', true, false)->andReturn([]);
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
         $fileLoader = Mockery::mock(ArrayFileLoader::class);
@@ -147,7 +147,7 @@ class DictionaryTest extends TestCase
 
         // Prepare mock Locator - Return the file
         $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->with('locale://aa_bb', true)->andReturn([$file]);
+        $locator->shouldReceive('listResources')->with('locale://aa_bb', true, false)->andReturn([$file]);
 
         // Prepare mock FileLoader - Will return the mock file, with a mock data
         $fileLoader = Mockery::mock(ArrayFileLoader::class);
@@ -200,7 +200,7 @@ class DictionaryTest extends TestCase
 
         // Prepare mock Locator - Return the file
         $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->with('locale://aa_bb', true)->once()->andReturn([$file1, $file2, $file3]);
+        $locator->shouldReceive('listResources')->with('locale://aa_bb', true, false)->once()->andReturn([$file1, $file2, $file3]);
 
         // Prepare mock FileLoader - Will return the mock file, with a mock data
         $fileLoader = Mockery::mock(ArrayFileLoader::class);
@@ -235,8 +235,8 @@ class DictionaryTest extends TestCase
 
         // Prepare mock Locator - Return no file
         $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true)->andReturn([]);
-        $locator->shouldReceive('listResources')->once()->with('locale://ff_FF', true)->andReturn([]);
+        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([]);
+        $locator->shouldReceive('listResources')->once()->with('locale://ff_FF', true, false)->andReturn([]);
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
         $fileLoader = Mockery::mock(ArrayFileLoader::class);
@@ -288,8 +288,8 @@ class DictionaryTest extends TestCase
 
         // Prepare mock Locator - Return no file on ff_FF
         $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true)->andReturn([$file1]);
-        $locator->shouldReceive('listResources')->once()->with('locale://ff_FF', true)->andReturn([]);
+        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([$file1]);
+        $locator->shouldReceive('listResources')->once()->with('locale://ff_FF', true, false)->andReturn([]);
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
         $fileLoader = Mockery::mock(ArrayFileLoader::class);
@@ -338,8 +338,8 @@ class DictionaryTest extends TestCase
 
         // Prepare mock Locator - Return no file on ff_FF
         $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true)->andReturn([]);
-        $locator->shouldReceive('listResources')->once()->with('locale://ff_FF', true)->andReturn([$file1]);
+        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([]);
+        $locator->shouldReceive('listResources')->once()->with('locale://ff_FF', true, false)->andReturn([$file1]);
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
         $fileLoader = Mockery::mock(ArrayFileLoader::class);
@@ -414,8 +414,8 @@ class DictionaryTest extends TestCase
 
         // Prepare mock Locator - Return no file on ff_FF
         $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->once()->with('locale://fr_FR', true)->andReturn([$file_FR]);
-        $locator->shouldReceive('listResources')->once()->with('locale://en_US', true)->andReturn([$file_EN]);
+        $locator->shouldReceive('listResources')->once()->with('locale://fr_FR', true, false)->andReturn([$file_FR]);
+        $locator->shouldReceive('listResources')->once()->with('locale://en_US', true, false)->andReturn([$file_EN]);
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
         $fileLoader = Mockery::mock(ArrayFileLoader::class);
@@ -459,9 +459,9 @@ class DictionaryTest extends TestCase
 
         // Prepare mock Locator - Return no file on ff_FF
         $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true)->andReturn([]);
-        $locator->shouldReceive('listResources')->once()->with('locale://ff_FF', true)->andReturn([]);
-        $locator->shouldReceive('listResources')->once()->with('locale://ee_EE', true)->andReturn([]);
+        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([]);
+        $locator->shouldReceive('listResources')->once()->with('locale://ff_FF', true, false)->andReturn([]);
+        $locator->shouldReceive('listResources')->once()->with('locale://ee_EE', true, false)->andReturn([]);
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
         $fileLoader = Mockery::mock(ArrayFileLoader::class);
@@ -511,8 +511,8 @@ class DictionaryTest extends TestCase
 
         // Prepare mock Locator - Return no file on ff_FF
         $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true)->andReturn([$file1]);
-        $locator->shouldReceive('listResources')->never()->with('locale://ff_FF', true);
+        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([$file1]);
+        $locator->shouldReceive('listResources')->never()->with('locale://ff_FF', true, false);
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
         $fileLoader = Mockery::mock(ArrayFileLoader::class);
