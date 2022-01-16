@@ -217,9 +217,9 @@ class TranslatorTest extends TestCase
         return [
             // Test most basic functionality
             ['USERNAME', [], 'Username', "Nom d'utilisateur"],
-            
+
             // Test key overwrite in higher sprinkle. GROUP is not defined in English
-            ['GROUP', [], 'My Foo Group', "Mes Foo Groupe"],
+            ['GROUP', [], 'My Foo Group', 'Mes Foo Groupe'],
 
             // Test most the base locale
             ['BASE_FALLBACK', [], 'Base fallback', 'Base fallback'],
