@@ -36,6 +36,7 @@ class TranslatorTest extends TestCase
         $this->locator->registerLocation('account');
         $this->locator->registerLocation('admin'); // Simulate non existing sprinkle
         $this->locator->registerLocation('fr_CA'); // Simulate the fr_CA locale !
+        $this->locator->registerLocation('test');
     }
 
     /**
@@ -216,6 +217,9 @@ class TranslatorTest extends TestCase
         return [
             // Test most basic functionality
             ['USERNAME', [], 'Username', "Nom d'utilisateur"],
+            
+            // Test key overwrite in higher sprinkle. GROUP is not defined in English
+            ['GROUP', [], 'My Foo Group', "Mes Foo Groupe"],
 
             // Test most the base locale
             ['BASE_FALLBACK', [], 'Base fallback', 'Base fallback'],

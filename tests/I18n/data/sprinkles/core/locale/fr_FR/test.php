@@ -18,6 +18,13 @@ return [
         'ALT'          => 'Profil',
     ],
 
+    'GROUP' => [
+        1 => 'Groupe',
+        2 => 'Groupes',
+
+        'CREATE' => 'Créer groupe',
+    ],
+
     // Colors
     'COLOR' => [
         //Substrings

@@ -11,6 +11,11 @@
 return [
     'USERNAME' => 'Username',
 
+    'GROUP' => [
+        1 => 'Group',
+        2 => 'Groups',
+    ],
+
     'X_FOO' => '{{plural}}x foos',
 
     'BASE_FALLBACK' => 'Base fallback',
