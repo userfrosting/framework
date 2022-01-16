@@ -3,7 +3,7 @@
 [![Latest Version](https://img.shields.io/github/release/userfrosting/framework.svg)](https://github.com/userfrosting/framework/releases)
 ![PHP Version](https://img.shields.io/packagist/php-v/userfrosting/framework.svg?color=brightgreen)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
-[![Join the chat at https://chat.userfrosting.com/channel/framework](https://chat.userfrosting.com/api/v1/shield.svg?name=UserFrosting)](https://chat.userfrosting.com/channel/framework)
+[![Join the chat](https://img.shields.io/badge/Chat-UserFrosting-brightgreen?logo=Rocket.Chat)](https://chat.userfrosting.com)
 [![Donate](https://img.shields.io/badge/Open%20Collective-Donate-blue.svg)](https://opencollective.com/userfrosting#backer)
 
 | Branch | Version | Build | Coverage | Style |
