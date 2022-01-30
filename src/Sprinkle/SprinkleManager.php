@@ -107,7 +107,7 @@ class SprinkleManager
     /**
      * Returns a list of all PHP-DI services/container definitions, from all sprinkles.
      *
-     * @return mixed[] PHP-DI definitions.
+     * @return mixed[][] PHP-DI definitions.
      */
     public function getServicesDefinitions(): array
     {
@@ -115,7 +115,7 @@ class SprinkleManager
 
         foreach ($this->sprinkles as $sprinkle) {
             foreach ($sprinkle->getServices() as $provider) {
-                $containers = array_merge($this->validateClassIsServicesProvider($provider)->register(), $containers);
+                $containers[] = $this->validateClassIsServicesProvider($provider)->register();
             }
         }
 

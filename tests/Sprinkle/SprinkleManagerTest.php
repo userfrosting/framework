@@ -12,6 +12,7 @@ namespace UserFrosting\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
+use UserFrosting\ServicesProvider\ServicesProviderInterface;
 use UserFrosting\Sprinkle\SprinkleManager;
 use UserFrosting\Support\Exception\BadClassNameException;
 use UserFrosting\Support\Exception\BadInstanceOfException;
@@ -150,7 +151,7 @@ class SprinkleManagerTest extends TestCase
         $services = $manager->getServicesDefinitions();
 
         $this->assertCount(1, $services);
-        $this->assertArrayHasKey('testMessageGenerator', $services);
+        $this->assertArrayHasKey('testMessageGenerator', $services[0]);
     }
 
     /**
@@ -182,7 +183,18 @@ class SprinkleManagerTest extends TestCase
         $services = $manager->getServicesDefinitions();
 
         $this->assertCount(1, $services);
-        $this->assertArrayHasKey('testMessageGenerator', $services);
+        $this->assertArrayHasKey('testMessageGenerator', $services[0]);
+    }
+
+    /**
+     * @depends testGetServicesDefinitions
+     */
+    public function testGetServicesDefinitionsWithOverwrite(): void
+    {
+        $manager = new SprinkleManager(ChildServiceSprinkleStub::class);
+        $services = $manager->getServicesDefinitions();
+
+        $this->assertCount(3, $services);
     }
 }
 
@@ -316,11 +328,49 @@ class ServiceSprinkleStub extends TestSprinkle
     }
 }
 
+class ChildServiceSprinkleStub extends TestSprinkle
+{
+    public function getServices(): array
+    {
+        return [
+            new OverwriteTestServicesProviders(),
+            OtherTestServicesProviders::class,
+        ];
+    }
+
+    public function getSprinkles(): array
+    {
+        return [
+            ServiceSprinkleStub::class,
+        ];
+    }
+}
+
 class CommandStub extends Command
 {
     // @phpstan-ignore-next-line
     protected function configure()
     {
         $this->setName('stub');
+    }
+}
+
+class OverwriteTestServicesProviders implements ServicesProviderInterface
+{
+    public function register(): array
+    {
+        return [
+            'testMessageGenerator' => 'blah',
+        ];
+    }
+}
+
+class OtherTestServicesProviders implements ServicesProviderInterface
+{
+    public function register(): array
+    {
+        return [
+            'foo' => 'bar',
+        ];
     }
 }

@@ -102,7 +102,12 @@ abstract class Cupcake
         $builder = new ContainerBuilder();
         $builder->useAnnotations(true);
         $builder->addDefinitions($frameworkServices->register());
-        $builder->addDefinitions($this->sprinkleManager->getServicesDefinitions());
+
+        // Add all definitions for each sprinkles
+        foreach ($this->sprinkleManager->getServicesDefinitions() as $definition) {
+            $builder->addDefinitions($definition);
+        }
+
         $ci = $builder->build();
 
         return $ci;
