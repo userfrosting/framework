@@ -102,7 +102,9 @@ class ReadOnlyStreamTest extends TestCase
         while ($entry = readdir($dir)) {
             $entries[] = $entry;
         }
-        $this->assertSame(['.', '..'], $entries);
+        // Sort results, as order might differ depending of OS
+        $expected = ['..', '.'];
+        $this->assertSame(sort($expected), sort($entries));
         closedir($dir); // Close dir to remove lock on Windows
 
         // Permissions
