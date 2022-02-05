@@ -26,17 +26,17 @@ class UserMessage
     public string $message;
 
     /**
-     * @var string[] The parameters to be filled in for any placeholders in the message.
+     * @var mixed[]|int The parameters to be filled in for any placeholders in the message.
      */
-    public array $parameters = [];
+    public array|int $parameters = [];
 
     /**
      * Public constructor.
      *
-     * @param string   $message
-     * @param string[] $parameters The parameters to be filled in for any placeholders in the message.
+     * @param string      $message
+     * @param mixed[]|int $parameters The parameters to be filled in for any placeholders in the message.
      */
-    public function __construct(string $message, array $parameters = [])
+    public function __construct(string $message, array|int $parameters = [])
     {
         $this->message = $message;
         $this->parameters = $parameters;
