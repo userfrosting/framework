@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.6.3](https://github.com/userfrosting/framework/compare/4.6.2...4.6.3)
+- Force version of `rockettheme/toolbox` to prevent eventdispatcher incompatibility between rockettheme and Symphony ([UserFrosting #1195](https://github.com/userfrosting/UserFrosting/issues/1195))
+
 ## [4.6.2](https://github.com/userfrosting/framework/compare/4.6.1...4.6.2)
  - Fix incorrect load order for locale files/sprinkles ([userfrosting/UserFrosting#1191](https://github.com/userfrosting/UserFrosting/issues/1191))
 

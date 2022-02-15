@@ -22,7 +22,7 @@
     ],
     "require": {
         "php": "^7.3 | ^8.0",
-        "rockettheme/toolbox": "^1.5",
+        "rockettheme/toolbox": "1.6.0",
         "illuminate/support": "^8.5",
         "illuminate/filesystem": "^8.5",
         "illuminate/config": "^8.5",
