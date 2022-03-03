@@ -51,7 +51,7 @@ trait CustomAssertionsTrait
      * @param ResponseInterface $response The response
      * @param string|null       $key      Scope to the key if required. Support dot notation.
      */
-    protected function assertJsonResponse(array|mixed $expected, ResponseInterface $response, ?string $key = null): void
+    protected function assertJsonResponse(mixed $expected, ResponseInterface $response, ?string $key = null): void
     {
         $actual = (string) $response->getBody();
         $this->assertJsonEquals($expected, $actual, $key);
