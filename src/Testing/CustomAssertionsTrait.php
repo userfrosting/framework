@@ -47,11 +47,11 @@ trait CustomAssertionsTrait
     /**
      * Verify that the given array is an exact match for the JSON returned.
      *
-     * @param mixed[]           $expected The expected array
+     * @param mixed[]|mixed     $expected The expected array. Can be mixed when $key is used.
      * @param ResponseInterface $response The response
      * @param string|null       $key      Scope to the key if required. Support dot notation.
      */
-    protected function assertJsonResponse(array $expected, ResponseInterface $response, ?string $key = null): void
+    protected function assertJsonResponse(array|mixed $expected, ResponseInterface $response, ?string $key = null): void
     {
         $actual = (string) $response->getBody();
         $this->assertJsonEquals($expected, $actual, $key);
