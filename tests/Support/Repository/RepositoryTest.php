@@ -15,7 +15,8 @@ use UserFrosting\Support\Repository\Repository;
 
 class RepositoryTest extends TestCase
 {
-    protected $data = [
+    /** @var array<string,mixed> */
+    protected array $data = [
         'voles' => [
             'caught'   => 8,
             'devoured' => null,
@@ -27,7 +28,7 @@ class RepositoryTest extends TestCase
         'chick_names' => [],
     ];
 
-    public function testGetDefined()
+    public function testGetDefined(): void
     {
         $repo = new Repository($this->data);
 
@@ -44,7 +45,7 @@ class RepositoryTest extends TestCase
         ], $defined);
     }
 
-    public function testGetDefinedSubkey()
+    public function testGetDefinedSubkey(): void
     {
         $repo = new Repository($this->data);
 
@@ -58,7 +59,7 @@ class RepositoryTest extends TestCase
     /**
      * @depends testGetDefined
      */
-    public function testGetDefinedWithString()
+    public function testGetDefinedWithString(): void
     {
         $repo = new Repository($this->data);
 
@@ -70,7 +71,7 @@ class RepositoryTest extends TestCase
     /**
      * @depends testGetDefined
      */
-    public function testGetDefinedWithArray()
+    public function testGetDefinedWithArray(): void
     {
         $repo = new Repository($this->data);
 
@@ -87,7 +88,7 @@ class RepositoryTest extends TestCase
     /**
      * @depends testGetDefinedWithString
      */
-    public function testMergeItems()
+    public function testMergeItems(): void
     {
         $repo = new Repository($this->data);
 
@@ -100,7 +101,7 @@ class RepositoryTest extends TestCase
     /**
      * @depends testGetDefinedWithString
      */
-    public function testMergeItemsWithArray()
+    public function testMergeItemsWithArray(): void
     {
         $repo = new Repository($this->data);
 
@@ -118,7 +119,7 @@ class RepositoryTest extends TestCase
     /**
      * @depends testGetDefinedWithString
      */
-    public function testMergeItemsWithNull()
+    public function testMergeItemsWithNull(): void
     {
         $repo = new Repository($this->data);
 
@@ -128,6 +129,19 @@ class RepositoryTest extends TestCase
 
         $repo->mergeItems(null, $newData);
         $defined = $repo->getDefined('foo');
+
+        $this->assertEquals('bar', $defined);
+    }
+
+    /**
+     * @depends testMergeItems
+     */
+    public function testMergeItemsWithArrayAndNotArrayItems(): void
+    {
+        $repo = new Repository($this->data);
+
+        $repo->mergeItems('voles', 'bar');
+        $defined = $repo->getDefined('voles');
 
         $this->assertEquals('bar', $defined);
     }

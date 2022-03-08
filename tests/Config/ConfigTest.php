@@ -9,169 +9,52 @@
  */
 
 use PHPUnit\Framework\TestCase;
-use UserFrosting\Config\ConfigPathBuilder;
-use UserFrosting\Support\Repository\Loader\ArrayFileLoader;
-use UserFrosting\UniformResourceLocator\ResourceLocation;
-use UserFrosting\UniformResourceLocator\ResourceLocator;
-use UserFrosting\UniformResourceLocator\ResourceStream;
+use UserFrosting\Config\Config;
+use UserFrosting\Config\TypeException;
 
 class ConfigTest extends TestCase
 {
-    protected string $basePath;
+    /** @var array<string,mixed> */
+    protected array $data = [
+        'bool'   => true,
+        'string' => 'foobar',
+        'int'    => 92,
+        'array'  => [],
+    ];
 
-    protected ResourceLocator $locator;
-
-    public function setUp(): void
+    public function testGetBool(): void
     {
-        $this->basePath = __DIR__.'/data';
-        $this->locator = new ResourceLocator($this->basePath);
+        $repo = new Config($this->data);
 
-        // Add them as locations to simulate how they are added in SprinkleManager
-        $this->locator->addLocation(new ResourceLocation('core'))
-                      ->addLocation(new ResourceLocation('account'))
-                      ->addLocation(new ResourceLocation('admin'))
-                      ->addStream(new ResourceStream('config'));
+        $this->assertSame(true, $repo->getBool('bool'));
+        $this->expectException(TypeException::class);
+        $repo->getBool('string');
     }
 
-    public function testConfigDefault(): void
+    public function testGetString(): void
     {
-        // Arrange
-        $builder = new ConfigPathBuilder($this->locator, 'config://');
-        $loader = new ArrayFileLoader($builder->buildPaths());
+        $repo = new Config($this->data);
 
-        // Act
-        $data = $loader->load();
-
-        $this->assertEquals($data, [
-            'site' => [
-                'AdminLTE' => [
-                    'skin' => 'blue',
-                ],
-                'analytics' => [
-                    'google' => [
-                        'code'    => '',
-                        'enabled' => false,
-                    ],
-                ],
-                'author' => 'Author',
-                'csrf'   => null,
-                'debug'  => [
-                    'ajax' => false,
-                    'info' => true,
-                ],
-                'locales' => [
-                    'available' => [
-                        'en_US' => 'English',
-                        'ar'    => 'العربية',
-                        'fr_FR' => 'Français',
-                        'pt_PT' => 'Português',
-                        'de_DE' => 'Deutsch',
-                        'th_TH' => 'ภาษาไทย',
-                    ],
-                    'default' => 'en_US',
-                ],
-                'title' => 'UserFrosting',
-                'uri'   => [
-                    'base' => [
-                        'host'   => 'localhost',
-                        'scheme' => 'http',
-                        'port'   => null,
-                        'path'   => 'myProject',
-                    ],
-                    'author'    => 'http://www.userfrosting.com',
-                    'publisher' => '',
-                ],
-                'login' => [
-                    'enable_email' => true,
-                ],
-                'registration' => [
-                    'enabled'                    => true,
-                    'captcha'                    => true,
-                    'require_email_verification' => true,
-                    'user_defaults'              => [
-                        'locale' => 'en_US',
-                        'group'  => 'terran',
-                        'roles'  => [
-                            'user' => true,
-                        ],
-                    ],
-                ],
-            ],
-            'timezone' => 'America/New_York',
-            'debug'    => [
-                'auth' => true,
-            ],
-        ]);
+        $this->assertSame('foobar', $repo->getString('string'));
+        $this->expectException(TypeException::class);
+        $repo->getString('bool');
     }
 
-    public function testConfigEnvironmentMode(): void
+    public function testGetInt(): void
     {
-        // Arrange
-        $builder = new ConfigPathBuilder($this->locator, 'config://');
-        $loader = new ArrayFileLoader($builder->buildPaths('production'));
+        $repo = new Config($this->data);
 
-        // Act
-        $data = $loader->load();
+        $this->assertSame(92, $repo->getInt('int'));
+        $this->expectException(TypeException::class);
+        $repo->getInt('string');
+    }
 
-        $this->assertEquals($data, [
-            'site' => [
-                'AdminLTE' => [
-                    'skin' => 'blue',
-                ],
-                'analytics' => [
-                    'google' => [
-                        'code'    => '',
-                        'enabled' => true,
-                    ],
-                ],
-                'author' => 'Author',
-                'csrf'   => null,
-                'debug'  => [
-                    'ajax' => false,
-                    'info' => false,
-                ],
-                'locales' => [
-                    'available' => [
-                        'en_US' => 'English',
-                        'ar'    => 'العربية',
-                        'fr_FR' => 'Français',
-                        'pt_PT' => 'Português',
-                        'de_DE' => 'Deutsch',
-                        'th_TH' => 'ภาษาไทย',
-                    ],
-                    'default' => 'en_US',
-                ],
-                'title' => 'UserFrosting',
-                'uri'   => [
-                    'base' => [
-                        'host'   => 'localhost',
-                        'scheme' => 'http',
-                        'port'   => null,
-                        'path'   => 'myProject',
-                    ],
-                    'author'    => 'http://www.userfrosting.com',
-                    'publisher' => '',
-                ],
-                'login' => [
-                    'enable_email' => false,
-                ],
-                'registration' => [
-                    'enabled'                    => false,
-                    'captcha'                    => false,
-                    'require_email_verification' => true,
-                    'user_defaults'              => [
-                        'locale' => 'en_US',
-                        'group'  => 'terran',
-                        'roles'  => [
-                            'user' => true,
-                        ],
-                    ],
-                ],
-            ],
-            'timezone' => 'America/New_York',
-            'debug'    => [
-                'auth' => false,
-            ],
-        ]);
+    public function testGetArray(): void
+    {
+        $repo = new Config($this->data);
+
+        $this->assertSame([], $repo->getArray('array'));
+        $this->expectException(TypeException::class);
+        $repo->getArray('string');
     }
 }

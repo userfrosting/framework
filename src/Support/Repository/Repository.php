@@ -18,8 +18,6 @@ use UserFrosting\Support\Util\Util;
  * Repository Class.
  *
  * Represents an extendable repository of key->value mappings.
- *
- * @author Alexander Weissman (https://alexanderweissman.com)
  */
 class Repository extends IlluminateRepository
 {
@@ -33,13 +31,13 @@ class Repository extends IlluminateRepository
      * @param string|null $key
      * @param mixed       $items
      *
-     * @return self
+     * @return static
      */
-    public function mergeItems($key, $items): self
+    public function mergeItems(?string $key, mixed $items): static
     {
         $targetValues = Arr::get($this->items, $key);
 
-        if (is_array($targetValues)) {
+        if (is_array($targetValues) && is_array($items)) {
             $modifiedValues = array_replace_recursive($targetValues, $items);
         } else {
             $modifiedValues = $items;
@@ -53,13 +51,13 @@ class Repository extends IlluminateRepository
     /**
      * Get the specified configuration value, recursively removing all null values.
      *
-     * @param string|array|null $key
+     * @param string|mixed[]|null $key
      *
      * @return mixed
      */
-    public function getDefined($key = null)
+    public function getDefined(string|array|null $key = null): mixed
     {
-        $result = $this->get($key);
+        $result = $this->get($key); // @phpstan-ignore-line Laravel param is wrong
         if (!is_array($result)) {
             return $result;
         }

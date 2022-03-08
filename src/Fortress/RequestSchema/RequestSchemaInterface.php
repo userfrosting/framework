@@ -34,7 +34,7 @@ interface RequestSchemaInterface
      * @param string|null $key
      * @param mixed       $items
      */
-    public function mergeItems($key, $items);
+    public function mergeItems(?string $key, mixed $items): static;
 
     /**
      * Set the default value for a specified field.
