@@ -105,4 +105,12 @@ class ReadOnlyStream extends Stream
 
         return false;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function stream_set_option(int $option, int $arg1, int $arg2)
+    {
+        return false;
+    }
 }

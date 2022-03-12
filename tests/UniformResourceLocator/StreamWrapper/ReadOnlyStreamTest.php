@@ -117,4 +117,20 @@ class ReadOnlyStreamTest extends TestCase
         // File can have a shared lock (reader)
         $this->assertTrue(flock(fopen($this->file, 'r'), LOCK_SH)); // @phpstan-ignore-line
     }
+
+    /**
+     * include() will throw error if `stream_set_option` is not implemented.
+     * @runInSeparateProcess
+     */
+    public function testInclude(): void
+    {
+        $locator = new ResourceLocator(__DIR__);
+        $locator->addStream(new ResourceStream('extra', shared: true, readonly: true));
+
+        $array = include 'extra://adjectives.php';
+        $this->assertSame([
+            'able',
+            'above',
+        ], $array);
+    }
 }

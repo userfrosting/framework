@@ -256,4 +256,20 @@ class StreamTest extends TestCase
         $this->assertFalse(chgrp($this->file, 'root'));
         unlink($this->file);  // Reset state
     }
+
+    /**
+     * include() will throw error if `stream_set_option` is not implemented.
+     * @runInSeparateProcess
+     */
+    public function testInclude(): void
+    {
+        $locator = new ResourceLocator(__DIR__);
+        $locator->addStream(new ResourceStream('extra', shared: true));
+
+        $array = include 'extra://adjectives.php';
+        $this->assertSame([
+            'able',
+            'above',
+        ], $array);
+    }
 }

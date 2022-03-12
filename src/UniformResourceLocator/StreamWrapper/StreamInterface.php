@@ -232,4 +232,21 @@ interface StreamInterface
      * @return mixed[]|false An array with file status, or FALSE in case of an error - see fstat()
      */
     public function url_stat(string $path, int $flags): array|false;
+
+    /**
+     * Support for stream_set_option
+     *  - stream_set_blocking()
+     *  - stream_set_timeout()
+     *  - stream_set_write_buffer()
+     *
+     * @see http://php.net/manual/streamwrapper.stream-set-option.php
+     * @see https://www.php.net/manual/en/migration74.incompatible.php
+     *
+     * @param int $option
+     * @param int $arg1
+     * @param int $arg2
+     *
+     * @return bool
+     */
+    public function stream_set_option(int $option, int $arg1, int $arg2);
 }
