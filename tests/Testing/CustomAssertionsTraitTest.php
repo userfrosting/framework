@@ -65,6 +65,19 @@ class CustomAssertionsTraitTest extends TestCase
         $this->assertJsonResponse(['foo', 'bar'], $response, 'result.list');
     }
 
+    /** @depends testAssertJsonNotEquals */
+    public function testAssertNotJsonResponse(): void
+    {
+        /** @var ResponseInterface $response */
+        $response = Mockery::mock(ResponseInterface::class)
+            ->shouldReceive('getBody')->times(3)->andReturn($this->json)
+            ->getMock();
+
+        $this->assertNotJsonResponse(['foo'], $response);
+        $this->assertNotJsonResponse(['foo'], $response, 'result.list');
+        $this->assertJsonNotEquals(['foo'], $response);
+    }
+
     public function testAssertJsonEquals(): void
     {
         $array = ['result' => ['foo' => true, 'bar' => false, 'list' => ['foo', 'bar']]];
@@ -72,6 +85,13 @@ class CustomAssertionsTraitTest extends TestCase
         $this->assertJsonEquals($array, $this->json);
         $this->assertJsonEquals(['foo', 'bar'], $this->json, 'result.list');
         $this->assertJsonEquals(true, $this->json, 'result.foo');
+    }
+
+    public function testAssertJsonNotEquals(): void
+    {
+        $this->assertJsonNotEquals(['foo'], $this->json);
+        $this->assertJsonNotEquals(['foo'], $this->json, 'result.list');
+        $this->assertJsonNotEquals(false, $this->json, 'result.foo');
     }
 
     public function testAssertJsonEqualsWithResponse(): void

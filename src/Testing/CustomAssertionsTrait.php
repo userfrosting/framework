@@ -58,6 +58,19 @@ trait CustomAssertionsTrait
     }
 
     /**
+     * Verify that the given array is an exact match for the JSON returned.
+     *
+     * @param mixed[]|mixed     $expected The expected array. Can be mixed when $key is used.
+     * @param ResponseInterface $response The response
+     * @param string|null       $key      Scope to the key if required. Support dot notation.
+     */
+    protected function assertNotJsonResponse(mixed $expected, ResponseInterface $response, ?string $key = null): void
+    {
+        $actual = (string) $response->getBody();
+        $this->assertJsonNotEquals($expected, $actual, $key);
+    }
+
+    /**
      * Asserts json is equals to something.
      *
      * @param mixed                    $expected Expected structure
@@ -72,6 +85,23 @@ trait CustomAssertionsTrait
 
         $this->assertJson($json);
         $this->assertSame($expected, $this->decodeJson($json, $key));
+    }
+
+    /**
+     * Asserts json is equals to something.
+     *
+     * @param mixed                    $expected Expected structure
+     * @param string|ResponseInterface $json     The json string
+     * @param string|null              $key      Scope to the key if required. Support dot notation.
+     */
+    protected function assertJsonNotEquals(mixed $expected, string|ResponseInterface $json, ?string $key = null): void
+    {
+        if ($json instanceof ResponseInterface) {
+            $json = (string) $json->getBody();
+        }
+
+        $this->assertJson($json);
+        $this->assertNotSame($expected, $this->decodeJson($json, $key));
     }
 
     /**
