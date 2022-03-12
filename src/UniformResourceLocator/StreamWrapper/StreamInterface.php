@@ -237,7 +237,7 @@ interface StreamInterface
      * Support for stream_set_option
      *  - stream_set_blocking()
      *  - stream_set_timeout()
-     *  - stream_set_write_buffer()
+     *  - stream_set_write_buffer().
      *
      * @see http://php.net/manual/streamwrapper.stream-set-option.php
      * @see https://www.php.net/manual/en/migration74.incompatible.php
