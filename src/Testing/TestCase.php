@@ -48,7 +48,7 @@ class TestCase extends BaseTestCase
     protected string $mainSprinkle;
 
     /**
-     * Setup the test environment.
+     * This method is called before each test.
      *
      * @codeCoverageIgnore
      */
@@ -56,19 +56,43 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->refreshApplication();
+        $this->createApplication();
     }
 
     /**
-     * Refresh the application instance by setting up a basic UF app.
+     * This method is called after each test.
      *
      * @codeCoverageIgnore
      */
-    protected function refreshApplication(): void
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->deleteApplication();
+    }
+
+    /**
+     * Create the application instance by setting up a basic UF app.
+     *
+     * @codeCoverageIgnore
+     */
+    protected function createApplication(): void
     {
         $this->userfrosting = new UserFrosting($this->mainSprinkle);
         $this->app = $this->userfrosting->getApp();
         $this->ci = $this->userfrosting->getContainer();
+    }
+
+    /**
+     * Unset the application instances (UF, Slim App and Container).
+     *
+     * @codeCoverageIgnore
+     */
+    protected function deleteApplication(): void
+    {
+        unset($this->userfrosting);
+        unset($this->app);
+        unset($this->ci);
     }
 
     /**
