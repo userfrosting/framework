@@ -362,7 +362,7 @@ class TranslatorTest extends TestCase
     {
         $translator = $this->getTranslator();
         $this->expectException(InvalidArgumentException::class);
-        $this->expectErrorMessage("Message for key `NON_STRING` must be string or array.");
+        $this->expectErrorMessage('Message for key `NON_STRING` must be string or array.');
         $translator->translate('NON_STRING');
     }
 
