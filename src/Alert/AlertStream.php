@@ -17,7 +17,7 @@ use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\I18n\Translator;
 
 /**
- * Implements an alert stream for use between HTTP requests, with i18n support via the Translator class
+ * Implements an alert stream for use between HTTP requests, with i18n support via the Translator class.
  */
 abstract class AlertStream
 {

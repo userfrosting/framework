@@ -17,7 +17,7 @@ use Illuminate\Contracts\Config\Repository;
 /**
  * Used to return all "Key => translation" data matrix
  * Extend the Config repository to have access to all the standard `has`, `get`,
- * etc. public methods on the dictionary array
+ * etc. public methods on the dictionary array.
  */
 interface DictionaryInterface extends Repository
 {
