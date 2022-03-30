@@ -27,4 +27,4 @@ jobs:
       run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
     - name: Run PHPStan
-      run: vendor/bin/phpstan analyse src/{Bakery,Config,Event,Routes,ServicesProvider,Session,Sprinkle,UniformResourceLocator} tests/{Bakery,Config,Event,Routes,Session,Sprinkle,UniformResourceLocator}
+      run: vendor/bin/phpstan analyse src/{Alert,Bakery,Config,Event,Routes,ServicesProvider,Session,Sprinkle,UniformResourceLocator} tests/{Bakery,Config,Event,Routes,Session,Sprinkle,UniformResourceLocator}

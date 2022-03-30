@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -11,28 +13,26 @@
 namespace UserFrosting\Alert;
 
 use Illuminate\Cache\Repository as Cache;
+use Illuminate\Cache\TaggedCache;
 use UserFrosting\I18n\Translator;
 
 /**
- * CacheAlertStream Class
  * Implements a message stream for use between HTTP requests, with i18n
  * support via the Translator class using the cache system to store
  * the alerts. Note that the tags are added each time instead of the
  * constructor since the session_id can change when the user logs in or out.
- *
- * @author Louis Charette
  */
 class CacheAlertStream extends AlertStream
 {
     /**
      * @var Cache Object We use the cache object so that added messages will automatically appear in the cache.
      */
-    protected $cache;
+    protected Cache $cache;
 
     /**
-     * @var string Session id tied to the alert stream
+     * @var string Session id tied to the alert stream.
      */
-    protected $session_id;
+    protected string $session_id;
 
     /**
      * Create a new message stream.
@@ -42,7 +42,7 @@ class CacheAlertStream extends AlertStream
      * @param Cache           $cache
      * @param string          $sessionId
      */
-    public function __construct($messagesKey, Translator $translator = null, Cache $cache, $sessionId)
+    public function __construct(string $messagesKey, ?Translator $translator, Cache $cache, string $sessionId)
     {
         $this->cache = $cache;
         $this->session_id = $sessionId;
@@ -50,41 +50,39 @@ class CacheAlertStream extends AlertStream
     }
 
     /**
-     * Get the messages from this message stream.
-     *
-     * @return array An array of messages, each of which is itself an array containing 'type' and 'message' fields.
+     * {@inheritDoc}
      */
-    public function messages()
+    public function messages(): array
     {
         if ($this->getCache()->has($this->messagesKey)) {
-            return $this->getCache()->get($this->messagesKey) ?: [];
+            $data = $this->getCache()->get($this->messagesKey);
+
+            return (is_array($data)) ? $data : [];
         } else {
             return [];
         }
     }
 
     /**
-     * Clear all messages from this message stream.
+     * {@inheritDoc}
      */
-    public function resetMessageStream()
+    public function resetMessageStream(): void
     {
         $this->getCache()->forget($this->messagesKey);
     }
 
     /**
-     * Save messages to the stream.
-     *
-     * @param array $messages The message
+     * {@inheritDoc}
      */
-    protected function saveMessages(array $messages)
+    protected function saveMessages(array $messages): void
     {
         $this->getCache()->forever($this->messagesKey, $messages);
     }
 
     /**
-     * @return \Illuminate\Cache\TaggedCache
+     * @return TaggedCache
      */
-    protected function getCache()
+    protected function getCache(): TaggedCache
     {
         return $this->cache->tags('_s' . $this->session_id);
     }
