@@ -21,7 +21,7 @@ namespace UserFrosting\I18n\PluralRules;
  */
 class Rule10 implements RuleInterface
 {
-    public static function getRule($number)
+    public static function getRule(int $number): int
     {
         if ($number % 100 == 1) {
             return 1;

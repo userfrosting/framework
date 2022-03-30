@@ -26,5 +26,5 @@ interface RuleInterface
      *
      * @return int The rule
      */
-    public static function getRule($number);
+    public static function getRule(int $number): int;
 }

@@ -18,7 +18,7 @@ namespace UserFrosting\I18n\PluralRules;
  */
 class Rule0 implements RuleInterface
 {
-    public static function getRule($number)
+    public static function getRule(int $number): int
     {
         return 1;
     }

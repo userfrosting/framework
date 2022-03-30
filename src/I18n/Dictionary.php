@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -11,55 +13,57 @@
 namespace UserFrosting\I18n;
 
 use Illuminate\Support\Arr;
+use LogicException;
 use UserFrosting\Support\Repository\Loader\ArrayFileLoader;
 use UserFrosting\Support\Repository\Loader\FileRepositoryLoader;
 use UserFrosting\Support\Repository\Repository;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 /**
- * Locale Dictionary.
- *
- * Load all locale all "Key => translation" data matrix
- *
- * @author Louis Charette
+ * Load all locale all "Key => translation" data matrix.
  */
 class Dictionary extends Repository implements DictionaryInterface
 {
     /**
      * @var string Base URI for locator
      */
-    protected $uri = 'locale://';
+    protected string $uri = 'locale://';
 
     /**
      * @var LocaleInterface
      */
-    protected $locale;
+    protected LocaleInterface $locale;
 
     /**
      * @var ResourceLocatorInterface
      */
-    protected $locator;
+    protected ResourceLocatorInterface $locator;
 
     /**
      * @var FileRepositoryLoader
      */
-    protected $fileLoader;
+    protected FileRepositoryLoader $fileLoader;
 
     /**
-     * @var (string|array)[] Locale "Key => translation" data matrix cache
+     * @var string[]|string[][] Locale "Key => translation" data matrix cache
      */
-    protected $items = [];
+    protected $items = []; // @phpstan-ignore-line Overwrite Laravel phpdoc
 
     /**
-     * @param LocaleInterface          $locale
-     * @param ResourceLocatorInterface $locator
-     * @param FileRepositoryLoader     $fileLoader File loader used to load each dictionnay files (default to Array Loader)
+     * @param LocaleInterface           $locale
+     * @param ResourceLocatorInterface  $locator
+     * @param FileRepositoryLoader|null $fileLoader File loader used to load each dictionary files (default to Array Loader)
      */
-    public function __construct(LocaleInterface $locale, ResourceLocatorInterface $locator, FileRepositoryLoader $fileLoader = null)
-    {
+    public function __construct(
+        LocaleInterface $locale,
+        ResourceLocatorInterface $locator,
+        ?FileRepositoryLoader $fileLoader = null
+    ) {
         $this->locale = $locale;
         $this->locator = $locator;
         $this->fileLoader = is_null($fileLoader) ? new ArrayFileLoader([]) : $fileLoader;
+
+        parent::__construct();
     }
 
     /**
@@ -67,7 +71,7 @@ class Dictionary extends Repository implements DictionaryInterface
      */
     public function getDictionary(): array
     {
-        if (empty($this->items)) {
+        if (count($this->items) === 0) {
             $this->items = $this->loadDictionary();
         }
 
@@ -113,7 +117,7 @@ class Dictionary extends Repository implements DictionaryInterface
     /**
      * Load the dictionary from file.
      *
-     * @return (string|array)[] The locale dictionary
+     * @return string[]|string[][] The locale dictionary
      */
     protected function loadDictionary(): array
     {
@@ -127,21 +131,21 @@ class Dictionary extends Repository implements DictionaryInterface
         $files = $this->filterDictionaryFiles($files);
 
         // Load all files content if files are present
-        if (!empty($files)) {
+        if (count($files) !== 0) {
             $loader = $this->getFileLoader();
             $loader->setPaths($files);
 
             $dictionary = $loader->load();
         }
 
-        // Now load dependent dictionnaries
+        // Now load dependent dictionaries
         foreach ($this->locale->getDependentLocales() as $locale) {
 
             // Stop if locale already loaded to prevent recursion
             $localesToLoad = array_merge([$locale->getIdentifier()], $locale->getDependentLocalesIdentifier());
             $intersection = array_intersect($localesToLoad, $loadedLocale);
-            if (!empty($intersection)) {
-                throw new \LogicException("Can't load dictionary. Dependencies recursion detected : " . implode(', ', $intersection));
+            if (count($intersection) !== 0) {
+                throw new LogicException("Can't load dictionary. Dependencies recursion detected : " . implode(', ', $intersection));
             }
 
             $dependentDictionary = new self($locale, $this->locator, $this->fileLoader);
@@ -162,6 +166,7 @@ class Dictionary extends Repository implements DictionaryInterface
      */
     protected function filterDictionaryFiles(array $files): array
     {
+        // @phpstan-ignore-next-line False positive. ResourceInterface is Stringable.
         return array_filter($files, function ($file) {
             if ($file->getExtension() == 'php') {
                 return (string) $file;

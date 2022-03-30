@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,33 +12,52 @@
 
 namespace UserFrosting\I18n;
 
+use InvalidArgumentException;
+use OutOfRangeException;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
 /**
- * Translator Class.
- *
  * Translate message ids to a message in a specified language.
- *
- * @author    Louis Charette
- * @author    Alexander Weissman (https://alexanderweissman.com)
  */
 class Translator
 {
     /**
      * @var Environment A Twig environment used to replace placeholders.
      */
-    protected $twig;
+    protected Environment $twig;
 
     /**
      * @var string The default key that contains the pluralization code.
      */
-    protected $defaultPluralKey = 'plural';
+    protected string $defaultPluralKey = 'plural';
 
     /**
      * @var DictionaryInterface
      */
-    protected $dictionary;
+    protected DictionaryInterface $dictionary;
+
+    /**
+     * @var array<int,class-string> Rules class list.
+     */
+    protected array $rulesClass = [
+        0  => \UserFrosting\I18n\PluralRules\Rule0::class,
+        1  => \UserFrosting\I18n\PluralRules\Rule1::class,
+        2  => \UserFrosting\I18n\PluralRules\Rule2::class,
+        3  => \UserFrosting\I18n\PluralRules\Rule3::class,
+        4  => \UserFrosting\I18n\PluralRules\Rule4::class,
+        5  => \UserFrosting\I18n\PluralRules\Rule5::class,
+        6  => \UserFrosting\I18n\PluralRules\Rule6::class,
+        7  => \UserFrosting\I18n\PluralRules\Rule7::class,
+        8  => \UserFrosting\I18n\PluralRules\Rule8::class,
+        9  => \UserFrosting\I18n\PluralRules\Rule9::class,
+        10 => \UserFrosting\I18n\PluralRules\Rule10::class,
+        11 => \UserFrosting\I18n\PluralRules\Rule11::class,
+        12 => \UserFrosting\I18n\PluralRules\Rule12::class,
+        13 => \UserFrosting\I18n\PluralRules\Rule13::class,
+        14 => \UserFrosting\I18n\PluralRules\Rule14::class,
+        15 => \UserFrosting\I18n\PluralRules\Rule15::class,
+    ];
 
     /**
      * Create the translator.
@@ -49,7 +70,7 @@ class Translator
         $this->dictionary = $dictionary;
         $this->dictionary->getDictionary();
 
-        // Preapre Twig Environment
+        // Prepare Twig Environment
         $loader = new FilesystemLoader();
         $this->twig = new Environment($loader);
     }
@@ -84,12 +105,8 @@ class Translator
      *
      * @return string The translated message.
      */
-    public function translate(string $messageKey, $placeholders = []): string
+    public function translate(string $messageKey, array|int $placeholders = []): string
     {
-        if (!is_numeric($placeholders) && !is_array($placeholders)) {
-            throw new \InvalidArgumentException('Placeholders must be array or numeric value.');
-        }
-
         // Get the correct message from the specified key
         $message = $this->getMessageFromKey($messageKey, $placeholders);
 
@@ -101,7 +118,7 @@ class Translator
 
     /**
      * Get the message from key.
-     * Go throught all registered language keys avaiable and find the correct
+     * Go through all registered language keys available and find the correct
      * one to use, using the placeholders to select the correct plural form.
      *
      * @param string      $messageKey   The key to find the message for
@@ -109,7 +126,7 @@ class Translator
      *
      * @return string The message string
      */
-    protected function getMessageFromKey(string $messageKey, &$placeholders): string
+    protected function getMessageFromKey(string $messageKey, array|int &$placeholders): string
     {
         // If we can't find a match, return $messageKey
         if (!$this->dictionary->has($messageKey)) {
@@ -119,14 +136,19 @@ class Translator
         // Get message from items
         $message = $this->dictionary->get($messageKey);
 
-        // If message is an array, we'll need to go depper to get the actual string. Otherwise we're good to move on.
+        // If message is not string/array, abort
+        if (!is_array($message) && !is_string($message)) {
+            throw new InvalidArgumentException("Message for key `$messageKey` must be string or array.");
+        }
+
+        // If message is an array, we'll need to go deeper to get the actual string. Otherwise we're good to move on.
         if (!is_array($message)) {
             return $message;
         }
 
         // First, let's see if we can get the plural rules.
         // A plural form will always have priority over the `@TRANSLATION` instruction
-        if (!empty(array_filter(array_keys($message), 'is_int'))) {
+        if (count(array_filter(array_keys($message), 'is_int')) !== 0) {
 
             // We start by picking up the plural key, aka which placeholder contains the numeric value defining how many {x} we have
             $pluralKey = $this->getPluralKey($message);
@@ -138,7 +160,7 @@ class Translator
             if (is_null($pluralValue)) {
 
                 // If we have a `@TRANSLATION` instruction, return this
-                if ($this->dictionary->has($messageKey . '.@TRANSLATION') && !is_null($this->dictionary->get($messageKey . '.@TRANSLATION'))) {
+                if ($this->dictionary->has($messageKey . '.@TRANSLATION') && is_string($this->dictionary->get($messageKey . '.@TRANSLATION'))) {
                     return $this->dictionary->get($messageKey . '.@TRANSLATION');
                 }
 
@@ -147,7 +169,7 @@ class Translator
             }
 
             // If $placeholders is a numeric value, we transform back to an array for replacement in the main $message
-            if (is_numeric($placeholders) || empty($placeholders)) {
+            if (is_numeric($placeholders) || count($placeholders) === 0) {
                 $placeholders = [$pluralKey => $pluralValue];
             }
 
@@ -167,7 +189,7 @@ class Translator
         }
 
         // If we didn't find a plural form, we try to find the "@TRANSLATION" form.
-        if ($this->dictionary->has($messageKey . '.@TRANSLATION')) {
+        if ($this->dictionary->has($messageKey . '.@TRANSLATION') && is_string($this->dictionary->get($messageKey . '.@TRANSLATION'))) {
             return $this->dictionary->get($messageKey . '.@TRANSLATION');
         }
 
@@ -186,7 +208,7 @@ class Translator
      */
     protected function getPluralKey(array $messageArray): string
     {
-        if (isset($messageArray['@PLURAL'])) {
+        if (isset($messageArray['@PLURAL']) && is_string($messageArray['@PLURAL'])) {
             return $messageArray['@PLURAL'];
         } else {
             return $this->defaultPluralKey;
@@ -194,20 +216,20 @@ class Translator
     }
 
     /**
-     * Return the plural value, aka the nummber to display, from the placeholder values.
+     * Return the plural value, aka the number to display, from the placeholder values.
      *
      * @param mixed[]|int $placeholders Placeholder
      * @param string      $pluralKey    The plural key, for key => value match
      *
      * @return int|null The number, null if not found
      */
-    protected function getPluralValue($placeholders, string $pluralKey): ?int
+    protected function getPluralValue(array|int $placeholders, string $pluralKey): ?int
     {
         if (is_array($placeholders) && isset($placeholders[$pluralKey])) {
             return (int) $placeholders[$pluralKey];
         }
 
-        if (!is_array($placeholders) && is_numeric($placeholders)) {
+        if (!is_array($placeholders)) {
             return $placeholders;
         }
 
@@ -270,10 +292,10 @@ class Translator
         }
 
         // Interpolate translatable placeholders values. This allows to
-        // pre-translate placeholder which value starts with the `&` caracter
+        // pre-translate placeholder which value starts with the `&` character
         foreach ($placeholders as $name => $value) {
             //We don't allow nested placeholders. They will return errors on the next lines
-            if (is_array($value)) {
+            if (!is_string($value)) {
                 continue;
             }
 
@@ -295,7 +317,7 @@ class Translator
         // We use some regex magic to detect them !
         $message = preg_replace_callback('/{{&(([^}]+[^a-z]))}}/', function ($matches) use ($placeholders) {
             return $this->translate($matches[1], $placeholders);
-        }, $message);
+        }, $message) ?? $message;
 
         // Now it's time to replace the remaining placeholder. We use Twig do to this.
         // It's a bit slower, but allows to use the many Twig filters
@@ -318,7 +340,7 @@ class Translator
      *
      * @return int The plural-case we need to use for the number plural-rule combination
      */
-    public function getPluralForm($number, $forceRule = false)
+    public function getPluralForm(int|float $number, int|bool $forceRule = false): int
     {
         if (is_int($forceRule)) {
             $ruleNumber = $forceRule;
@@ -327,11 +349,10 @@ class Translator
         }
 
         // Get the rule class
-        $class = "\UserFrosting\I18n\PluralRules\Rule$ruleNumber";
-        if (!class_exists($class)) {
-            throw new \OutOfRangeException("The rule number '$ruleNumber' must be between 0 and 16. ($class)");
+        if (!array_key_exists($ruleNumber, $this->rulesClass)) {
+            throw new OutOfRangeException("The rule number '$ruleNumber' must be between 0 and 15.");
         }
 
-        return $class::getRule((int) $number);
+        return $this->rulesClass[$ruleNumber]::getRule((int) $number);
     }
 }

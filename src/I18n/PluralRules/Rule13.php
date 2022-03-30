@@ -21,7 +21,7 @@ namespace UserFrosting\I18n\PluralRules;
  */
 class Rule13 implements RuleInterface
 {
-    public static function getRule($number)
+    public static function getRule(int $number): int
     {
         if ($number === 1) {
             return 1;

@@ -155,18 +155,6 @@ class TranslatorTest extends TestCase
     }
 
     /**
-     * Force test a non-array / non-int placeholder.
-     *
-     * @depends testTranslate
-     */
-    public function testTranslateKeyWithBadPlaceholder(): void
-    {
-        $translator = $this->getTranslator();
-        $this->expectException(\InvalidArgumentException::class);
-        $this->assertEquals($translator->translate('X_FOO', 'xx'), 'xxx foos');
-    }
-
-    /**
      * Basic test to see if triple dependency works.
      */
     public function testTranslateWithNestedDependencies(): void

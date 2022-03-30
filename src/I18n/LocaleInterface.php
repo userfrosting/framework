@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -12,8 +14,6 @@ namespace UserFrosting\I18n;
 
 /**
  * Locale interface.
- *
- * @author Louis Charette
  */
 interface LocaleInterface
 {
@@ -41,7 +41,7 @@ interface LocaleInterface
     /**
      * Return the raw configuration data.
      *
-     * @return (array|string)[]
+     * @return string[][]|string[]
      */
     public function getConfig(): array;
 

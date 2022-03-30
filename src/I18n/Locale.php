@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -13,28 +15,24 @@ namespace UserFrosting\I18n;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 
 /**
- * Locale Class.
- *
- * Act as a container for a Locale data loaded from filesystem data
- *
- * @author Louis Charette
+ * Act as a container for a Locale data loaded from filesystem data.
  */
 class Locale implements LocaleInterface
 {
     /**
-     * @var string The locale identifier, ie "en_US" or "fr_FR"
+     * @var string The locale identifier, ie "en_US" or "fr_FR".
      */
-    protected $identifier = '';
+    protected string $identifier = '';
 
     /**
-     * @var string The locale config file path
+     * @var string The locale config file path.
      */
-    protected $configFile = '';
+    protected string $configFile = '';
 
     /**
-     * @var string[] Locale config data, loaded from the locale YAML file
+     * @var string[][]|string[] Locale config data, loaded from the locale YAML file.
      */
-    protected $config;
+    protected array $config;
 
     /**
      * Create locale class.
@@ -104,7 +102,7 @@ class Locale implements LocaleInterface
     /**
      * Return the raw configuration data.
      *
-     * @return string[]
+     * @return string[][]|string[]
      */
     public function getConfig(): array
     {
@@ -149,10 +147,10 @@ class Locale implements LocaleInterface
      */
     public function getName(): string
     {
-        if (!isset($this->config['name'])) {
-            return '';
-        } else {
+        if (isset($this->config['name']) && is_string($this->config['name'])) {
             return $this->config['name'];
+        } else {
+            return '';
         }
     }
 
@@ -177,9 +175,9 @@ class Locale implements LocaleInterface
      */
     public function getRegionalName(): string
     {
-        if (isset($this->config['regional'])) {
+        if (isset($this->config['regional']) && is_string($this->config['regional'])) {
             return $this->config['regional'];
-        } elseif (isset($this->config['name'])) {
+        } elseif (isset($this->config['name']) && is_string($this->config['name'])) {
             return $this->config['name'];
         } else {
             return $this->identifier;

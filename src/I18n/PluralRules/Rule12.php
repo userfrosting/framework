@@ -24,7 +24,7 @@ namespace UserFrosting\I18n\PluralRules;
  */
 class Rule12 implements RuleInterface
 {
-    public static function getRule($number)
+    public static function getRule(int $number): int
     {
         if ($number == 1) {
             return 1;
@@ -38,7 +38,7 @@ class Rule12 implements RuleInterface
             return 3;
         }
 
-        if (($number % 100 >= 11) && ($number % 100 <= 99)) {
+        if (($number % 100 >= 11)) {
             return 4;
         }
 

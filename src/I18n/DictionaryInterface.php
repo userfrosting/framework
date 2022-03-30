@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -13,20 +15,16 @@ namespace UserFrosting\I18n;
 use Illuminate\Contracts\Config\Repository;
 
 /**
- * Locale Dictionary.
- *
  * Used to return all "Key => translation" data matrix
- * Extend the Config repository to have acess to all the standard `has`, `get`,
- * etc. public methods on the dictionnay array
- *
- * @author Louis Charette
+ * Extend the Config repository to have access to all the standard `has`, `get`,
+ * etc. public methods on the dictionary array
  */
 interface DictionaryInterface extends Repository
 {
     /**
      * Returns all loaded locale Key => Translation data dictionary.
      *
-     * @return (string|array)[] The locale dictionary
+     * @return (string|string[])[] The locale dictionary
      */
     public function getDictionary(): array;
 
@@ -38,7 +36,7 @@ interface DictionaryInterface extends Repository
     public function getLocale(): LocaleInterface;
 
     /**
-     * Return the dictionnary as a flatten array, using dot notation.
+     * Return the dictionary as a flatten array, using dot notation.
      *
      * @return string[]
      */

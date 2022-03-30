@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -15,8 +17,6 @@ use Illuminate\Support\Arr;
 /**
  * Helper class to compare two dictionaries.
  * Can be used to determine which keys/values are missing from a dictionary (right) compared to a base directory (left).
- *
- * @author Louis Charette
  */
 class Compare
 {
@@ -42,7 +42,7 @@ class Compare
 
     /**
      * Compares keys from left dictionary against right dictionary.
-     * Returns a list of keys present in the left dictory, but not found in the right one.
+     * Returns a list of keys present in the left dictionary, but not found in the right one.
      * Can be used to sync both dictionary content.
      *
      * @param DictionaryInterface $leftDictionary
@@ -98,11 +98,11 @@ class Compare
     }
 
     /**
-     * Transfer dot notation associative array back into multidimentional associative array.
+     * Transfer dot notation associative array back into multidimensional associative array.
      *
-     * @param mixed[] $array
+     * @param string[] $array
      *
-     * @return mixed[]
+     * @return string[]
      */
     protected static function undot(array $array): array
     {

@@ -20,7 +20,7 @@ namespace UserFrosting\I18n\PluralRules;
  */
 class Rule3 implements RuleInterface
 {
-    public static function getRule($number)
+    public static function getRule(int $number): int
     {
         if ($number == 0) {
             return 1;
