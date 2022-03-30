@@ -10,6 +10,7 @@
 
 namespace UserFrosting\Tests\I18n;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\I18n\Dictionary;
 use UserFrosting\I18n\Locale;
@@ -352,6 +353,17 @@ class TranslatorTest extends TestCase
     {
         $translator = $this->getTranslator();
         $this->assertEquals($translator->translate('You are {{status}}', ['status' => 'dumb']), 'You are dumb');
+    }
+
+    /**
+     * Test for placeholder applied to `$key` if it doesn't match any languages keys.
+     */
+    public function testNonStringMessage(): void
+    {
+        $translator = $this->getTranslator();
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectErrorMessage("Message for key `NON_STRING` must be string or array.");
+        $translator->translate('NON_STRING');
     }
 
     /**

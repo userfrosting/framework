@@ -27,4 +27,6 @@ return [
     ],
 
     'COMPLEX_STRING2' => "There's {{&X_CHILD}} and {{&X_ADULT}} in the {{color}} {{&CAR.FULL_MODEL}}",
+
+    'NON_STRING' => 1,
 ];
