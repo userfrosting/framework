@@ -11,6 +11,7 @@
 namespace UserFrosting\Tests\Alert;
 
 use Illuminate\Cache\Repository as Cache;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Alert\AlertStream;
@@ -19,30 +20,26 @@ use UserFrosting\I18n\Translator;
 
 class CacheAlertStreamTest extends TestCase
 {
-    protected $key = 'alerts';
+    use MockeryPHPUnitIntegration;
 
-    protected $session_id = 'foo123';
+    protected string $key = 'alerts';
 
-    public function tearDown(): void
-    {
-        parent::tearDown();
-        m::close();
-    }
+    protected string $session_id = 'foo123';
 
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $translator = m::mock(Translator::class);
         $cache = m::mock(Cache::class);
         $stream = new CacheAlertStream($this->key, $translator, $cache, $this->session_id);
 
-        $this->assertInstanceOf(AlertStream::class, $stream);
-        $this->assertInstanceOf(CacheAlertStream::class, $stream);
+        $this->assertInstanceOf(AlertStream::class, $stream); // @phpstan-ignore-line
+        $this->assertInstanceOf(CacheAlertStream::class, $stream); // @phpstan-ignore-line
     }
 
     /**
      * @depends testConstructor
      */
-    public function testSetTranslator()
+    public function testSetTranslator(): void
     {
         $translator = m::mock(Translator::class);
         $cache = m::mock(Cache::class);
@@ -52,14 +49,14 @@ class CacheAlertStreamTest extends TestCase
 
         $translator2 = m::mock(Translator::class);
         $this->assertNotSame($translator, $translator2);
-        $this->assertInstanceOf(CacheAlertStream::class, $stream->setTranslator($translator2));
+        $this->assertInstanceOf(CacheAlertStream::class, $stream->setTranslator($translator2)); // @phpstan-ignore-line
         $this->assertSame($translator2, $stream->translator());
     }
 
     /**
      * @depends testConstructor
      */
-    public function testAddMessage()
+    public function testAddMessage(): void
     {
         // Build Mock
         $translator = m::mock(Translator::class);
@@ -77,13 +74,13 @@ class CacheAlertStreamTest extends TestCase
 
         // Process
         $stream = new CacheAlertStream($this->key, $translator, $cache, $this->session_id);
-        $this->assertInstanceOf(CacheAlertStream::class, $stream->addMessage('success', 'foo'));
+        $this->assertInstanceOf(CacheAlertStream::class, $stream->addMessage('success', 'foo')); // @phpstan-ignore-line
     }
 
     /**
      * @depends testAddMessage
      */
-    public function testAddMessageWithExistingkey()
+    public function testAddMessageWithExistingKey(): void
     {
         // Build Mock
         $translator = m::mock(Translator::class);
@@ -102,13 +99,13 @@ class CacheAlertStreamTest extends TestCase
 
         // Process
         $stream = new CacheAlertStream($this->key, $translator, $cache, $this->session_id);
-        $this->assertInstanceOf(CacheAlertStream::class, $stream->addMessage('success', 'foo'));
+        $stream->addMessage('success', 'foo');
     }
 
     /**
-     * @depends testAddMessageWithExistingkey
+     * @depends testAddMessageWithExistingKey
      */
-    public function testAddMessageWithExistingkeyNotEmpty()
+    public function testAddMessageWithExistingKeyNotEmpty(): void
     {
         // Build Mock
         $translator = m::mock(Translator::class);
@@ -127,13 +124,13 @@ class CacheAlertStreamTest extends TestCase
 
         // Process
         $stream = new CacheAlertStream($this->key, $translator, $cache, $this->session_id);
-        $this->assertInstanceOf(CacheAlertStream::class, $stream->addMessage('success', 'foo'));
+        $stream->addMessage('success', 'foo');
     }
 
     /**
      * @depends testConstructor
      */
-    public function testResetMessageStream()
+    public function testResetMessageStream(): void
     {
         // Build Mock
         $translator = m::mock(Translator::class);
@@ -146,13 +143,13 @@ class CacheAlertStreamTest extends TestCase
 
         // Process
         $stream = new CacheAlertStream($this->key, $translator, $cache, $this->session_id);
-        $this->assertNull($stream->resetMessageStream());
+        $stream->resetMessageStream();
     }
 
     /**
      * @depends testConstructor
      */
-    public function testAddMessageTranslatedWithNoTranslator()
+    public function testAddMessageTranslatedWithNoTranslator(): void
     {
         $cache = m::mock(Cache::class);
         $stream = new CacheAlertStream($this->key, null, $cache, $this->session_id);
@@ -164,7 +161,7 @@ class CacheAlertStreamTest extends TestCase
     /**
      * @depends testConstructor
      */
-    public function testAddMessageTranslated()
+    public function testAddMessageTranslated(): void
     {
         // Build Mock
         $translator = m::mock(Translator::class);
@@ -188,14 +185,14 @@ class CacheAlertStreamTest extends TestCase
 
         // Process
         $stream = new CacheAlertStream($this->key, $translator, $cache, $this->session_id);
-        $this->assertInstanceOf(CacheAlertStream::class, $stream->addMessageTranslated('success', $key, $placeholder));
+        $stream->addMessageTranslated('success', $key, $placeholder);
     }
 
     /**
-     * @depends testAddMessageWithExistingkey
+     * @depends testAddMessageWithExistingKey
      * @depends testResetMessageStream
      */
-    public function testGetAndClearMessages()
+    public function testGetAndClearMessages(): void
     {
         // Build Mock
         $translator = m::mock(Translator::class);
@@ -220,7 +217,7 @@ class CacheAlertStreamTest extends TestCase
     /**
      * @depends testAddMessage
      */
-    public function testAddValidationErrors()
+    public function testAddValidationErrors(): void
     {
         // Build Mock
         $translator = m::mock(Translator::class);

@@ -92,10 +92,12 @@ abstract class AlertStream
 
     /**
      * Get the messages and then clear the message stream.
+     *
      * This function does the same thing as `messages()`, except that it also clears all messages afterwards.
      * This is useful, because typically we don't want to view the same messages more than once.
+     * Returns an array of messages, each of which is itself an array containing "type" and "message" fields.
      *
-     * @return mixed[] An array of messages, each of which is itself an array containing "type" and "message" fields.
+     * @return array<int, array{type: string, message: string}>
      */
     public function getAndClearMessages(): array
     {
@@ -133,7 +135,7 @@ abstract class AlertStream
     /**
      * Get the messages from this message stream.
      *
-     * @return mixed[] An array of messages, each of which is itself an array containing "type" and "message" fields.
+     * @return array<int, array{type: string, message: string}> An array of messages, each of which is itself an array containing "type" and "message" fields.
      */
     abstract public function messages(): array;
 
@@ -145,7 +147,7 @@ abstract class AlertStream
     /**
      * Save messages to the stream.
      *
-     * @param mixed[] $messages
+     * @param array<int, array{type: string, message: string}> $messages
      */
     abstract protected function saveMessages(array $messages): void;
 }
