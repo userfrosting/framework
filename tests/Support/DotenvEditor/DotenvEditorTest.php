@@ -10,48 +10,27 @@
 
 namespace UserFrosting\Tests\Support\DotenvEditor;
 
-use Jackiedo\DotenvEditor\Exceptions\FileNotFoundException;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Support\DotenvEditor\DotenvEditor;
 
 class DotenvEditorTest extends TestCase
 {
-    protected $basePath = __DIR__.'/data/';
+    protected string $basePath = __DIR__.'/data/';
 
-    public function testConstructor()
+    public function testLoad(): void
     {
-        $editor = new DotenvEditor($this->basePath.'.env-backups/');
-        $this->assertInstanceOf(DotenvEditor::class, $editor);
-
-        return $editor;
-    }
-
-    /**
-     * @depends testConstructor
-     */
-    public function testBackupException()
-    {
-        $this->expectException(FileNotFoundException::class);
-        new DotenvEditor($this->basePath.'backups/');
-    }
-
-    /**
-     * @depends testConstructor
-     */
-    public function testLoad()
-    {
-        $editor = new DotenvEditor($this->basePath.'.env-backups/');
+        $editor = new DotenvEditor();
         $editor->load($this->basePath.'.env');
         $this->assertEquals('dbpass', $editor->getValue('DB_PASSWORD'));
     }
 
     /**
-     * @depends testConstructor
      * @depends testLoad
      */
-    public function testBackup()
+    public function testBackup(): void
     {
-        $editor = new DotenvEditor($this->basePath.'.env-backups/');
+        $editor = new DotenvEditor();
+        $editor->setBackupPath($this->basePath.'.env-backups/');
         $editor->load($this->basePath.'.env');
 
         $backups_before = $editor->getBackups();
@@ -66,30 +45,21 @@ class DotenvEditorTest extends TestCase
         touch($this->basePath.'.env-backups/.gitkeep');
     }
 
-    /**
-     * @depends testConstructor
-     */
-    public function testLoadPathNotExist()
+    public function testLoadPathNotExist(): void
     {
         $editor = new DotenvEditor($this->basePath.'.env-backups/');
         $result = $editor->load($this->basePath.'.fakeEnv');
         $this->assertEquals($editor, $result);
     }
 
-    /**
-     * @depends testConstructor
-     */
-    public function testLoadPathIsNull()
+    public function testLoadPathIsNull(): void
     {
         $editor = new DotenvEditor($this->basePath.'.env-backups/');
         $this->expectException(\InvalidArgumentException::class);
-        $result = $editor->load();
+        $editor->load();
     }
 
-    /**
-     * @depends testConstructor
-     */
-    public function testLoadPathNotExistAndRestore()
+    public function testLoadPathNotExistAndRestore(): void
     {
         // Create a backup
         $editor = new DotenvEditor($this->basePath.'.env-backups/');

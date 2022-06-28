@@ -10,18 +10,14 @@
 
 namespace UserFrosting\Support\DotenvEditor;
 
+use InvalidArgumentException;
 use Jackiedo\DotenvEditor\DotenvEditor as Editor;
 use Jackiedo\DotenvEditor\DotenvFormatter;
 use Jackiedo\DotenvEditor\DotenvReader;
 use Jackiedo\DotenvEditor\DotenvWriter;
-use Jackiedo\DotenvEditor\Exceptions\FileNotFoundException;
 
 /**
- * DotenvEditor.
- *
- * Implementation of Jackiedo DotenvEditor for use in UserFrosting
- *
- * @author Louis Charette
+ * Implementation of Jackiedo DotenvEditor for use in UserFrosting.
  */
 class DotenvEditor extends Editor
 {
@@ -31,18 +27,13 @@ class DotenvEditor extends Editor
      * @param string $backupPath
      * @param bool   $autoBackup
      *
-     * @throws FileNotFoundException
+     * @phpstan-ignore-next-line We don't want to use the constructor of the parent class.
      */
-    public function __construct($backupPath = '', $autoBackup = true)
+    public function __construct(string $backupPath = '', bool $autoBackup = true)
     {
         $this->formatter = new DotenvFormatter();
         $this->reader = new DotenvReader($this->formatter);
         $this->writer = new DotenvWriter($this->formatter);
-
-        if (!is_dir($backupPath)) {
-            throw new FileNotFoundException("Backup path `$backupPath` is not a directory");
-        }
-
         $this->backupPath = $backupPath;
         $this->autoBackup = $autoBackup;
     }
@@ -50,7 +41,7 @@ class DotenvEditor extends Editor
     /**
      * Load file for working.
      *
-     * @param string      $filePath          The file path
+     * @param string|null $filePath          The file path
      * @param bool        $restoreIfNotFound Restore this file from other file if it's not found
      * @param string|null $restorePath       The file path you want to restore from
      *
@@ -60,7 +51,7 @@ class DotenvEditor extends Editor
     {
         //Fail if path is null to maintain compatibility with Jackiedo\DotenvEditor
         if (is_null($filePath)) {
-            throw new \InvalidArgumentException('File path cannot be null');
+            throw new InvalidArgumentException('File path cannot be null');
         }
 
         $this->resetContent();
@@ -79,5 +70,19 @@ class DotenvEditor extends Editor
         } else {
             return $this;
         }
+    }
+
+    /**
+     * Set the backup path.
+     *
+     * @param string $backupPath
+     *
+     * @return static
+     */
+    public function setBackupPath(string $backupPath): static
+    {
+        $this->backupPath = $backupPath;
+
+        return $this;
     }
 }
