@@ -71,9 +71,9 @@ class SprinkleManagerTest extends TestCase
             MainStub::class,
         ], array_keys($sprinkles));
         $this->assertInstanceOf(CoreStub::class, array_shift($sprinkles));
-        $this->assertInstanceOf(AdminStub::class, array_shift($sprinkles));
-        $this->assertInstanceOf(AccountStub::class, array_shift($sprinkles));
-        $this->assertInstanceOf(MainStub::class, array_shift($sprinkles));
+        $this->assertInstanceOf(AdminStub::class, array_shift($sprinkles)); // @phpstan-ignore-line
+        $this->assertInstanceOf(AccountStub::class, array_shift($sprinkles)); // @phpstan-ignore-line
+        $this->assertInstanceOf(MainStub::class, array_shift($sprinkles)); // @phpstan-ignore-line
         $this->assertInstanceOf(MainStub::class, $manager->getMainSprinkle());
 
         // Test getSprinkleNames while at it
@@ -95,9 +95,9 @@ class SprinkleManagerTest extends TestCase
 
         $this->assertCount(4, $sprinkles);
         $this->assertInstanceOf(CoreStub::class, array_shift($sprinkles));
-        $this->assertInstanceOf(AccountStub::class, array_shift($sprinkles));
-        $this->assertInstanceOf(AdminNestedStub::class, array_shift($sprinkles));
-        $this->assertInstanceOf(MainNestedStub::class, array_shift($sprinkles));
+        $this->assertInstanceOf(AccountStub::class, array_shift($sprinkles)); // @phpstan-ignore-line
+        $this->assertInstanceOf(AdminNestedStub::class, array_shift($sprinkles)); // @phpstan-ignore-line
+        $this->assertInstanceOf(MainNestedStub::class, array_shift($sprinkles)); // @phpstan-ignore-line
     }
 
     /**
@@ -110,9 +110,9 @@ class SprinkleManagerTest extends TestCase
 
         $this->assertCount(4, $sprinkles);
         $this->assertInstanceOf(CoreStub::class, array_shift($sprinkles));
-        $this->assertInstanceOf(AccountStub::class, array_shift($sprinkles));
-        $this->assertInstanceOf(AdminNestedStub::class, array_shift($sprinkles));
-        $this->assertInstanceOf(MainDuplicateStub::class, array_shift($sprinkles));
+        $this->assertInstanceOf(AccountStub::class, array_shift($sprinkles)); // @phpstan-ignore-line
+        $this->assertInstanceOf(AdminNestedStub::class, array_shift($sprinkles)); // @phpstan-ignore-line
+        $this->assertInstanceOf(MainDuplicateStub::class, array_shift($sprinkles)); // @phpstan-ignore-line
     }
 
     /**
