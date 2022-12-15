@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php_versions: ['8.0', '8.1']
+        php_versions: ['8.0', '8.1', '8.2']
         os: [ubuntu-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
@@ -51,7 +51,7 @@ jobs:
 
     - name: Upload coverage to Codecov
       if: github.event_name != 'schedule'
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
         file: ./_meta/coverage.xml
         fail_ci_if_error: true
