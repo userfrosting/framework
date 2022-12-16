@@ -19,9 +19,7 @@ jobs:
     - name: Setup PHP, with composer and extensions
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.0'
-        extensions: mbstring, dom, fileinfo, gd
-        tools: pecl
+        php-version: '8.2'
 
     - name: Install Dependencies
       run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
