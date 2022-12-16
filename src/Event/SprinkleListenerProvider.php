@@ -41,7 +41,7 @@ final class SprinkleListenerProvider implements ListenerProviderInterface
         $listeners = $this->getRegisteredListeners();
 
         // Catch if event doesn't have listener
-        if (!array_key_exists($event::class, $listeners)) {
+        if (!array_key_exists($event::class, $listeners) || !is_array($listeners[$event::class])) {
             return [];
         }
 

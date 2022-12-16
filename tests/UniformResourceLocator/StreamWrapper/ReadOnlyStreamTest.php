@@ -104,7 +104,9 @@ class ReadOnlyStreamTest extends TestCase
         }
         // Sort results, as order might differ depending of OS
         $expected = ['..', '.'];
-        $this->assertSame(sort($expected), sort($entries));
+        sort($expected);
+        sort($entries);
+        $this->assertSame($expected, $entries);
         closedir($dir); // Close dir to remove lock on Windows
 
         // Permissions
