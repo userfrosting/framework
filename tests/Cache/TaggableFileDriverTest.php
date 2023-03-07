@@ -32,14 +32,14 @@ class TaggableFileDriverTest extends TestCase
         $this->path = __DIR__.'/store';
     }
 
-    public function testTagKeyGeneratesPrefixedKey()
+    public function testTagKeyGeneratesPrefixedKey(): void
     {
         $store = new TaggableFileStore($this->file, $this->path, []);
         $tagSet = new FileTagSet($store, ['foobar']);
         $this->assertEquals('cache_tags~#~foobar', $tagSet->tagKey('foobar'));
     }
 
-    public function testTagKeyGeneratesPrefixedKeywithCustomSeparator()
+    public function testTagKeyGeneratesPrefixedKeywithCustomSeparator(): void
     {
         $store = new TaggableFileStore($this->file, $this->path, [
             'separator'=> '~|~',
@@ -48,7 +48,7 @@ class TaggableFileDriverTest extends TestCase
         $this->assertEquals('cache_tags~|~foobar', $tagSet->tagKey('foobar'));
     }
 
-    public function testPathGeneratesCorrectPathfoKeyWithoutSeparator()
+    public function testPathGeneratesCorrectPathfoKeyWithoutSeparator(): void
     {
         $reflectionMethod = new \ReflectionMethod(TaggableFileStore::class, 'path');
 
@@ -60,7 +60,7 @@ class TaggableFileDriverTest extends TestCase
         $this->assertTrue(str_replace($this->path, '', $path) === '/88/43/8843d7f92416211de9ebb963ff4ce28125932878');
     }
 
-    public function testPathGeneratesCorrectPathforKeyWithSeparator()
+    public function testPathGeneratesCorrectPathforKeyWithSeparator(): void
     {
         $reflectionMethod = new \ReflectionMethod(TaggableFileStore::class, 'path');
 
@@ -72,7 +72,7 @@ class TaggableFileDriverTest extends TestCase
         $this->assertTrue(str_replace($this->path, '', $path) === '/boofar/88/43/8843d7f92416211de9ebb963ff4ce28125932878');
     }
 
-    public function testPathGeneratesCorrectPathforKeyWithCustomSeparator()
+    public function testPathGeneratesCorrectPathforKeyWithCustomSeparator(): void
     {
         $reflectionMethod = new \ReflectionMethod(TaggableFileStore::class, 'path');
 
@@ -84,7 +84,7 @@ class TaggableFileDriverTest extends TestCase
         $this->assertTrue(str_replace($this->path, '', $path) === '/boofar/88/43/8843d7f92416211de9ebb963ff4ce28125932878');
     }
 
-    public function testTagsReturnsTaggedFileCache()
+    public function testTagsReturnsTaggedFileCache(): void
     {
         $store = new TaggableFileStore($this->file, $this->path, []);
 
@@ -93,7 +93,7 @@ class TaggableFileDriverTest extends TestCase
         $this->assertInstanceOf(TaggedFileCache::class, $cache);
     }
 
-    public function testFlushOldTagDeletesTagFolders()
+    public function testFlushOldTagDeletesTagFolders(): void
     {
         $filesMock = Mockery::mock(new Filesystem());
         $store = new TaggableFileStore($filesMock, '/', []);
@@ -115,7 +115,7 @@ class TaggableFileDriverTest extends TestCase
         $store->flushOldTag('foobar');
     }
 
-    public function testFlushOldTagDoesNotDeletesOtherFolders()
+    public function testFlushOldTagDoesNotDeletesOtherFolders(): void
     {
         $filesMock = Mockery::mock(new Filesystem());
         $store = new TaggableFileStore($filesMock, '/', []);
@@ -133,32 +133,25 @@ class TaggableFileDriverTest extends TestCase
         $store->flushOldTag('foobar');
     }
 
-    public function testItemKeyCallsTaggedItemKey()
+    public function testItemKeyCallsTaggedItemKey(): void
     {
         $store = new TaggableFileStore($this->file, $this->path, []);
         $cache = new TaggedFileCache($store, new FileTagSet($store, ['foobar']));
 
         $mock = Mockery::mock($cache);
-
-        $mock->shouldReceive('taggedItemKey')->with('test');
+        $mock->shouldReceive('taggedItemKey')->with('test')->once();
 
         $mock->itemKey('test');
     }
 
-    public function testItemKeyReturnsTaggedItemKey()
+    public function testItemKeyReturnsTaggedItemKey(): void
     {
         $store = new TaggableFileStore($this->file, $this->path, []);
         $cache = new TaggedFileCache($store, new FileTagSet($store, ['foobar']));
 
         $mock = Mockery::mock($cache);
-
         $mock->shouldReceive('taggedItemKey')->with('test')->andReturn('boofar');
 
         $this->assertEquals('boofar', $mock->itemKey('test'));
-    }
-
-    public function tearDown(): void
-    {
-        Mockery::close();
     }
 }
