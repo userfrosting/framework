@@ -32,7 +32,7 @@ class ContainerStub
     {
         $builder = new ContainerBuilder();
         $builder->addDefinitions($definitions);
-        $builder->useAnnotations(true);
+        $builder->useAttributes(true);
 
         return $builder->build();
     }

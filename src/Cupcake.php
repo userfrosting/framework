@@ -100,7 +100,7 @@ abstract class Cupcake
         $frameworkServices = new FrameworkService();
 
         $builder = new ContainerBuilder();
-        $builder->useAnnotations(true);
+        $builder->useAttributes(true);
         $builder->addDefinitions($frameworkServices->register());
 
         // Add all definitions for each sprinkles
