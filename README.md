@@ -3,10 +3,10 @@
 [![Version](https://img.shields.io/badge/Version-5.0.x-red.svg)](https://github.com/userfrosting/framework/releases)
 ![PHP](https://img.shields.io/packagist/php-v/userfrosting/framework/dev-develop-5.0?color=brightgreen)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
-[![Build](https://img.shields.io/github/workflow/status/userfrosting/framework/Build/develop-5.0?logo=github)](https://github.com/userfrosting/framework/actions)
+[![Build](https://img.shields.io/github/actions/workflow/status/userfrosting/framework/Build.yml?branch=develop-5.0&logo=github)](https://github.com/userfrosting/framework/actions)
 [![Codecov](https://codecov.io/gh/userfrosting/framework/branch/develop-5.0/graph/badge.svg)](https://app.codecov.io/gh/userfrosting/framework/branch/develop-5.0)
 [![StyleCI](https://github.styleci.io/repos/360994768/shield?branch=develop-5.0&style=flat)](https://github.styleci.io/repos/360994768)
-[![PHPStan](https://img.shields.io/github/workflow/status/userfrosting/framework/PHPStan/develop-5.0?label=PHPStan)](https://github.com/userfrosting/framework/actions/workflows/PHPStan.yml)
+[![PHPStan](https://img.shields.io/github/actions/workflow/status/userfrosting/framework/PHPStan.yml?branch=develop-5.0&label=PHPStan)](https://github.com/userfrosting/framework/actions/workflows/PHPStan.yml)
 [![Join the chat](https://img.shields.io/badge/Chat-UserFrosting-brightgreen?logo=Rocket.Chat)](https://chat.userfrosting.com)
 [![Donate](https://img.shields.io/badge/Open%20Collective-Donate-blue.svg)](https://opencollective.com/userfrosting#backer)
 
