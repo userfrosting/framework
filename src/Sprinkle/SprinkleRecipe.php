@@ -39,13 +39,6 @@ interface SprinkleRecipe
     public function getSprinkles(): array;
 
     /**
-     * Return an array of all registered Bakery Commands.
-     *
-     * @return string[]
-     */
-    public function getBakeryCommands(): array;
-
-    /**
      * Returns a list of routes definition in PHP files.
      *
      * @return string[]
@@ -58,11 +51,4 @@ interface SprinkleRecipe
      * @return string[]|\UserFrosting\ServicesProvider\ServicesProviderInterface[]
      */
     public function getServices(): array;
-
-    /**
-     * Returns a list of all Middlewares classes.
-     *
-     * @return string[]
-     */
-    public function getMiddlewares(): array;
 }

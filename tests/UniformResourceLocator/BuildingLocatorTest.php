@@ -421,7 +421,7 @@ class BuildingLocatorTest extends TestCase
         // Unregister
         self::$locator->removeStream('test');
         // @phpstan-ignore-next-line - Result of file_exists() will be different than previous lines, as it's modified by `removeStream`
-        $this->assertFalse(@file_exists($filename)); 
+        $this->assertFalse(@file_exists($filename));
     }
 
     /**

@@ -21,6 +21,7 @@ use UserFrosting\Sprinkle\SprinkleMiddlewareRepository;
 use UserFrosting\Sprinkle\SprinkleRecipe;
 use UserFrosting\Support\Exception\BadClassNameException;
 use UserFrosting\Support\Exception\BadInstanceOfException;
+use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
 class SprinkleMiddlewareRepositoryTest extends TestCase
 {
@@ -31,18 +32,18 @@ class SprinkleMiddlewareRepositoryTest extends TestCase
         $middleware = Mockery::mock(MiddlewareInterface::class);
 
         /** @var SprinkleRecipe */
-        $sprinkle = Mockery::mock(SprinkleRecipe::class)
-            ->shouldReceive('getMiddlewares')->andReturn([$middleware::class])
+        $sprinkle = Mockery::mock(TestSprinkle::class)
+            ->shouldReceive('getMiddlewares')->once()->andReturn([$middleware::class])
             ->getMock();
 
         /** @var SprinkleManager */
         $sprinkleManager = Mockery::mock(SprinkleManager::class)
-            ->shouldReceive('getSprinkles')->andReturn([$sprinkle])
+            ->shouldReceive('getSprinkles')->once()->andReturn([$sprinkle])
             ->getMock();
 
         /** @var ContainerInterface */
         $ci = Mockery::mock(ContainerInterface::class)
-            ->shouldReceive('get')->with($middleware::class)->andReturn($middleware)
+            ->shouldReceive('get')->with($middleware::class)->once()->andReturn($middleware)
             ->getMock();
 
         $repository = new SprinkleMiddlewareRepository($sprinkleManager, $ci);
@@ -52,16 +53,39 @@ class SprinkleMiddlewareRepositoryTest extends TestCase
         $this->assertSame($middleware, $classes[0]);
     }
 
-    public function testGetAllWithCommandNotFound(): void
+    public function testGetAllNoInterface(): void
     {
         /** @var SprinkleRecipe */
         $sprinkle = Mockery::mock(SprinkleRecipe::class)
-            ->shouldReceive('getMiddlewares')->andReturn(['/Not/MiddlewareInterface'])
+            ->shouldNotReceive('getMiddlewares')
             ->getMock();
 
         /** @var SprinkleManager */
         $sprinkleManager = Mockery::mock(SprinkleManager::class)
-            ->shouldReceive('getSprinkles')->andReturn([$sprinkle])
+            ->shouldReceive('getSprinkles')->once()->andReturn([$sprinkle])
+            ->getMock();
+
+        /** @var ContainerInterface */
+        $ci = Mockery::mock(ContainerInterface::class)
+            ->shouldNotReceive('get')
+            ->getMock();
+
+        $repository = new SprinkleMiddlewareRepository($sprinkleManager, $ci);
+        $classes = $repository->all();
+
+        $this->assertCount(0, $classes);
+    }
+
+    public function testGetAllWithCommandNotFound(): void
+    {
+        /** @var SprinkleRecipe */
+        $sprinkle = Mockery::mock(TestSprinkle::class)
+            ->shouldReceive('getMiddlewares')->once()->andReturn(['/Not/MiddlewareInterface'])
+            ->getMock();
+
+        /** @var SprinkleManager */
+        $sprinkleManager = Mockery::mock(SprinkleManager::class)
+            ->shouldReceive('getSprinkles')->once()->andReturn([$sprinkle])
             ->getMock();
 
         /** @var ContainerInterface */
@@ -79,18 +103,18 @@ class SprinkleMiddlewareRepositoryTest extends TestCase
         $middleware = Mockery::mock(stdClass::class);
 
         /** @var SprinkleRecipe */
-        $sprinkle = Mockery::mock(SprinkleRecipe::class)
-            ->shouldReceive('getMiddlewares')->andReturn([$middleware::class])
+        $sprinkle = Mockery::mock(TestSprinkle::class)
+            ->shouldReceive('getMiddlewares')->once()->andReturn([$middleware::class])
             ->getMock();
 
         /** @var SprinkleManager */
         $sprinkleManager = Mockery::mock(SprinkleManager::class)
-            ->shouldReceive('getSprinkles')->andReturn([$sprinkle])
+            ->shouldReceive('getSprinkles')->once()->andReturn([$sprinkle])
             ->getMock();
 
         /** @var ContainerInterface */
         $ci = Mockery::mock(ContainerInterface::class)
-            ->shouldReceive('get')->with($middleware::class)->andReturn($middleware)
+            ->shouldReceive('get')->with($middleware::class)->once()->andReturn($middleware)
             ->getMock();
 
         $repository = new SprinkleMiddlewareRepository($sprinkleManager, $ci);

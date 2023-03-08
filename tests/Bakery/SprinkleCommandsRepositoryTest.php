@@ -21,6 +21,7 @@ use UserFrosting\Sprinkle\SprinkleManager;
 use UserFrosting\Sprinkle\SprinkleRecipe;
 use UserFrosting\Support\Exception\BadClassNameException;
 use UserFrosting\Support\Exception\BadInstanceOfException;
+use UserFrosting\Tests\TestSprinkle\TestSprinkle;
 
 class SprinkleCommandsRepositoryTest extends TestCase
 {
@@ -31,18 +32,18 @@ class SprinkleCommandsRepositoryTest extends TestCase
         $command = Mockery::mock(Command::class);
 
         /** @var SprinkleRecipe */
-        $sprinkle = Mockery::mock(SprinkleRecipe::class)
-            ->shouldReceive('getBakeryCommands')->andReturn([$command::class])
+        $sprinkle = Mockery::mock(TestSprinkle::class)
+            ->shouldReceive('getBakeryCommands')->once()->andReturn([$command::class])
             ->getMock();
 
         /** @var SprinkleManager */
         $sprinkleManager = Mockery::mock(SprinkleManager::class)
-            ->shouldReceive('getSprinkles')->andReturn([$sprinkle])
+            ->shouldReceive('getSprinkles')->once()->andReturn([$sprinkle])
             ->getMock();
 
         /** @var ContainerInterface */
         $ci = Mockery::mock(ContainerInterface::class)
-            ->shouldReceive('get')->with($command::class)->andReturn($command)
+            ->shouldReceive('get')->with($command::class)->once()->andReturn($command)
             ->getMock();
 
         $repository = new SprinkleCommandsRepository($sprinkleManager, $ci);
@@ -52,16 +53,39 @@ class SprinkleCommandsRepositoryTest extends TestCase
         $this->assertSame($command, $classes[0]);
     }
 
-    public function testGetAllWithCommandNotFound(): void
+    public function testGetAllNoInterface(): void
     {
         /** @var SprinkleRecipe */
         $sprinkle = Mockery::mock(SprinkleRecipe::class)
-            ->shouldReceive('getBakeryCommands')->andReturn(['/Not/Command'])
+            ->shouldNotReceive('getBakeryCommands')
             ->getMock();
 
         /** @var SprinkleManager */
         $sprinkleManager = Mockery::mock(SprinkleManager::class)
-            ->shouldReceive('getSprinkles')->andReturn([$sprinkle])
+            ->shouldReceive('getSprinkles')->once()->andReturn([$sprinkle])
+            ->getMock();
+
+        /** @var ContainerInterface */
+        $ci = Mockery::mock(ContainerInterface::class)
+            ->shouldNotReceive('get')
+            ->getMock();
+
+        $repository = new SprinkleCommandsRepository($sprinkleManager, $ci);
+        $classes = $repository->all();
+
+        $this->assertCount(0, $classes);
+    }
+
+    public function testGetAllWithCommandNotFound(): void
+    {
+        /** @var SprinkleRecipe */
+        $sprinkle = Mockery::mock(TestSprinkle::class)
+            ->shouldReceive('getBakeryCommands')->once()->andReturn(['/Not/Command'])
+            ->getMock();
+
+        /** @var SprinkleManager */
+        $sprinkleManager = Mockery::mock(SprinkleManager::class)
+            ->shouldReceive('getSprinkles')->once()->andReturn([$sprinkle])
             ->getMock();
 
         /** @var ContainerInterface */
@@ -79,18 +103,18 @@ class SprinkleCommandsRepositoryTest extends TestCase
         $command = Mockery::mock(stdClass::class);
 
         /** @var SprinkleRecipe */
-        $sprinkle = Mockery::mock(SprinkleRecipe::class)
-            ->shouldReceive('getBakeryCommands')->andReturn([$command::class])
+        $sprinkle = Mockery::mock(TestSprinkle::class)
+            ->shouldReceive('getBakeryCommands')->once()->andReturn([$command::class])
             ->getMock();
 
         /** @var SprinkleManager */
         $sprinkleManager = Mockery::mock(SprinkleManager::class)
-            ->shouldReceive('getSprinkles')->andReturn([$sprinkle])
+            ->shouldReceive('getSprinkles')->once()->andReturn([$sprinkle])
             ->getMock();
 
         /** @var ContainerInterface */
         $ci = Mockery::mock(ContainerInterface::class)
-            ->shouldReceive('get')->with($command::class)->andReturn($command)
+            ->shouldReceive('get')->with($command::class)->once()->andReturn($command)
             ->getMock();
 
         $repository = new SprinkleCommandsRepository($sprinkleManager, $ci);

@@ -39,6 +39,9 @@ class SprinkleMiddlewareRepository extends ClassRepository
         $instances = [];
 
         foreach ($this->sprinkleManager->getSprinkles() as $sprinkle) {
+            if (!$sprinkle instanceof MiddlewareRecipe) {
+                continue;
+            }
             foreach ($sprinkle->getMiddlewares() as $commandsClass) {
                 if (!class_exists($commandsClass)) {
                     throw new BadClassNameException("Middleware class `$commandsClass` not found.");

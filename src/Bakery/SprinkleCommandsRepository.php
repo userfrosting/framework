@@ -14,6 +14,7 @@ namespace UserFrosting\Bakery;
 
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
+use UserFrosting\Sprinkle\BakeryRecipe;
 use UserFrosting\Sprinkle\SprinkleManager;
 use UserFrosting\Support\ClassRepository;
 use UserFrosting\Support\Exception\BadClassNameException;
@@ -40,6 +41,9 @@ class SprinkleCommandsRepository extends ClassRepository
         $instances = [];
 
         foreach ($this->sprinkleManager->getSprinkles() as $sprinkle) {
+            if (!$sprinkle instanceof BakeryRecipe) {
+                continue;
+            }
             foreach ($sprinkle->getBakeryCommands() as $commandsClass) {
                 if (!class_exists($commandsClass)) {
                     throw new BadClassNameException("Bakery command class `$commandsClass` not found.");
