@@ -132,8 +132,8 @@ class TestCase extends BaseTestCase
     ): ServerRequestInterface {
         $request = $this->createRequest($method, $uri);
 
-        if ($data !== null) {
-            $request = $request->withParsedBody($data);
+        if (is_array($data)) {
+            $request->getBody()->write(json_encode($data, JSON_THROW_ON_ERROR));
         }
 
         return $request->withHeader('Accept', 'application/json');
