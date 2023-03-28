@@ -140,7 +140,6 @@ class Dictionary extends Repository implements DictionaryInterface
 
         // Now load dependent dictionaries
         foreach ($this->locale->getDependentLocales() as $locale) {
-
             // Stop if locale already loaded to prevent recursion
             $localesToLoad = array_merge([$locale->getIdentifier()], $locale->getDependentLocalesIdentifier());
             $intersection = array_intersect($localesToLoad, $loadedLocale);

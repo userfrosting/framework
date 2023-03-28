@@ -22,6 +22,7 @@ use UserFrosting\Support\Exception\ClassNotFoundException;
  * Handle a PHP class repository.
  *
  * @template T of object
+ *
  * @implements ClassRepositoryInterface<T>
  */
 abstract class ClassRepository implements ClassRepositoryInterface

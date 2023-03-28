@@ -48,7 +48,6 @@ class JqueryValidationAdapter extends ClientSideValidationAdapter
             if (isset($field['validators'])) {
                 $validators = $field['validators'];
                 foreach ($validators as $validatorName => $validator) {
-
                     // Skip messages that are for server-side use only
                     if (isset($validator['domain']) && $validator['domain'] == 'server') {
                         continue;

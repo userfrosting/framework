@@ -82,7 +82,6 @@ class Resource implements ResourceInterface
 
         // Add the location path to the search path if there's a location
         if (!is_null($this->getLocation())) {
-
             // We'll also need to remove the locator base path from the locator path
             // as it won't be removed by the previous attempt
             $locatorPath = preg_replace('#^' . preg_quote($this->getLocatorBasePath()) . '#', '', $this->getLocation()->getPath());

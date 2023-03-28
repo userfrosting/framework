@@ -32,7 +32,6 @@ class FileStore extends ArrayStore
      */
     public function __construct($path = './', $storeName = 'default', Container $app = null)
     {
-
         // Run the parent function to build base $app and $config
         parent::__construct($storeName, $app);
 

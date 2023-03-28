@@ -66,7 +66,6 @@ class Normalizer
         // Parse each parts to handle relative portion of paths
         $list = [];
         foreach ($parts as $i => $part) {
-
             // If parts point to same directory, skip.
             // Also skip if part is empty, except for the first one.
             if (($part === '' && $i !== 0) || $part === '.') {
@@ -75,7 +74,6 @@ class Normalizer
 
             // Handle when part point to parent dir.
             if ($part === '..') {
-
                 // Remove parent from list
                 $part = array_pop($list);
 

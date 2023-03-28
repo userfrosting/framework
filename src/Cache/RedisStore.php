@@ -28,7 +28,6 @@ class RedisStore extends ArrayStore
      */
     public function __construct($redisServer = [], string $storeName = 'default', Container $app = null)
     {
-
         // Run the parent function to build base $app and $config
         parent::__construct($storeName, $app);
 

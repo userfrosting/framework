@@ -38,7 +38,7 @@ class Rule12 implements RuleInterface
             return 3;
         }
 
-        if (($number % 100 >= 11)) {
+        if ($number % 100 >= 11) {
             return 4;
         }
 

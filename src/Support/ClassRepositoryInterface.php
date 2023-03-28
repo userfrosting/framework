@@ -19,6 +19,7 @@ use IteratorAggregate;
  * Implements a PHP class repository.
  *
  * @template T of object
+ *
  * @extends IteratorAggregate<int, T>
  */
 interface ClassRepositoryInterface extends Countable, IteratorAggregate

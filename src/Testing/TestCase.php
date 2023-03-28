@@ -103,6 +103,7 @@ class TestCase extends BaseTestCase
      * @param mixed[]             $serverParams The server parameters
      *
      * @return ServerRequestInterface
+     *
      * @codeCoverageIgnore
      */
     protected function createRequest(
@@ -123,6 +124,7 @@ class TestCase extends BaseTestCase
      * @param mixed[]|null        $data   The json data
      *
      * @return ServerRequestInterface
+     *
      * @codeCoverageIgnore
      */
     protected function createJsonRequest(
@@ -145,6 +147,7 @@ class TestCase extends BaseTestCase
      * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
+     *
      * @codeCoverageIgnore
      */
     protected function handleRequest(ServerRequestInterface $request): ResponseInterface

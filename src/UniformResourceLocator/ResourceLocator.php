@@ -336,7 +336,6 @@ class ResourceLocator implements ResourceLocatorInterface
 
         // Get all directory where we can find this resource. Will be returned with the priority order
         foreach ($this->getResources($uri) as $directory) {
-
             // Use Filesystem to list all file in the directory
             $files = $this->filesystem->allFiles($directory->getAbsolutePath());
 
@@ -347,7 +346,6 @@ class ResourceLocator implements ResourceLocatorInterface
             });
 
             foreach ($files as $file) {
-
                 // Calculate the relative path
                 $basePath = rtrim($this->getBasePath(), $this->separator) . $this->separator;
                 $fullPath = $file->getPathname();
@@ -459,7 +457,6 @@ class ResourceLocator implements ResourceLocatorInterface
 
         $list = [];
         foreach ($this->getLocations() as $location) {
-
             // Get location and stream path
             $parts = [];
             $parts[] = rtrim($location->getPath(), $this->separator);
@@ -496,7 +493,6 @@ class ResourceLocator implements ResourceLocatorInterface
         $results = [];
 
         foreach ($this->streams[$scheme] as $stream) {
-
             // Get all search paths using all locations
             $paths = $this->searchPaths($stream);
 
@@ -523,7 +519,6 @@ class ResourceLocator implements ResourceLocatorInterface
 
                 // Add the result to the list if the path exist, unless we want all results
                 if ($all || $this->filesystem->exists($fullPath)) {
-
                     // Handle relative path that is an absolute outside the basePath
                     // This can happen when the location has an absolute path outside the locator base path.
                     if ($fullPath == $relPath) {

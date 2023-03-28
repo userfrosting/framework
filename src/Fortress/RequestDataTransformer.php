@@ -121,11 +121,20 @@ class RequestDataTransformer implements RequestDataTransformerInterface
 
             foreach ($fieldParameters['transformations'] as $transformation) {
                 switch (strtolower($transformation)) {
-                    case 'purify': $transformedValue = $this->purifier->purify($transformedValue); break;
-                    case 'escape': $transformedValue = $this->escapeHtmlCharacters($transformedValue); break;
-                    case 'purge': $transformedValue = $this->purgeHtmlCharacters($transformedValue); break;
-                    case 'trim': $transformedValue = $this->trim($transformedValue); break;
-                    default: break;
+                    case 'purify':
+                        $transformedValue = $this->purifier->purify($transformedValue);
+                        break;
+                    case 'escape':
+                        $transformedValue = $this->escapeHtmlCharacters($transformedValue);
+                        break;
+                    case 'purge':
+                        $transformedValue = $this->purgeHtmlCharacters($transformedValue);
+                        break;
+                    case 'trim':
+                        $transformedValue = $this->trim($transformedValue);
+                        break;
+                    default:
+                        break;
                 }
             }
 

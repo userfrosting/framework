@@ -36,7 +36,6 @@ class BakeryTester
         array $userInput = [],
         int $verbosity = OutputInterface::VERBOSITY_NORMAL,
     ): CommandTester {
-
         // Create app and add command to it
         $app = new Application();
         $app->add($command);

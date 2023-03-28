@@ -61,7 +61,6 @@ final class SprinkleListenerProvider implements ListenerProviderInterface
 
         /** @var \UserFrosting\Sprinkle\SprinkleRecipe $sprinkle */
         foreach ($this->sprinkleManager->getSprinkles() as $sprinkle) {
-
             // Skip any sprinkle recipe that doesn't implement recipe interface
             if (!is_subclass_of($sprinkle, EventListenerRecipe::class)) {
                 continue;

@@ -149,7 +149,6 @@ class Translator
         // First, let's see if we can get the plural rules.
         // A plural form will always have priority over the `@TRANSLATION` instruction
         if (count(array_filter(array_keys($message), 'is_int')) !== 0) {
-
             // We start by picking up the plural key, aka which placeholder contains the numeric value defining how many {x} we have
             $pluralKey = $this->getPluralKey($message);
 
@@ -158,7 +157,6 @@ class Translator
 
             // If no plural value was found, we either use the singular form or fallback to `@TRANSLATION` instruction
             if (is_null($pluralValue)) {
-
                 // If we have a `@TRANSLATION` instruction, return this
                 if ($this->dictionary->has($messageKey . '.@TRANSLATION') && is_string($this->dictionary->get($messageKey . '.@TRANSLATION'))) {
                     return $this->dictionary->get($messageKey . '.@TRANSLATION');
