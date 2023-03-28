@@ -53,5 +53,6 @@ jobs:
       if: github.event_name != 'schedule'
       uses: codecov/codecov-action@v3
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         file: ./_meta/coverage.xml
         fail_ci_if_error: true
