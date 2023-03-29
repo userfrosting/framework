@@ -12,44 +12,33 @@ namespace UserFrosting\Fortress;
 
 use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
+use UserFrosting\Support\Repository\Loader\FileRepositoryLoader;
 
 /**
- * RequestSchema Class.
- *
- * Represents a schema for an HTTP request, compliant with the WDVSS standard (https://github.com/alexweissman/wdvss)
- *
- * @author Alexander Weissman (https://alexanderweissman.com)
+ * Represents a schema for an HTTP request, compliant with the WDVSS standard 
+ * (https://github.com/alexweissman/wdvss)
  */
 class RequestSchema extends RequestSchemaRepository
 {
     /**
-     * @var \UserFrosting\Support\Repository\Loader\FileRepositoryLoader
+     * @var FileRepositoryLoader
      */
-    protected $loader;
+    protected FileRepositoryLoader $loader;
 
     /**
      * Loads the request schema from a file.
      *
-     * @param string $path The full path to the file containing the [WDVSS schema](https://github.com/alexweissman/wdvss).
+     * @param string|null $path The full path to the file containing the [WDVSS schema](https://github.com/alexweissman/wdvss).
      */
-    public function __construct($path = null)
+    // @phpstan-ignore-next-line - Parent constructor is not called on purpose
+    public function __construct(?string $path = null)
     {
         $this->items = [];
 
         if (!is_null($path)) {
             $this->loader = new YamlFileLoader($path);
 
-            $this->items = $this->loader->load();
+            $this->items = $this->loader->load(false);
         }
-    }
-
-    /**
-     * @deprecated since 4.1. Use `all()` instead
-     *
-     * @return array The schema data.
-     */
-    public function getSchema()
-    {
-        return $this->items;
     }
 }
