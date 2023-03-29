@@ -11,12 +11,12 @@
 namespace UserFrosting\Fortress;
 
 use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
-use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 use UserFrosting\Support\Repository\Loader\FileRepositoryLoader;
+use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 
 /**
- * Represents a schema for an HTTP request, compliant with the WDVSS standard 
- * (https://github.com/alexweissman/wdvss)
+ * Represents a schema for an HTTP request, compliant with the WDVSS standard
+ * (https://github.com/alexweissman/wdvss).
  */
 class RequestSchema extends RequestSchemaRepository
 {
