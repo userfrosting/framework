@@ -69,6 +69,13 @@ Version 5 also requires PHP 8.0 and up. With that in mind, most of the code has 
 - Deprecated `ResourceLocator::addPath` method removed
 - `ResourceLocator::setBasePath` method removed
 
+### Fortress
+
+#### Fix
+- Fix [userfrosting/UserFrosting#1216](https://github.com/userfrosting/UserFrosting/issues/1216) - Throw error when RequestSchema path doesn't exist
+
+#### Removed
+- Removed deprecated method `getSchema` in `RequestSchema`
 
 ## [4.6.1](https://github.com/userfrosting/framework/compare/4.6.0...4.6.1)
  - Fix issue with location outside of the main path not returning  the correct relative path.
