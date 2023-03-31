@@ -99,10 +99,10 @@ final class FrameworkService implements ServicesProviderInterface
         foreach ($middlewareRepository as $middleware) {
             $app->addMiddleware($middleware);
         }
-        
+
         // Add default Slim middlewares
         $app->addBodyParsingMiddleware();
-        $app->addRoutingMiddleware();        
+        $app->addRoutingMiddleware();
     }
 
     /**
