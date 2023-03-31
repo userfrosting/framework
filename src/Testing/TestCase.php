@@ -49,8 +49,6 @@ class TestCase extends BaseTestCase
 
     /**
      * This method is called before each test.
-     *
-     * @codeCoverageIgnore
      */
     protected function setUp(): void
     {
@@ -61,8 +59,6 @@ class TestCase extends BaseTestCase
 
     /**
      * This method is called after each test.
-     *
-     * @codeCoverageIgnore
      */
     protected function tearDown(): void
     {
@@ -73,8 +69,6 @@ class TestCase extends BaseTestCase
 
     /**
      * Create the application instance by setting up a basic UF app.
-     *
-     * @codeCoverageIgnore
      */
     protected function createApplication(): void
     {
@@ -85,8 +79,6 @@ class TestCase extends BaseTestCase
 
     /**
      * Unset the application instances (UF, Slim App and Container).
-     *
-     * @codeCoverageIgnore
      */
     protected function deleteApplication(): void
     {
@@ -103,8 +95,6 @@ class TestCase extends BaseTestCase
      * @param mixed[]             $serverParams The server parameters
      *
      * @return ServerRequestInterface
-     *
-     * @codeCoverageIgnore
      */
     protected function createRequest(
         string $method,
@@ -121,11 +111,9 @@ class TestCase extends BaseTestCase
      *
      * @param string              $method The HTTP method
      * @param string|UriInterface $uri    The URI
-     * @param mixed[]|null        $data   The json data
+     * @param mixed[]|null        $data   The json / POST data
      *
      * @return ServerRequestInterface
-     *
-     * @codeCoverageIgnore
      */
     protected function createJsonRequest(
         string $method,
@@ -138,7 +126,8 @@ class TestCase extends BaseTestCase
             $request->getBody()->write(json_encode($data, JSON_THROW_ON_ERROR));
         }
 
-        return $request->withHeader('Accept', 'application/json');
+        return $request->withHeader('Accept', 'application/json')
+                       ->withHeader('Content-Type', 'application/json');
     }
 
     /**
@@ -147,8 +136,6 @@ class TestCase extends BaseTestCase
      * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
-     *
-     * @codeCoverageIgnore
      */
     protected function handleRequest(ServerRequestInterface $request): ResponseInterface
     {

@@ -95,14 +95,14 @@ final class FrameworkService implements ServicesProviderInterface
      */
     protected function registerMiddlewares(SlimApp $app, SprinkleMiddlewareRepository $middlewareRepository): void
     {
-        // Add default Slim middlewares
-        $app->addBodyParsingMiddleware();
-        $app->addRoutingMiddleware();
-
         // Add the registered Middlewares
         foreach ($middlewareRepository as $middleware) {
             $app->addMiddleware($middleware);
         }
+        
+        // Add default Slim middlewares
+        $app->addBodyParsingMiddleware();
+        $app->addRoutingMiddleware();        
     }
 
     /**
