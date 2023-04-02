@@ -89,20 +89,25 @@ final class FrameworkService implements ServicesProviderInterface
 
     /**
      * Load and register all middlewares.
+     * Last registered middleware is executed first.
      *
      * @param SlimApp                      $app
      * @param SprinkleMiddlewareRepository $middlewareRepository
      */
     protected function registerMiddlewares(SlimApp $app, SprinkleMiddlewareRepository $middlewareRepository): void
     {
+        // Routing middleware can be executed last.
+        // It should be executed after any error handling middleware.
+        $app->addRoutingMiddleware();
+
         // Add the registered Middlewares
         foreach ($middlewareRepository as $middleware) {
             $app->addMiddleware($middleware);
         }
 
-        // Add default Slim middlewares
+        // Body parsing middleware should be executed first, so other middleware
+        // can access the parsed body.
         $app->addBodyParsingMiddleware();
-        $app->addRoutingMiddleware();
     }
 
     /**
