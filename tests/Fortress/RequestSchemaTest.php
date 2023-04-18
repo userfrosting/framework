@@ -18,7 +18,7 @@ class RequestSchemaTest extends TestCase
 {
     protected array $contactSchema; // @phpstan-ignore-line
     protected string $basePath;
-    
+
     public function setUp(): void
     {
         $this->basePath = __DIR__.'/data/contact.json';
