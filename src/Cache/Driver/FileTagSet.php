@@ -23,7 +23,7 @@ use Illuminate\Cache\TagSet;
 class FileTagSet extends TagSet
 {
     /**
-     *    @var string Driver name
+     * @var string Driver name
      */
     protected static $driver = 'tfile';
 
