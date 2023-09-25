@@ -18,7 +18,7 @@ use UserFrosting\Assets\Util\MimeType;
  * Loads an asset from the filesystem.
  *
  * @author Alex Weissman (https://alexanderweissman.com)
- * 
+ *
  * @deprecated 5.0, replaced by Webpack Encore
  */
 class AssetLoader

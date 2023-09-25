@@ -25,7 +25,7 @@ use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
  *
  * @author Alex Weissman (https://alexanderweissman.com)
  * @author Jordan Mele (https://blog.djmm.me)
- * 
+ *
  * @deprecated 5.0, replaced by Webpack Encore
  */
 class Assets

@@ -16,7 +16,7 @@ namespace UserFrosting\Assets\Exception;
  * This exception should be thrown when there was a problem processing a bundles file.
  *
  * @author Jordan Mele
- * 
+ *
  * @deprecated 5.0, replaced by Webpack Encore
  */
 class InvalidBundlesFileException extends \RuntimeException

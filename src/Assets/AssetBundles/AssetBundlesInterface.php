@@ -15,7 +15,7 @@ namespace UserFrosting\Assets\AssetBundles;
  *
  * @author Alex Weissman (https://alexanderweissman.com)
  * @author Jordan Mele
- * 
+ *
  * @deprecated 5.0, replaced by Webpack Encore
  */
 interface AssetBundlesInterface
