@@ -17,6 +17,8 @@ namespace UserFrosting\Assets;
  * @author Jordan Mele (https://blog.djmm.me)
  *
  * @todo JS and CSS convenience methods. (not bundles)
+ * 
+ * @deprecated 5.0, replaced by Webpack Encore
  */
 class AssetsTemplatePlugin
 {

@@ -20,6 +20,8 @@ use UserFrosting\Support\Repository\Repository;
  *
  * @author Alex Weissman (https://alexanderweissman.com)
  * @author Jordan Mele
+ * 
+ * @deprecated 5.0, replaced by Webpack Encore
  */
 abstract class GulpBundleAssetsBundles implements AssetBundlesInterface
 {

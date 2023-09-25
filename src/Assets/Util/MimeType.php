@@ -17,6 +17,8 @@ namespace UserFrosting\Assets\Util;
  * @author Alex Weissman (https://alexanderweissman.com)
  *
  * @see https://github.com/thephpleague/flysystem
+ * 
+ * @deprecated 5.0, replaced by Webpack Encore
  */
 class MimeType
 {

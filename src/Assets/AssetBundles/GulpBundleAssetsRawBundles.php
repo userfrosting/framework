@@ -21,6 +21,8 @@ use UserFrosting\Support\Exception\JsonException;
  * @author Jordan Mele
  *
  * @todo Many of the more advanced features available in gulp-bundle-assets configuration are not supported. (EG: Specifying the pre-minified versions of assets)
+ * 
+ * @deprecated 5.0, replaced by Webpack Encore
  */
 class GulpBundleAssetsRawBundles extends GulpBundleAssetsBundles
 {
