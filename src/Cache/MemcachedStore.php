@@ -17,7 +17,7 @@ use Illuminate\Cache\MemcachedStore as IlluminateMemcachedStore;
 use Illuminate\Contracts\Cache\Store;
 
 /**
- * Setup a cache instance in a defined namespace using the `memcached` driver
+ * Setup a cache instance in a defined namespace using the `memcached` driver.
  */
 class MemcachedStore extends AbstractStore
 {

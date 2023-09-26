@@ -22,7 +22,7 @@ use Illuminate\Filesystem\Filesystem;
 class FileStore extends AbstractStore
 {
     /**
-     * Accept the file driver $path
+     * Accept the file driver $path.
      *
      * @param string $path (default: "./")
      */

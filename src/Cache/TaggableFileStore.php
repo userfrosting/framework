@@ -17,12 +17,12 @@ use Illuminate\Filesystem\Filesystem;
 use UserFrosting\Cache\Driver\TaggableFileStore as TaggableFileDriver;
 
 /**
- * Setup a cache instance using the custom `TaggableFileDriver` driver
+ * Setup a cache instance using the custom `TaggableFileDriver` driver.
  */
 class TaggableFileStore extends AbstractStore
 {
     /**
-     * Accept the file driver $path
+     * Accept the file driver $path.
      *
      * @param string $path      (default: "./")
      * @param string $separator (default: "")
