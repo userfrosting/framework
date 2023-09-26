@@ -48,12 +48,7 @@ class MemcachedStore extends AbstractStore
     public function getStore(): Store
     {
         $connector = new MemcachedConnector();
-        $memcached = $connector->connect(
-            $this->config['servers'],
-            $this->config['persistent_id'] ?? null,
-            $this->config['options'] ?? [],
-            array_filter($this->config['sasl'] ?? [])
-        );
+        $memcached = $connector->connect($this->config);
 
         return new IlluminateMemcachedStore($memcached, $this->config['prefix']);
     }
