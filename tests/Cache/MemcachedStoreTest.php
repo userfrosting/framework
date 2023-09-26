@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,6 +12,7 @@
 
 namespace UserFrosting\Tests\Cache;
 
+use UserFrosting\Cache\Cache;
 use UserFrosting\Cache\MemcachedStore;
 
 /**
@@ -18,7 +21,7 @@ use UserFrosting\Cache\MemcachedStore;
 class MemcachedStoreTest extends StoreTestCase
 {
     /** {@inheritdoc} */
-    protected function createStore()
+    protected function createStore(): Cache
     {
         // Create $cache with default config in CI, and tweaked in Lando
         $config = [];
@@ -33,7 +36,7 @@ class MemcachedStoreTest extends StoreTestCase
     /**
      * Test memcached store.
      */
-    public function testMemcachedStore()
+    public function testMemcachedStore(): void
     {
         $cache = $this->createStore();
 
@@ -42,7 +45,7 @@ class MemcachedStoreTest extends StoreTestCase
         $this->assertEquals('memcached bar', $cache->get('foo'));
     }
 
-    public function testMemcachedStorePersistence()
+    public function testMemcachedStorePersistence(): void
     {
         $cache = $this->createStore();
 
@@ -50,7 +53,7 @@ class MemcachedStoreTest extends StoreTestCase
         $this->assertEquals('memcached bar', $cache->get('foo'));
     }
 
-    public function testMultipleMemcachedStore()
+    public function testMultipleMemcachedStore(): void
     {
         $cache = $this->createStore();
 
@@ -72,7 +75,7 @@ class MemcachedStoreTest extends StoreTestCase
         $this->assertEquals('BARRRRRRRRE', $cache->tags('user')->get('foo'));
     }
 
-    public function testMultipleMemcachedStoreWithTags()
+    public function testMultipleMemcachedStoreWithTags(): void
     {
         $cache = $this->createStore();
 
@@ -90,14 +93,14 @@ class MemcachedStoreTest extends StoreTestCase
         $this->assertEquals('blue', $cache->tags(['foo', 'blue'])->get('bar'));
     }
 
-    public function testTagsFlush()
+    public function testTagsFlush(): void
     {
         $cache = $this->createStore();
 
         // Start by not using tags
         $cache->put('test', '123', 60);
         $this->assertEquals('123', $cache->get('test'));
-        $this->assertTrue($cache->flush());
+        $this->assertTrue($cache->flush()); // @phpstan-ignore-line False positive.
         $this->assertNull($cache->get('test'));
 
         // Try again with tags

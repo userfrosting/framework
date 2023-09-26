@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -11,51 +13,46 @@
 namespace UserFrosting\Cache;
 
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Redis\RedisManager;
+use UserFrosting\Cache\Patch\Redis\RedisStore as PatchedRedisStore;
 
 /**
  * Setup a cache instance in a defined namespace using the `redis` driver.
  */
-class RedisStore extends ArrayStore
+class RedisStore extends AbstractStore
 {
     /**
-     * Extend the `ArrayStore` constructor to accept the redis server and
-     * port configuration.
-     *
-     * @param mixed[]        $redisServer (default: [])
-     * @param string         $storeName   (default: "default")
-     * @param Container|null $app
+     * @var array<mixed> Memcached config.
      */
-    public function __construct($redisServer = [], string $storeName = 'default', Container $app = null)
-    {
-        // Run the parent function to build base $app and $config
-        parent::__construct($storeName, $app);
+    protected array $config;
 
+    /**
+     * Accept the redis server configuration.
+     *
+     * @param array<mixed> $config (default: [])
+     */
+    public function __construct($config = [])
+    {
         // Setup Redis server config
-        $redisConfig = [
+        $this->config = [
             'default' => array_merge([
                 'host'     => '127.0.0.1',
                 'password' => null,
                 'port'     => 6379,
                 'database' => 0,
                 'prefix'   => '',
-            ], $redisServer),
+            ], $config),
         ];
+    }
 
-        // Setup the config for this file store
-        $this->config['cache'] = [
-            'prefix' => $redisConfig['default']['prefix'],
-            'stores' => [
-                $this->storeName => [
-                    'driver'     => 'redis',
-                    'connection' => 'default',
-                ],
-            ],
-        ];
+    /**
+     * Create the Illuminate FileStore.
+     */
+    public function getStore(): Store
+    {
+        $redis = new RedisManager(new Container(), 'predis', $this->config);
 
-        // Register redis manager
-        $this->app->singleton('redis', function ($app) use ($redisConfig) {
-            return new RedisManager($app, 'predis', $redisConfig);
-        });
+        return new PatchedRedisStore($redis, $this->config['default']['prefix']);
     }
 }

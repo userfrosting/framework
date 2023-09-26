@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,20 +12,21 @@
 
 namespace UserFrosting\Tests\Cache;
 
+use UserFrosting\Cache\Cache;
 use UserFrosting\Cache\TaggableFileStore;
 use UserFrosting\UniformResourceLocator\Normalizer;
 
 class TaggableFileStoreTest extends StoreTestCase
 {
-    public $storage;
+    public string $storage;
 
-    public function setup(): void
+    public function setUp(): void
     {
         $this->storage = Normalizer::normalizePath(__DIR__.'/store');
     }
 
     /** {@inheritdoc} */
-    protected function createStore()
+    protected function createStore(): Cache
     {
         // Create the $cache object
         $cacheStore = new TaggableFileStore($this->storage);
@@ -34,7 +37,7 @@ class TaggableFileStoreTest extends StoreTestCase
     /**
      * Test file store.
      */
-    public function testTaggableFileStore()
+    public function testTaggableFileStore(): void
     {
         $cache = $this->createStore();
 
@@ -43,7 +46,7 @@ class TaggableFileStoreTest extends StoreTestCase
         $this->assertEquals('bar', $cache->get('foo'));
     }
 
-    public function TaggableFileStorePersistence()
+    public function TaggableFileStorePersistence(): void
     {
         $cache = $this->createStore();
 
@@ -51,7 +54,7 @@ class TaggableFileStoreTest extends StoreTestCase
         $this->assertEquals('bar', $cache->get('foo'));
     }
 
-    public function testMultipleTaggableFileStore()
+    public function testMultipleTaggableFileStore(): void
     {
         $cache = $this->createStore();
 
@@ -73,7 +76,7 @@ class TaggableFileStoreTest extends StoreTestCase
         $this->assertEquals('BARRRRRRRRE', $cache->tags('user')->get('foo'));
     }
 
-    public function testMultipleTaggableFileStoreWithTags()
+    public function testMultipleTaggableFileStoreWithTags(): void
     {
         $cache = $this->createStore();
 
@@ -91,14 +94,14 @@ class TaggableFileStoreTest extends StoreTestCase
         $this->assertEquals('blue', $cache->tags(['foo', 'blue'])->get('bar'));
     }
 
-    public function testTagsFlush()
+    public function testTagsFlush(): void
     {
         $cache = $this->createStore();
 
         // Start by not using tags
         $cache->put('test', '123', 60);
         $this->assertEquals('123', $cache->get('test'));
-        $this->assertTrue($cache->flush());
+        $this->assertTrue($cache->flush()); // @phpstan-ignore-line False positive.
         $this->assertNull($cache->get('test'));
 
         // Try again with tags

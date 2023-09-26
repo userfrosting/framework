@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,20 +12,20 @@
 
 namespace UserFrosting\Tests\Cache;
 
-use Illuminate\Contracts\Cache\Repository as CacheRepositoryContract;
 use PHPUnit\Framework\TestCase;
+use UserFrosting\Cache\Cache;
 
 abstract class StoreTestCase extends TestCase
 {
     /**
-     * @return CacheRepositoryContract Laravel Cache instance
+     * @return Cache
      */
-    abstract protected function createStore();
+    abstract protected function createStore(): Cache;
 
     /**
      * Ensure consistent behaviors across all cache providers.
      */
-    public function testPutValueHandling()
+    public function testPutValueHandling(): void
     {
         $cache = $this->createStore();
 

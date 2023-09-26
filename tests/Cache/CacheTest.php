@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,15 +12,17 @@
 
 namespace UserFrosting\Tests\Cache;
 
+use Illuminate\Contracts\Cache\Repository as CacheContract;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Cache\ArrayStore;
+use UserFrosting\Cache\Cache;
 use UserFrosting\Cache\FileStore;
 
 class CacheTest extends TestCase
 {
-    public $storage;
+    public string $storage;
 
-    public function setup(): void
+    public function setUp(): void
     {
         $this->storage = __DIR__.'/store';
     }
@@ -26,84 +30,65 @@ class CacheTest extends TestCase
     /**
      * Test basic array store.
      */
-    public function testArrayStore()
+    public function testArrayStore(): void
     {
         // Create the $cache object
         $cacheStore = new ArrayStore();
         $cache = $cacheStore->instance();
+
+        // Assert Instances
+        $this->assertInstanceOf(CacheContract::class, $cache); // @phpstan-ignore-line
+        $this->assertInstanceOf(Cache::class, $cache); // @phpstan-ignore-line
 
         // Store "foo" and try to read it
         $cache->forever('foo', 'array');
         $this->assertEquals('array', $cache->get('foo'));
     }
 
-    public function testArrayStorePersistence()
+    public function testArrayStorePersistence(): void
     {
         // Create the $cache object
         $cacheStore = new ArrayStore();
         $cache = $cacheStore->instance();
+
+        // Assert Instances
+        $this->assertInstanceOf(CacheContract::class, $cache); // @phpstan-ignore-line
+        $this->assertInstanceOf(Cache::class, $cache); // @phpstan-ignore-line
 
         // Doesn't store anything, just tried to read the last one
         // Won't work, because array doesn't save anything
         $this->assertNotEquals('array', $cache->get('foo'));
     }
 
-    public function testArrayStoreThorwsExceptionOnBadStoreName()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        new ArrayStore(123);
-    }
-
     /**
      * Test file store.
      */
-    public function testFileStore()
+    public function testFileStore(): void
     {
         // Create the $cache object
         $cacheStore = new FileStore($this->storage);
         $cache = $cacheStore->instance();
+
+        // Assert Instances
+        $this->assertInstanceOf(CacheContract::class, $cache); // @phpstan-ignore-line
+        $this->assertInstanceOf(Cache::class, $cache); // @phpstan-ignore-line
 
         // Store "foo" and try to read it
         $cache->forever('foo', 'bar');
         $this->assertEquals('bar', $cache->get('foo'));
     }
 
-    public function testFileStorePersistence()
+    public function testFileStorePersistence(): void
     {
         // Create the $cache object
         $cacheStore = new FileStore($this->storage);
         $cache = $cacheStore->instance();
 
+        // Assert Instances
+        $this->assertInstanceOf(CacheContract::class, $cache); // @phpstan-ignore-line
+        $this->assertInstanceOf(Cache::class, $cache); // @phpstan-ignore-line
+
         // Doesn't store anything, just tried to read the last one
         $this->assertEquals('bar', $cache->get('foo'));
     }
-
-    /*public function testReuseApp()
-    {
-        $app = new \Illuminate\Container\Container();
-
-        // Create two $cache object
-        $cacheStore = new FileStore("global", $this->storage, $app);
-        $cacheGlobal = $cacheStore->instance();
-
-        $cacheStore2 = new FileStore("user2419", $this->storage, $app);
-        $cacheUser = $cacheStore2->instance();
-
-        // Store stuff in first
-        $cacheGlobal->forever("test", "1234");
-        $cacheGlobal->forever("foo", "bar");
-        $cacheGlobal->forever("cities", ['Montréal', 'Paris', 'NYC']);
-
-        // Store stuff in second
-        $cacheUser->forever("test", "1234");
-        $cacheUser->forever("foo", "BARRRRRRRRE");
-        $cacheUser->forever("cities", ['Montréal', 'Paris', 'NYC']);
-
-        // Flush first
-        $cacheGlobal->flush();
-
-        // First show be empty, but not the second one
-        $this->assertEquals(null, $cacheGlobal->get('foo'));
-        $this->assertEquals("BARRRRRRRRE", $cacheUser->get('foo'));
-    }*/
 }

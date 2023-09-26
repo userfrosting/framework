@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -11,55 +13,48 @@
 namespace UserFrosting\Cache;
 
 use Illuminate\Cache\MemcachedConnector;
-use Illuminate\Container\Container;
+use Illuminate\Cache\MemcachedStore as IlluminateMemcachedStore;
+use Illuminate\Contracts\Cache\Store;
 
 /**
- * MemcachedStore Class.
- *
  * Setup a cache instance in a defined namespace using the `memcached` driver
- *
- * @author    Louis Charette
  */
-class MemcachedStore extends ArrayStore
+class MemcachedStore extends AbstractStore
 {
     /**
-     * Extend the `ArrayStore` contructor to accept the memcached server and
-     * port configuraton.
-     *
-     * @param array          $memcachedConfig (default: [])
-     * @param string         $storeName       (default: "default")
-     * @param Container|null $app
+     * @var array<mixed> Memcached config.
      */
-    public function __construct($memcachedConfig = [], $storeName = 'default', Container $app = null)
-    {
-        // Run the parent function to build base $app and $config
-        parent::__construct($storeName, $app);
+    protected array $config;
 
+    /**
+     * Accept the memcached server configuration.
+     *
+     * @param array<mixed> $config (default: [])
+     */
+    public function __construct(array $config = [])
+    {
         // Merge argument config with default one
-        $memcachedConfig = array_merge([
+        $this->config = array_merge([
             'host'   => '127.0.0.1',
             'port'   => 11211,
             'weight' => 100,
             'prefix' => '',
-        ], $memcachedConfig);
+        ], $config);
+    }
 
-        // Memcached store requires a MemcachedConnector
-        $this->app->singleton('memcached.connector', function () {
-            return new MemcachedConnector();
-        });
+    /**
+     * Create the Illuminate FileStore.
+     */
+    public function getStore(): Store
+    {
+        $connector = new MemcachedConnector();
+        $memcached = $connector->connect(
+            $this->config['servers'],
+            $this->config['persistent_id'] ?? null,
+            $this->config['options'] ?? [],
+            array_filter($this->config['sasl'] ?? [])
+        );
 
-        // Setup the config for this file store
-        // Nb.: Yes. The `servers` part is in a double array.
-        $this->config['cache'] = [
-            'prefix' => $memcachedConfig['prefix'],
-            'stores' => [
-                $this->storeName => [
-                    'driver'  => 'memcached',
-                    'servers' => [
-                        $memcachedConfig,
-                    ],
-                ],
-            ],
-        ];
+        return new IlluminateMemcachedStore($memcached, $this->config['prefix']);
     }
 }

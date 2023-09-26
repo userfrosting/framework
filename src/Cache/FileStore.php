@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,42 +12,29 @@
 
 namespace UserFrosting\Cache;
 
-use Illuminate\Container\Container;
+use Illuminate\Cache\FileStore as IlluminateFileStore;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Filesystem\Filesystem;
 
 /**
- * FileStore Class.
- *
- * Setup a cache instance in a defined namespace using the `file` driver
- *
- * @author    Louis Charette
+ * Setup a cache instance using the `file` driver.
  */
-class FileStore extends ArrayStore
+class FileStore extends AbstractStore
 {
     /**
-     * Extend the `ArrayStore` contructor to accept the file driver $path
-     * config and setup the necessary config.
+     * Accept the file driver $path
      *
-     * @param string         $path      (default: "./")
-     * @param string         $storeName (default: "default")
-     * @param Container|null $app       (default: null)
+     * @param string $path (default: "./")
      */
-    public function __construct($path = './', $storeName = 'default', Container $app = null)
+    public function __construct(protected $path = './')
     {
-        // Run the parent function to build base $app and $config
-        parent::__construct($storeName, $app);
+    }
 
-        // Files store requires a Filesystem access
-        $this->app->singleton('files', function () {
-            return new Filesystem();
-        });
-
-        // Setup the config for this file store
-        $this->config['cache.stores'] = [
-            $this->storeName => [
-                'driver' => 'file',
-                'path'   => $path,
-            ],
-        ];
+    /**
+     * Create the Illuminate FileStore.
+     */
+    public function getStore(): Store
+    {
+        return new IlluminateFileStore(new Filesystem(), $this->path);
     }
 }

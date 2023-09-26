@@ -12,21 +12,24 @@ declare(strict_types=1);
 
 namespace UserFrosting\Cache;
 
-use Illuminate\Cache\ArrayStore as IlluminateArrayStore;
 use Illuminate\Contracts\Cache\Store;
 
-/**
- * Setup a cache instance using the `array` driver.
- * This driver is a dummy one that doesn't save anything, and should primally
- * be used for testing or disabling cache.
- */
-class ArrayStore extends AbstractStore
+abstract class AbstractStore
 {
     /**
-     * Create the Illuminate ArrayStore.
+     * Create the appropriate Illuminate Store.
      */
-    public function getStore(): Store
+    abstract public function getStore(): Store;
+
+    /**
+     * Return the Cache instance.
+     *
+     * @return Cache
+     */
+    public function instance(): Cache
     {
-        return new IlluminateArrayStore();
+        $store = $this->getStore();
+
+        return new Cache($store);
     }
 }
