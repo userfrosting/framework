@@ -16,7 +16,7 @@ use Illuminate\Cache\TaggedCache;
 
 /**
  * Custom file based cache driver with supports for Tags
- * Inspired by unikent/taggedFileCache
+ * Inspired by unikent/taggedFileCache.
  */
 class TaggedFileCache extends TaggedCache
 {
