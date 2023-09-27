@@ -1,8 +1,6 @@
-# Cache module for UserFrosting 4
+# Cache module for UserFrosting 5
 
-Wrapper function for *Laravel cache system* for easier integration of the cache system in standalone projects. Refer to [Laravel documentation](https://laravel.com/docs/5.4/cache) for all cache related function. This wrapper support Laravel `ArrayStore`, `FileStore`, `MemcachedStore` and `RedisStore`.
-
-Also include a `namespace` parameter to handle multiple cache instance on the same server or project.
+Wrapper function for *Laravel cache system* for easier integration of the cache system in standalone projects. Refer to [Laravel documentation](https://laravel.com/docs/8.x/cache) for all cache related function. This wrapper support Laravel `ArrayStore`, `FileStore`, `MemcachedStore` and `RedisStore`.
 
 ## Usage
 
@@ -10,17 +8,10 @@ For any store driver, you first need to create a new `*Store`, passing the confi
 
 To use one of the following stores, you first need to include add it to the `use` list of your class or php file.
 
-If you need to use multiple cache instance on the same server (especially for Memcached and Redis drivers) or on the same project (for example, user based cache), you can use the `namespace` parameter in the `*Store` constructor. A namespace should always be a *string*.
-
-Since he *Laravel cache* requires an instance of `Illuminate\Container\Container`, every `*Store` in this package will create
-one automatically. If you want to reuse an existing `Container`, you can pass it to the `*Store` constructor.
-
-While the `namespace` parameter is required for any `*Store`, all other parameters are optional, unless otherwise specified.
-
 ### ArrayStore
-The [ArrayStore](https://laravel.com/api/5.4/Illuminate/Cache/ArrayStore.html) is a dummy store that doesn't really save anything. This can be used if you want to disable cache globally.
+The [ArrayStore](https://laravel.com/api/8.x/Illuminate/Cache/ArrayStore.html) is a dummy store that doesn't really save anything. This can be used if you want to disable cache globally.
 
-The `ArrayStore` accepts the `namespace` and `Container` parameters: `new ArrayStore(string $namespace, Illuminate\Container\Container $app = null);`
+The `ArrayStore` accepts no parameters: `new ArrayStore();`
 
 *Example :*
 ```
@@ -28,7 +19,7 @@ use UserFrosting\Cache\ArrayStore;
 
 ...
 
-$cacheStore = new ArrayStore("global");
+$cacheStore = new ArrayStore();
 $cache = $cacheStore->instance();
 
 $cache->get(...);
@@ -36,9 +27,9 @@ $cache->get(...);
 
 ### FileStore
 
-The [FileStore](https://laravel.com/api/5.4/Illuminate/Cache/FileStore.html) save file to the filesystem.
+The [FileStore](https://laravel.com/api/8.x/Illuminate/Cache/FileStore.html) save file to the filesystem.
 
-The `FileStore` accepts the `namespace`, `path` and `Container` parameters : `new FileStore(string $namespace, string $path = "./", Illuminate\Container\Container $app = null);`
+The `FileStore` accepts the `path` parameter : `new FileStore(string $path = "./");`
 
 *Example :*
 ```
@@ -46,7 +37,7 @@ use UserFrosting\Cache\FileStore;
 
 ...
 
-$cacheStore = new FileStore("global", "./cache");
+$cacheStore = new FileStore("./cache");
 $cache = $cacheStore->instance();
 
 $cache->get(...);
@@ -54,11 +45,11 @@ $cache->get(...);
 
 ### MemcachedStore
 
-The [MemcachedStore](https://laravel.com/api/5.4/Illuminate/Cache/MemcachedStore.html) uses [Memcached](http://www.memcached.org) to efficiently handle caching.
+The [MemcachedStore](https://laravel.com/api/8.x/Illuminate/Cache/MemcachedStore.html) uses [Memcached](http://www.memcached.org) to efficiently handle caching.
 
 > **Memcached** should't be mistaken for the **Memcache**. Those are tow separate things !
 
-The `MemcachedStore` accepts the `namespace`, `config` and `Container` parameters : `new MemcachedStore(string $namespace, array $config = [], Illuminate\Container\Container $app = null);`
+The `MemcachedStore` accepts the `config` parameter : `new MemcachedStore(array $config = []);`
 
 Memcached config's array contain the settings for your Memcached instance. Default values are:
 ```
@@ -77,7 +68,7 @@ use UserFrosting\Cache\MemcachedStore;
 
 ...
 
-$cacheStore = new MemcachedStore("global"); //Uses default Memcached settings
+$cacheStore = new MemcachedStore(); //Uses default Memcached settings
 $cache = $cacheStore->instance();
 
 $cache->get(...);
@@ -89,7 +80,7 @@ use UserFrosting\Cache\MemcachedStore;
 
 ...
 
-$cacheStore = new MemcachedStore("global", [
+$cacheStore = new MemcachedStore([
   'host' => '123.456.789.0',
   'port' => '22122'
 ]);
@@ -100,9 +91,9 @@ $cache->get(...);
 
 ### RedisStore
 
-The [RedisStore](https://laravel.com/api/5.4/Illuminate/Cache/RedisStore.html) uses [Redis server](https://redis.io) to efficiently handle caching.
+The [RedisStore](https://laravel.com/api/8.x/Illuminate/Cache/RedisStore.html) uses [Redis server](https://redis.io) to efficiently handle caching.
 
-The `RedisStore` accepts the `namespace`, `config` and `Container` parameters : `new RedisStore(string $namespace, array $config = [], Illuminate\Container\Container $app = null);`
+The `RedisStore` accepts the `config` parameter : `new RedisStore(array $config = []);`
 
 Redis config's array contain the settings for your Redis server. Default values are:
 ```
@@ -122,7 +113,7 @@ use UserFrosting\Cache\RedisStore;
 
 ...
 
-$cacheStore = new RedisStore("global"); //Uses default Redis settings
+$cacheStore = new RedisStore(); //Uses default Redis settings
 $cache = $cacheStore->instance();
 
 $cache->get(...);
@@ -134,7 +125,7 @@ use UserFrosting\Cache\RedisStore;
 
 ...
 
-$cacheStore = new RedisStore("global", [
+$cacheStore = new RedisStore([
   'password' => 'MyAwesomePassword',
   'port' => '1234'
 ]);

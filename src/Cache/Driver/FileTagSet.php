@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -13,19 +15,34 @@ namespace UserFrosting\Cache\Driver;
 use Illuminate\Cache\TagSet;
 
 /**
- * FileTagSet Class.
- *
  * Custom file based cache driver with supports for Tags
  * Inspired by unikent/taggedFileCache
- *
- * @author    Louis Charette
  */
 class FileTagSet extends TagSet
 {
     /**
+     * The cache store implementation.
+     *
+     * @var TaggableFileStore
+     */
+    // @phpstan-ignore-next-line
+    protected $store;
+
+    /**
      * @var string Driver name
      */
     protected static $driver = 'tfile';
+
+    /**
+     * Create a new TagSet instance.
+     *
+     * @param TaggableFileStore $store
+     * @param string[]          $names
+     */
+    public function __construct(TaggableFileStore $store, array $names = [])
+    {
+        parent::__construct($store, $names);
+    }
 
     /**
      * Get the tag identifier key for a given tag.
@@ -48,11 +65,11 @@ class FileTagSet extends TagSet
      */
     public function resetTag($name)
     {
-        // Get the old tagId. When reseting a tag, a new id will be create
+        // Get the old tagId. When resetting a tag, a new id will be create
         $oldID = $this->store->get($this->tagKey($name));
 
         if ($oldID !== false) {
-            $oldIDArray = is_array($oldID) ? $ids : [$oldID];
+            $oldIDArray = is_array($oldID) ? $oldID : [$oldID];
             foreach ($oldIDArray as $id) {
                 $this->store->flushOldTag($id);
             }

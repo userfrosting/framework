@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -15,58 +17,46 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 /**
- * TaggableFileStore Class.
- *
  * Custom file based cache driver with supports for Tags
  * Inspired by unikent/taggedFileCache
- *
- * @author    Louis Charette
  */
 class TaggableFileStore extends FileStore
 {
     /**
      * @var string The separator when creating a tagged directory.
      */
-    public $separator;
+    public string $separator;
 
     /**
      * @var string The directory where the tags list is stored
      */
-    public $tagRepository = 'cache_tags';
+    public string $tagRepository = 'cache_tags';
 
     /**
      * @var string Directory separator.
      */
-    public $ds = '/';
+    public string $ds = '/';
 
     /**
      * Create a new file cache store instance.
      *
      * @param Filesystem $files
      * @param string     $directory
-     * @param array      $options
+     * @param string     $separator
      */
-    public function __construct(Filesystem $files, $directory, $options)
+    public function __construct(Filesystem $files, string $directory, string $separator = '~#~')
     {
-        $options = array_merge([
-            'separator'=> '~#~',
-        ], $options);
-
-        $this->separator = $options['separator'];
+        $this->separator = $separator;
         parent::__construct($files, $directory);
     }
 
     /**
-     * Get the full path for the given cache key.
-     *
-     * @param string $key
-     *
-     * @return string
+     * {@inheritDoc}
      */
     protected function path($key)
     {
         $isTag = false;
-        $split = explode($this->separator, $key);
+        $split = explode($this->separator, $key); //@phpstan-ignore-line
 
         if (count($split) > 1) {
             $folder = reset($split) . $this->ds;
@@ -107,7 +97,7 @@ class TaggableFileStore extends FileStore
      *
      * @param string $tagId
      */
-    public function flushOldTag($tagId)
+    public function flushOldTag($tagId): void
     {
         foreach ($this->files->directories($this->directory) as $directory) {
             if (Str::contains(basename($directory), $tagId)) {

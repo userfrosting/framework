@@ -51,6 +51,7 @@ class RedisStore extends AbstractStore
      */
     public function getStore(): Store
     {
+        // @phpstan-ignore-next-line - Use container as dummy app
         $redis = new RedisManager(new Container(), 'predis', $this->config);
 
         return new PatchedRedisStore($redis, $this->config['default']['prefix']);

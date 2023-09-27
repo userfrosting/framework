@@ -28,8 +28,8 @@ class TaggableFileStore extends AbstractStore
      * @param string $separator (default: "")
      */
     public function __construct(
-        protected $path = './',
-        protected $separator = '~#~'
+        protected string $path = './',
+        protected string $separator = '~#~'
     ) {
     }
 
@@ -38,8 +38,6 @@ class TaggableFileStore extends AbstractStore
      */
     public function getStore(): Store
     {
-        return new TaggableFileDriver(new Filesystem(), $this->path, [
-            'separator' => $this->separator,
-        ]);
+        return new TaggableFileDriver(new Filesystem(), $this->path, $this->separator);
     }
 }

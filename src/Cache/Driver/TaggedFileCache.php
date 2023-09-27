@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -13,12 +15,8 @@ namespace UserFrosting\Cache\Driver;
 use Illuminate\Cache\TaggedCache;
 
 /**
- * TaggedFileCache Class.
- *
  * Custom file based cache driver with supports for Tags
  * Inspired by unikent/taggedFileCache
- *
- * @author    Louis Charette
  */
 class TaggedFileCache extends TaggedCache
 {
@@ -27,6 +25,7 @@ class TaggedFileCache extends TaggedCache
      */
     public function taggedItemKey($key)
     {
+        // @phpstan-ignore-next-line - TaggableFileStore will be used
         return $this->tags->getNamespace() . $this->store->separator . $key;
     }
 }
