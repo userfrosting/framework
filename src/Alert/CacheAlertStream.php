@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace UserFrosting\Alert;
 
+use Illuminate\Cache\Repository as Cache;
 use Illuminate\Cache\TaggedCache;
-use UserFrosting\Cache\Cache;
 use UserFrosting\I18n\Translator;
 
 /**

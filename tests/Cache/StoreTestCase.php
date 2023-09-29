@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace UserFrosting\Tests\Cache;
 
+use Illuminate\Cache\Repository as Cache;
 use PHPUnit\Framework\TestCase;
-use UserFrosting\Cache\Cache;
 
 abstract class StoreTestCase extends TestCase
 {

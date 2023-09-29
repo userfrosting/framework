@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace UserFrosting\Cache;
 
+use Illuminate\Cache\Repository as Cache;
 use Illuminate\Contracts\Cache\Store;
 
 abstract class AbstractStore

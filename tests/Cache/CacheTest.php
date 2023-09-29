@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace UserFrosting\Tests\Cache;
 
+use Illuminate\Cache\Repository as Cache;
 use Illuminate\Contracts\Cache\Repository as CacheContract;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Cache\ArrayStore;
-use UserFrosting\Cache\Cache;
 use UserFrosting\Cache\FileStore;
 
 class CacheTest extends TestCase

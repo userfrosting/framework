@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace UserFrosting\Tests\Cache;
 
-use UserFrosting\Cache\Cache;
+use Illuminate\Cache\Repository as Cache;
 use UserFrosting\Cache\TaggableFileStore;
 use UserFrosting\UniformResourceLocator\Normalizer;
 
