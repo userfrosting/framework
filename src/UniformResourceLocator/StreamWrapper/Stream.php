@@ -41,7 +41,14 @@ class Stream implements StreamInterface
      */
     public function stream_open(string $uri, string $mode, int $options, ?string &$opened_path): bool
     {
-        $path = $this->findPath($uri);
+        // In write mode, we want to write to the first existing path (should
+        // be a shared location) because fopen will attempts to create the file.
+        // Otherwise, we need to find the first found path, across location.
+        if (in_array($mode, ['w', 'w+', 'a', 'a+', 'x', 'x+'], true)) {
+            $path = $this->findPath($uri, true);
+        } else {
+            $path = $this->findPath($uri);
+        }
 
         if ($path === null) {
             return false;
@@ -49,8 +56,8 @@ class Stream implements StreamInterface
 
         $handle = @fopen($path, $mode);
 
-        // fopen will return false if mode is 'x' and file already exist.
-        // See : https://www.php.net/manual/en/function.fopen
+        // fopen will return false if file is not found or if mode is 'x' and
+        // file already exist. See : https://www.php.net/manual/en/function.fopen
         if ($handle === false) {
             return false;
         }

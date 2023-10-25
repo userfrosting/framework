@@ -162,17 +162,73 @@ class StreamTest extends TestCase
     }
 
     /**
+     * Test on a file that already exist.
      * @depends testSimpleFile
      */
     public function testFOpen(): void
     {
+        touch($this->file);
+        $this->assertTrue(file_exists($this->file)); // Make sure file exist, it's the point of the test
+        $this->assertIsResource(fopen($this->file, 'w'));
+        unlink($this->file);
+    }
+
+    /**
+     * Make sure fopen create the file if it doesn't exist.
+     * @depends testSimpleFile
+     */
+    public function testFOpenFileNotExistButWillCreate(): void
+    {
+        $this->assertFalse(file_exists($this->file));
+        $this->assertIsResource(fopen($this->file, 'w'));
+        $this->assertTrue(file_exists($this->file));
+        unlink($this->file);
+    }
+
+    /**
+     * Make sure fopen will return false if the file doesn't exist in readonly
+     * mode. Even if locator return a resource path (with all flag).
+     *
+     * @depends testSimpleFile
+     */
+    public function testFOpenFileNotExist(): void
+    {
         // stream_open will trigger an error even if the stream return false.
+        // fopen(bar://test.txt): Failed to open stream: "UserFrosting\UniformResourceLocator\StreamWrapper\Stream::stream_open" call failed
+        // This suppress this error, and allow us to test the return value.
         set_error_handler(function ($no, $str, $file, $line) { // @phpstan-ignore-line
         });
 
-        touch($this->file); // Touch basic file
+        $this->assertFalse(file_exists($this->file));
+        $this->assertFalse(fopen($this->file, 'r'));
+        $this->assertFalse(file_exists($this->file));
+    }
+
+    /**
+     * @depends testSimpleFile
+     */
+    public function testFOpenInvalidPath(): void
+    {
+        // Catch exception
+        set_error_handler(function ($no, $str, $file, $line) { // @phpstan-ignore-line
+        });
+
+        $this->assertFalse(fopen('bar://test.txt', 'w'));
+    }
+
+    /**
+     * fopen will return false if mode is 'x' and file already exist.
+     * @depends testSimpleFile
+     */
+    public function testFOpenFalseReturn(): void
+    {
+        // Catch exception
+        set_error_handler(function ($no, $str, $file, $line) { // @phpstan-ignore-line
+        });
+
+        touch($this->file);
         $this->assertFalse(fopen($this->file, 'x'));
-        unlink($this->file);  // Reset state
+        unlink($this->file);
     }
 
     /**
