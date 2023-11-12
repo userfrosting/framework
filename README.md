@@ -1,7 +1,7 @@
 # UserFrosting 5.0 Framework
 
 [![Version](https://img.shields.io/github/v/release/userfrosting/framework.svg?include_prereleases)](https://github.com/userfrosting/framework/releases)
-![PHP](https://img.shields.io/packagist/php-v/userfrosting/framework/dev-5.0?color=brightgreen)
+![PHP](https://img.shields.io/badge/php-%5E8.0-brightgreen)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![Build](https://img.shields.io/github/actions/workflow/status/userfrosting/framework/Build.yml?branch=5.0&logo=github)](https://github.com/userfrosting/framework/actions)
 [![Codecov](https://codecov.io/gh/userfrosting/framework/branch/5.0/graph/badge.svg)](https://app.codecov.io/gh/userfrosting/framework/branch/5.0)
