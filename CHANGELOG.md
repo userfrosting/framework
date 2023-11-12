@@ -28,6 +28,7 @@ Version 5 also requires PHP 8.0 and up. With that in mind, most of the code has 
 - Updated PHP-CS-Fixer & StyleCI config
 
 ### Assets
+**Assets module is now deprecated and will be removed in UserFrosting 5.1 !**
 #### Removed
 - `UserFrosting\Assets\ServeAsset\SlimServeAsset` has been removed. Code has been moved into Core Sprinkle
 

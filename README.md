@@ -1,6 +1,6 @@
 # UserFrosting 5.0 Framework
 
-[![Version](https://img.shields.io/badge/Version-5.0.x-red.svg)](https://github.com/userfrosting/framework/releases)
+[![Version](https://img.shields.io/github/v/release/userfrosting/framework.svg?include_prereleases)](https://github.com/userfrosting/framework/releases)
 ![PHP](https://img.shields.io/packagist/php-v/userfrosting/framework/dev-develop-5.0?color=brightgreen)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![Build](https://img.shields.io/github/actions/workflow/status/userfrosting/framework/Build.yml?branch=develop-5.0&logo=github)](https://github.com/userfrosting/framework/actions)
@@ -27,6 +27,8 @@ See main [UserFrosting Documentation](https://learn.userfrosting.com) and docume
  - [UniformResourceLocator](src/UniformResourceLocator)
 
 ## [Changelog](CHANGELOG.md)
+
+## [Issues](https://github.com/userfrosting/UserFrosting/issues)
 
 ## [License](LICENSE.md)
 
