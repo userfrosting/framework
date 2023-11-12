@@ -1,14 +1,17 @@
 # UserFrosting 5.0 Framework
 
 [![Version](https://img.shields.io/github/v/release/userfrosting/framework.svg?include_prereleases)](https://github.com/userfrosting/framework/releases)
-![PHP](https://img.shields.io/packagist/php-v/userfrosting/framework/dev-develop-5.0?color=brightgreen)
+![PHP](https://img.shields.io/packagist/php-v/userfrosting/framework/dev-5.0?color=brightgreen)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
-[![Build](https://img.shields.io/github/actions/workflow/status/userfrosting/framework/Build.yml?branch=develop-5.0&logo=github)](https://github.com/userfrosting/framework/actions)
-[![Codecov](https://codecov.io/gh/userfrosting/framework/branch/develop-5.0/graph/badge.svg)](https://app.codecov.io/gh/userfrosting/framework/branch/develop-5.0)
-[![StyleCI](https://github.styleci.io/repos/360994768/shield?branch=develop-5.0&style=flat)](https://github.styleci.io/repos/360994768)
-[![PHPStan](https://img.shields.io/github/actions/workflow/status/userfrosting/framework/PHPStan.yml?branch=develop-5.0&label=PHPStan)](https://github.com/userfrosting/framework/actions/workflows/PHPStan.yml)
+[![Build](https://img.shields.io/github/actions/workflow/status/userfrosting/framework/Build.yml?branch=5.0&logo=github)](https://github.com/userfrosting/framework/actions)
+[![Codecov](https://codecov.io/gh/userfrosting/framework/branch/5.0/graph/badge.svg)](https://app.codecov.io/gh/userfrosting/framework/branch/5.0)
+[![StyleCI](https://github.styleci.io/repos/360994768/shield?branch=5.0&style=flat)](https://github.styleci.io/repos/360994768)
+[![PHPStan](https://img.shields.io/github/actions/workflow/status/userfrosting/framework/PHPStan.yml?branch=5.0&label=PHPStan)](https://github.com/userfrosting/framework/actions/workflows/PHPStan.yml)
 [![Join the chat](https://img.shields.io/badge/Chat-UserFrosting-brightgreen?logo=Rocket.Chat)](https://chat.userfrosting.com)
-[![Donate](https://img.shields.io/badge/Open%20Collective-Donate-blue.svg)](https://opencollective.com/userfrosting#backer)
+[![Donate](https://img.shields.io/badge/Open_Collective-Donate-blue?logo=Open%20Collective
+)](https://opencollective.com/userfrosting#backer)
+[![Donate](https://img.shields.io/badge/Ko--fi-Donate-blue?logo=ko-fi&logoColor=white
+)](https://ko-fi.com/lcharette)
 
 ## Installation
 ```
