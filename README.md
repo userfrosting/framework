@@ -20,7 +20,6 @@ composer require userfrosting/framework
 
 ## Documentation & Usage
 See main [UserFrosting Documentation](https://learn.userfrosting.com) and documentation for specific parts: 
- - [Assets](src/Assets/)
  - [Cache](src/Cache/)
  - [Config](src/Config/)
  - [Fortress](src/Fortress/)

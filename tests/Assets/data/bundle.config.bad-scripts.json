@@ -1,8 +1,0 @@
-{
-    "bundle": {
-        "test": {
-            "scripts": false,
-            "styles": "bootstrap/css/bootstrap.css"
-        }
-    }
-}
