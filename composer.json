@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "illuminate/support": "^8.5",
         "illuminate/filesystem": "^8.5",
         "illuminate/config": "^8.5",
