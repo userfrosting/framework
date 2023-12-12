@@ -12,9 +12,9 @@ namespace UserFrosting\Support\DotenvEditor;
 
 use InvalidArgumentException;
 use Jackiedo\DotenvEditor\DotenvEditor as Editor;
-use Jackiedo\DotenvEditor\Workers\Formatters\Formatter;
 use Jackiedo\DotenvEditor\DotenvReader;
 use Jackiedo\DotenvEditor\DotenvWriter;
+use Jackiedo\DotenvEditor\Workers\Formatters\Formatter;
 use Jackiedo\DotenvEditor\Workers\Parsers\ParserV3;
 
 /**
@@ -33,7 +33,7 @@ class DotenvEditor extends Editor
     public function __construct(string $backupPath = '', bool $autoBackup = true)
     {
         $formatter = new Formatter();
-        $parser    = new ParserV3();
+        $parser = new ParserV3();
 
         $this->reader = new DotenvReader($parser);
         $this->writer = new DotenvWriter($formatter);
