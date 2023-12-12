@@ -29,7 +29,7 @@
         "illuminate/cache": "^8.5",
         "illuminate/container": "^8.5",
         "illuminate/redis": "^8.5",
-        "jackiedo/dotenv-editor": "^1.2",
+        "jackiedo/dotenv-editor": "^2.1",
         "symfony/console": "^5.1",
         "symfony/yaml": ">=4.4",
         "ezyang/htmlpurifier": "^4.7.0",
