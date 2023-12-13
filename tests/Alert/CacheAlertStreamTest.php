@@ -240,7 +240,7 @@ class CacheAlertStreamTest extends TestCase
             'type'    => 'danger',
             'message' => 'Email should be a valid email address',
         ];
-        $tags->shouldReceive('has')->with($this->key)->andReturn(false, [$message1], [$message1, $message2]); // Save 1, Save 2, display both
+        $tags->shouldReceive('has')->with($this->key)->andReturn(false, true, true); // Save 1, Save 2, display both
         $tags->shouldReceive('get')->with($this->key)->andReturn([$message1], [$message1, $message2]); // Save 2, Display both
         $tags->shouldReceive('forever')->with($this->key, [$message1])->once()->andReturn(null); // Save 1
         $tags->shouldReceive('forever')->with($this->key, [$message1, $message2])->once()->andReturn(null); // Save 2

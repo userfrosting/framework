@@ -53,7 +53,7 @@ class TaggableFileStore extends FileStore
     /**
      * {@inheritDoc}
      */
-    protected function path($key)
+    public function path($key)
     {
         $isTag = false;
         $split = explode($this->separator, $key); //@phpstan-ignore-line
