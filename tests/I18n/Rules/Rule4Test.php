@@ -21,7 +21,7 @@ class Rule4Test extends RuleBase
      * 3 - others between 3 and 19: 3, 4, ... 10, 13, ... 18, 19
      * 4 - everything else: 0, 20, 21, ...
      */
-    public function ruleProvider()
+    public static function ruleProvider()
     {
         return [
             [0, 4],

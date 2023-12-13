@@ -20,7 +20,7 @@ class Rule5Test extends RuleBase
      * 2 - is 0 or ends in 01-19: 0, 2, 3, ... 19, 101, 102, ... 119, 201, ...
      * 3 - everything else: 20, 21, ...
      */
-    public function ruleProvider()
+    public static function ruleProvider()
     {
         return [
             [0, 2],

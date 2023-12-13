@@ -155,7 +155,7 @@ class RepositoryLoaderTest extends TestCase
         $path = __DIR__.'/data/core/owls/tyto.yaml';
         $loader = $this->getMockBuilder(YamlFileLoader::class)
                        ->setConstructorArgs([$path])
-                       ->setMethods(['isReadable'])
+                       ->onlyMethods(['isReadable'])
                        ->getMock();
         $loader->method('isReadable')->willReturn(false);
 
@@ -178,7 +178,7 @@ class RepositoryLoaderTest extends TestCase
         $path = __DIR__.'/data/core/owls/tyto.yaml';
         $loader = $this->getMockBuilder(YamlFileLoader::class)
                        ->setConstructorArgs([$path])
-                       ->setMethods(['fileGetContents'])
+                       ->onlyMethods(['fileGetContents'])
                        ->getMock();
         $loader->method('fileGetContents')->willReturn(false);
 

@@ -464,7 +464,7 @@ class BuildingLocatorTest extends TestCase
      *
      * @return mixed[]
      */
-    public function resourceProvider(): array
+    public static function resourceProvider(): array
     {
         return [
             //[$scheme, $file, $location, $expectedPaths, $expectedAllPaths],
@@ -525,7 +525,7 @@ class BuildingLocatorTest extends TestCase
      *
      * @return mixed[]
      */
-    public function sharedResourceProvider(): array
+    public static function sharedResourceProvider(): array
     {
         return [
             //[$scheme, $file, $location, $expectedPaths, $expectedAllPaths],

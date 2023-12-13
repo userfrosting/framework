@@ -20,7 +20,7 @@ class Rule3Test extends RuleBase
      * 2 - ends in 1, not 11: 1, 21, ... 101, 121, ...
      * 3 - everything else: 2, 3, ... 10, 11, 12, ... 20, 22, ...
      */
-    public function ruleProvider()
+    public static function ruleProvider()
     {
         return [
             [0, 1],

@@ -19,7 +19,7 @@ class Rule15Test extends RuleBase
      * 1 - ends in 1, not 11: 1, 21, 31, ... 101, 121, 131, ...
      * 2 - everything else: 0, 2, 3, ... 10, 11, 12, ... 20, 22, ...
      */
-    public function ruleProvider()
+    public static function ruleProvider()
     {
         return [
             [0, 2],

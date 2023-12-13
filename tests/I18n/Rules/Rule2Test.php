@@ -19,7 +19,7 @@ class Rule2Test extends RuleBase
      * 1 - 0, 1
      * 2 - everything else: 2, 3, ...
      */
-    public function ruleProvider()
+    public static function ruleProvider()
     {
         return [
             [0, 1],

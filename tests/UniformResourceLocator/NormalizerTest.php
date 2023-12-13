@@ -36,7 +36,7 @@ class NormalizerTest extends TestCase
      *
      * @return string[][]
      */
-    public function normalizeProvider(): array
+    public static function normalizeProvider(): array
     {
         return [
             ['', ''],
@@ -87,7 +87,7 @@ class NormalizerTest extends TestCase
      *
      * @return string[][]
      */
-    public function normalizeWithExceptionProvider(): array
+    public static function normalizeWithExceptionProvider(): array
     {
         return [
             ['path/to/../../../file.txt'],
@@ -114,7 +114,7 @@ class NormalizerTest extends TestCase
      *
      * @return string[][]
      */
-    public function normalizePathProvider(): array
+    public static function normalizePathProvider(): array
     {
         return [
             ['', ''],

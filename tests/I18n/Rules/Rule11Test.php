@@ -22,7 +22,7 @@ class Rule11Test extends RuleBase
      * 4 - is 7-10: 7, 8, 9, 10
      * 5 - everything else: 0, 11, 12, ...
      */
-    public function ruleProvider()
+    public static function ruleProvider()
     {
         return [
             [0, 5],

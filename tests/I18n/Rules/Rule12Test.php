@@ -24,7 +24,7 @@ class Rule12Test extends RuleBase
      * 5 - everything else: 100, 101, 102, 200, 201, 202, ...
      * 6 - 0
      */
-    public function ruleProvider()
+    public static function ruleProvider()
     {
         return [
             [0, 6],

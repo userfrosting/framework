@@ -201,7 +201,7 @@ class TranslatorTest extends TestCase
      *
      * @return mixed[] [$key, $placeholders, $expectedResultEnglish, $expectedResultFrench]
      */
-    public function localeStringProvider(): array
+    public static function localeStringProvider(): array
     {
         return [
             // Test most basic functionality
@@ -384,7 +384,7 @@ class TranslatorTest extends TestCase
      *
      * @return mixed[]
      */
-    public function twigProvider(): array
+    public static function twigProvider(): array
     {
         return [
 

@@ -21,7 +21,7 @@ class Rule10Test extends RuleBase
      * 3 - ends in 03-04: 3, 4, 103, 104, 203, 204, ...
      * 4 - everything else: 0, 5, 6, 7, 8, 9, 10, 11, ...
      */
-    public function ruleProvider()
+    public static function ruleProvider()
     {
         return [
             [0, 4],

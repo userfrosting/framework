@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Drop PHP 8.1 support, add PHP 8.3 support
 - Removed Assets
 - Update to Laravel 10
+- Update to PHPUnit 10
 
 ## [5.0.0](https://github.com/userfrosting/framework/compare/4.6.1...5.0.0)
 With version 5, this repo can be used as a bare bone Slim & Symfony Console application. It include the necessary routing class, [PHP-DI](https://php-di.org) as the Dependency Injection Container, a PSR EventDispatcher, etc. SprinkleManager has also been moved from Core/System Sprinkle and completely rewritten. 

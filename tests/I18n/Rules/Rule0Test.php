@@ -18,7 +18,7 @@ class Rule0Test extends RuleBase
      * Families: Asian (Chinese, Japanese, Korean, Vietnamese), Persian, Turkic/Altaic (Turkish), Thai, Lao
      * 1 - everything: 0, 1, 2, ...
      */
-    public function ruleProvider()
+    public static function ruleProvider()
     {
         return [
             [0, 1],

@@ -3,7 +3,7 @@ vendor
 composer.lock
 .php-cs-fixer.cache
 _meta
-.phpunit.result.cache
+.phpunit.cache
 .phpdoc
 
 # OS & Editors

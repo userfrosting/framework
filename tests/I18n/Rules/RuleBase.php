@@ -44,5 +44,5 @@ abstract class RuleBase extends TestCase
      *
      * @return array
      */
-    abstract public function ruleProvider();
+    abstract public static function ruleProvider();
 }

@@ -20,7 +20,7 @@ class Rule9Test extends RuleBase
      * 2 - ends in 2-4, not 12-14: 2, 3, 4, 22, 23, 24, 32, ... 104, 122, ...
      * 3 - everything else: 0, 5, 6, ... 11, 12, 13, 14, 15, ... 20, 21, 25, ...
      */
-    public function ruleProvider()
+    public static function ruleProvider()
     {
         return [
             [0, 3],

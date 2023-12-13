@@ -20,7 +20,7 @@ class Rule8Test extends RuleBase
      * 2 - 2, 3, 4
      * 3 - everything else: 0, 5, 6, 7, ...
      */
-    public function ruleProvider()
+    public static function ruleProvider()
     {
         return [
             [0, 3],

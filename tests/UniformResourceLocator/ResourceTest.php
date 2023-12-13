@@ -88,7 +88,7 @@ class ResourceTest extends TestCase
      *
      * @return mixed[]
      */
-    public function resourcesProvider(): array
+    public static function resourcesProvider(): array
     {
         $paths = [
             '',                       // No stream part. Shouldn't happen in real life
@@ -155,7 +155,7 @@ class ResourceTest extends TestCase
      *
      * @return string[][]
      */
-    public function sharedResourceStreamProvider(): array
+    public static function sharedResourceStreamProvider(): array
     {
         return [
             ['Garage/cars'],
@@ -199,7 +199,7 @@ class ResourceTest extends TestCase
      *
      * @return string[][]
      */
-    public function FilesProvider(): array
+    public static function FilesProvider(): array
     {
         return [
             // RelPath, basename, filename, extension

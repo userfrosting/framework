@@ -21,7 +21,7 @@ class Rule13Test extends RuleBase
      * 3 - ends in 11-19: 11, 12, ... 18, 19, 111, 112, ...
      * 4 - everything else: 20, 21, ...
      */
-    public function ruleProvider()
+    public static function ruleProvider()
     {
         return [
             [0, 2],
