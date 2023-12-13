@@ -34,7 +34,7 @@
         "symfony/yaml": ">=4.4",
         "ezyang/htmlpurifier": "^4.7.0",
         "vlucas/valitron": "^1.2.3",
-        "predis/predis": "~1.0",
+        "predis/predis": "^2.2",
         "twig/twig": "^3.3",
         "slim/slim": "^4.7",
         "slim/psr7": "^1.4",
