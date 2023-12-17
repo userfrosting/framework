@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace UserFrosting\Alert;
 
-use RuntimeException;
 use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\I18n\Translator;
 
@@ -24,46 +23,29 @@ abstract class AlertStream
     /**
      * Create a new message stream.
      *
-     * @param string          $messagesKey
-     * @param Translator|null $translator
+     * @param Translator $translator
      */
     public function __construct(
-        protected string $messagesKey,
-        protected ?Translator $translator = null
+        protected Translator $translator
     ) {
-    }
-
-    /**
-     * Set the translator to be used for all message streams.  Must be done
-     * before `addMessageTranslated` can be used.
-     *
-     * @param Translator|null $translator
-     *
-     * @return static
-     */
-    public function setTranslator(?Translator $translator = null): static
-    {
-        $this->translator = $translator;
-
-        return $this;
     }
 
     /**
      * Adds a raw text message to the cache message stream.
      *
-     * @param string $type    The type of message, indicating how it will be styled when outputted. Should be set to "success", "danger", "warning", or "info".
-     * @param string $message The message to be added to the message stream.
+     * @param string      $type         The type of message, indicating how it will be styled when outputted. Should be set to "success", "danger", "warning", or "info".
+     * @param string      $message      The message to be added to the message stream.
+     * @param mixed[]|int $placeholders An optional hash of placeholder names => placeholder values to substitute into the translated message.
      *
      * @return static
      */
-    public function addMessage(string $type, string $message): static
+    public function addMessage(string $type, string $message, array|int $placeholders = []): static
     {
-        $messages = $this->messages();
-        $messages[] = [
-            'type'    => $type,
-            'message' => $message,
-        ];
-        $this->saveMessages($messages);
+        $this->storeMessage([
+            'type'         => $type,
+            'message'      => $message,
+            'placeholders' => $placeholders,
+        ]);
 
         return $this;
     }
@@ -72,22 +54,16 @@ abstract class AlertStream
      * Adds a text message to the cache message stream, translated into the currently selected language.
      *
      * @param string      $type         The type of message, indicating how it will be styled when outputted.  Should be set to "success", "danger", "warning", or "info".
-     * @param string      $messageId    The message id for the message to be added to the message stream.
+     * @param string      $message      The message id for the message to be added to the message stream.
      * @param mixed[]|int $placeholders An optional hash of placeholder names => placeholder values to substitute into the translated message.
      *
-     * @throws RuntimeException
-     *
      * @return static
+     *
+     * @deprecated 5.1 Use `addMessage` instead.
      */
-    public function addMessageTranslated(string $type, string $messageId, array|int $placeholders = []): static
+    public function addMessageTranslated(string $type, string $message, array|int $placeholders = []): static
     {
-        if ($this->translator === null) {
-            throw new RuntimeException('No translator has been set!  Please call MessageStream::setTranslator first.');
-        }
-
-        $message = $this->translator->translate($messageId, $placeholders);
-
-        return $this->addMessage($type, $message);
+        return $this->addMessage($type, $message, $placeholders);
     }
 
     /**
@@ -97,12 +73,25 @@ abstract class AlertStream
      * This is useful, because typically we don't want to view the same messages more than once.
      * Returns an array of messages, each of which is itself an array containing "type" and "message" fields.
      *
-     * @return array<int, array{type: string, message: string}>
+     * @return array<int, array{type: string, message: string, placeholders: mixed[]|int}>
      */
     public function getAndClearMessages(): array
     {
         $messages = $this->messages();
         $this->resetMessageStream();
+
+        return $messages;
+    }
+
+    /**
+     * Get the messages from this message stream.
+     *
+     * @return array<int, array{type: string, message: string, placeholders: mixed[]|int}>
+     */
+    public function messages(): array
+    {
+        $messages = $this->retrieveMessages();
+        $messages = $this->translateMessages($messages);
 
         return $messages;
     }
@@ -123,21 +112,29 @@ abstract class AlertStream
     }
 
     /**
-     * Return the translator for this message stream.
+     * Translates messages that have a message id instead of a message.
      *
-     * @return Translator|null The translator for this message stream.
+     * @param array<int, array{type: string, message: string, placeholders: mixed[]|int}> $messages
+     *
+     * @return array<int, array{type: string, message: string, placeholders: mixed[]|int}>
      */
-    public function translator(): ?Translator
+    protected function translateMessages(array $messages): array
     {
-        return $this->translator;
+        $translated = [];
+        foreach ($messages as $message) {
+            $message['message'] = $this->translator->translate($message['message'], $message['placeholders']);
+            $translated[] = $message;
+        }
+
+        return $translated;
     }
 
     /**
      * Get the messages from this message stream.
      *
-     * @return array<int, array{type: string, message: string}> An array of messages, each of which is itself an array containing "type" and "message" fields.
+     * @return array<int, array{type: string, message: string, placeholders: mixed[]|int}> An array of messages, each of which is itself an array containing "type" and "message" fields.
      */
-    abstract public function messages(): array;
+    abstract protected function retrieveMessages(): array;
 
     /**
      * Clear all messages from this message stream.
@@ -147,7 +144,7 @@ abstract class AlertStream
     /**
      * Save messages to the stream.
      *
-     * @param array<int, array{type: string, message: string}> $messages
+     * @param array{type: string, message: string, placeholders: mixed[]|int} $message
      */
-    abstract protected function saveMessages(array $messages): void;
+    abstract protected function storeMessage(array $message): void;
 }

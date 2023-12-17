@@ -25,34 +25,26 @@ use UserFrosting\I18n\Translator;
 class CacheAlertStream extends AlertStream
 {
     /**
-     * @var Cache Object We use the cache object so that added messages will automatically appear in the cache.
-     */
-    protected Cache $cache;
-
-    /**
-     * @var string Session id tied to the alert stream.
-     */
-    protected string $session_id;
-
-    /**
      * Create a new message stream.
      *
-     * @param string          $messagesKey Store the messages under this key
-     * @param Translator|null $translator
-     * @param Cache           $cache
-     * @param string          $sessionId
+     * @param string     $messagesKey Store the messages under this key
+     * @param Translator $translator
+     * @param Cache      $cache       Object We use the cache object so that added messages will automatically appear in the cache.
+     * @param string     $tag         Cache tag id tied to the alert stream. Usually tied to the session ID.
      */
-    public function __construct(string $messagesKey, ?Translator $translator, Cache $cache, string $sessionId)
-    {
-        $this->cache = $cache;
-        $this->session_id = $sessionId;
-        parent::__construct($messagesKey, $translator);
+    public function __construct(
+        protected string $messagesKey,
+        protected Translator $translator,
+        protected Cache $cache,
+        protected string $tag,
+    ) {
+        parent::__construct($translator);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function messages(): array
+    protected function retrieveMessages(): array
     {
         if ($this->getCache()->has($this->messagesKey)) {
             $data = $this->getCache()->get($this->messagesKey);
@@ -74,8 +66,11 @@ class CacheAlertStream extends AlertStream
     /**
      * {@inheritDoc}
      */
-    protected function saveMessages(array $messages): void
+    protected function storeMessage(array $message): void
     {
+        $messages = $this->retrieveMessages();
+        $messages[] = $message;
+
         $this->getCache()->forever($this->messagesKey, $messages);
     }
 
@@ -84,6 +79,6 @@ class CacheAlertStream extends AlertStream
      */
     protected function getCache(): TaggedCache
     {
-        return $this->cache->tags('_s' . $this->session_id);
+        return $this->cache->tags('_s' . $this->tag);
     }
 }

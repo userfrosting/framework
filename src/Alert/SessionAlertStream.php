@@ -22,27 +22,24 @@ use UserFrosting\Session\Session;
 class SessionAlertStream extends AlertStream
 {
     /**
-     * @var Session We use the session object so that added messages will automatically appear in the session.
-     */
-    protected Session $session;
-
-    /**
      * Create a new message stream.
      *
-     * @param string          $messagesKey Store the messages under this key
-     * @param Translator|null $translator
-     * @param Session         $session
+     * @param string     $messagesKey Store the messages under this key
+     * @param Session    $session     We use the session object so that added messages will automatically appear in the session.
+     * @param Translator $translator
      */
-    public function __construct(string $messagesKey, ?Translator $translator, Session $session)
-    {
-        $this->session = $session;
-        parent::__construct($messagesKey, $translator);
+    public function __construct(
+        protected string $messagesKey,
+        protected Translator $translator,
+        protected Session $session,
+    ) {
+        parent::__construct($translator);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function messages(): array
+    protected function retrieveMessages(): array
     {
         $data = $this->session->get($this->messagesKey);
 
@@ -60,8 +57,11 @@ class SessionAlertStream extends AlertStream
     /**
      * {@inheritDoc}
      */
-    protected function saveMessages(array $messages): void
+    protected function storeMessage(array $message): void
     {
+        $messages = $this->retrieveMessages();
+        $messages[] = $message;
+
         $this->session->set($this->messagesKey, $messages);
     }
 }
