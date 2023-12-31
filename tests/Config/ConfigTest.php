@@ -19,7 +19,7 @@ class ConfigTest extends TestCase
         'bool'   => true,
         'string' => 'foobar',
         'int'    => 92,
-        'array'  => [],
+        'array'  => ['foo', 'bar'],
     ];
 
     public function testGetBool(): void
@@ -27,6 +27,9 @@ class ConfigTest extends TestCase
         $repo = new Config($this->data);
 
         $this->assertSame(true, $repo->getBool('bool'));
+        $this->assertSame(false, $repo->getBool('missing', false));
+        $this->assertSame(null, $repo->getBool('missing'));
+        $this->assertSame($repo->get('missing'), $repo->getBool('missing')); // Same default behavior as "get"
         $this->expectException(TypeException::class);
         $repo->getBool('string');
     }
@@ -36,6 +39,9 @@ class ConfigTest extends TestCase
         $repo = new Config($this->data);
 
         $this->assertSame('foobar', $repo->getString('string'));
+        $this->assertSame('barfoo', $repo->getString('missing', 'barfoo'));
+        $this->assertSame(null, $repo->getString('missing'));
+        $this->assertSame($repo->get('missing'), $repo->getString('missing')); // Same default behavior as "get"
         $this->expectException(TypeException::class);
         $repo->getString('bool');
     }
@@ -45,6 +51,9 @@ class ConfigTest extends TestCase
         $repo = new Config($this->data);
 
         $this->assertSame(92, $repo->getInt('int'));
+        $this->assertSame(29, $repo->getInt('missing', 29));
+        $this->assertSame(null, $repo->getInt('missing'));
+        $this->assertSame($repo->get('missing'), $repo->getInt('missing')); // Same default behavior as "get"
         $this->expectException(TypeException::class);
         $repo->getInt('string');
     }
@@ -53,7 +62,10 @@ class ConfigTest extends TestCase
     {
         $repo = new Config($this->data);
 
-        $this->assertSame([], $repo->getArray('array'));
+        $this->assertSame(['foo', 'bar'], $repo->getArray('array'));
+        $this->assertSame(['bar', 'foo'], $repo->getArray('missing', ['bar', 'foo']));
+        $this->assertSame(null, $repo->getArray('missing'));
+        $this->assertSame($repo->get('missing'), $repo->getArray('missing')); // Same default behavior as "get"
         $this->expectException(TypeException::class);
         $repo->getArray('string');
     }

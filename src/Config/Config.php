@@ -25,13 +25,13 @@ class Config extends Repository
      * @param string    $key
      * @param bool|null $default
      *
-     * @return bool
+     * @return bool|null Returns null if the key is not found
      */
-    public function getBool(string $key, ?bool $default = null): bool
+    public function getBool(string $key, ?bool $default = null): ?bool
     {
         $value = $this->get($key, $default);
 
-        if (!is_bool($value)) {
+        if (!is_bool($value) && !is_null($value)) {
             throw new TypeException("Config key '$key' doesn't return bool.");
         }
 
@@ -44,13 +44,13 @@ class Config extends Repository
      * @param string      $key
      * @param string|null $default
      *
-     * @return string
+     * @return string|null Returns null if the key is not found
      */
-    public function getString(string $key, ?string $default = null): string
+    public function getString(string $key, ?string $default = null): ?string
     {
         $value = $this->get($key, $default);
 
-        if (!is_string($value)) {
+        if (!is_string($value) && !is_null($value)) {
             throw new TypeException("Config key '$key' doesn't return string.");
         }
 
@@ -63,13 +63,13 @@ class Config extends Repository
      * @param string   $key
      * @param int|null $default
      *
-     * @return int
+     * @return int|null Returns null if the key is not found
      */
-    public function getInt(string $key, ?int $default = null): int
+    public function getInt(string $key, ?int $default = null): ?int
     {
         $value = $this->get($key, $default);
 
-        if (!is_int($value)) {
+        if (!is_int($value) && !is_null($value)) {
             throw new TypeException("Config key '$key' doesn't return int.");
         }
 
@@ -82,13 +82,13 @@ class Config extends Repository
      * @param string       $key
      * @param mixed[]|null $default
      *
-     * @return mixed[]
+     * @return mixed[]|null Returns null if the key is not found
      */
-    public function getArray(string $key, ?array $default = null): array
+    public function getArray(string $key, ?array $default = null): ?array
     {
         $value = $this->get($key, $default);
 
-        if (!is_array($value)) {
+        if (!is_array($value) && !is_null($value)) {
             throw new TypeException("Config key '$key' doesn't return array.");
         }
 
