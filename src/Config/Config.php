@@ -25,7 +25,7 @@ class Config extends Repository
      * @param string    $key
      * @param bool|null $default
      *
-     * @return bool|null Returns null if the key is not found
+     * @return ($default is null ? bool|null : bool) Returns null if the key is not found
      */
     public function getBool(string $key, ?bool $default = null): ?bool
     {
@@ -44,7 +44,7 @@ class Config extends Repository
      * @param string      $key
      * @param string|null $default
      *
-     * @return string|null Returns null if the key is not found
+     * @return ($default is null ? string|null : string) Returns null if the key is not found
      */
     public function getString(string $key, ?string $default = null): ?string
     {
@@ -63,7 +63,7 @@ class Config extends Repository
      * @param string   $key
      * @param int|null $default
      *
-     * @return int|null Returns null if the key is not found
+     * @return ($default is null ? int|null : int) Returns null if the key is not found
      */
     public function getInt(string $key, ?int $default = null): ?int
     {
@@ -82,7 +82,7 @@ class Config extends Repository
      * @param string       $key
      * @param mixed[]|null $default
      *
-     * @return mixed[]|null Returns null if the key is not found
+     * @return ($default is null ? mixed[]|null : mixed[]) Returns null if the key is not found
      */
     public function getArray(string $key, ?array $default = null): ?array
     {
