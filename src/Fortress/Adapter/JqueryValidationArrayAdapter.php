@@ -31,6 +31,7 @@ final class JqueryValidationArrayAdapter implements ValidationAdapterInterface
 
     /**
      * {@inheritdoc}
+     *
      * @param string $arrayPrefix (Default: '')
      *
      * @return array{rules: mixed[], messages: mixed[]}

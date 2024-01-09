@@ -31,6 +31,7 @@ final class JqueryValidationJsonAdapter implements ValidationAdapterInterface
 
     /**
      * {@inheritdoc}
+     *
      * @param string $arrayPrefix (Default: '')
      *
      * @return string
