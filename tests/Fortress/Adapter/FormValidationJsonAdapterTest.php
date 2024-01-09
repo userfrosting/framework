@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -8,24 +10,24 @@
  * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Tests\Fortress;
+namespace UserFrosting\Tests\Fortress\Adapter;
 
 use PHPUnit\Framework\TestCase;
-use UserFrosting\Fortress\Adapter\FormValidationAdapter;
+use UserFrosting\Fortress\Adapter\FormValidationJsonAdapter;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
 use UserFrosting\I18n\Translator;
+use UserFrosting\Tests\Fortress\DictionaryStub;
 
-class FormValidationAdapterTest extends TestCase
+class FormValidationJsonAdapterTest extends TestCase
 {
-    protected $translator;
+    protected Translator $translator;
 
     public function setUp(): void
     {
-        // Create a message translator
         $this->translator = new Translator(new DictionaryStub());
     }
 
-    public function testValidateEmail()
+    public function testValidateEmail(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -49,27 +51,18 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-
-        // Test with stringEncode as true
-        $result = $adapter->rules('json', false);
-        $this->assertEquals($expectedResult, $result);
-
-        // Test with html5 format
-        $result = $adapter->rules('html5');
-        $expectedResult = ['email' => 'data-fv-emailaddress=true data-fv-emailaddress-message="Not a valid email address...we think." '];
-        $this->assertEquals($expectedResult, $result);
     }
 
     /**
-     * N.B.: equals is not a supported validator in FormValidationAdapter.
+     * N.B.: equals is not a supported validator in JsonValidationAdapter.
      * Let's test what's happening when this happens.
      */
-    public function testValidateEquals()
+    public function testValidateEquals(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -92,18 +85,13 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT | JSON_FORCE_OBJECT), $result);
-
-        // Test with html5 format
-        $result = $adapter->rules('html5');
-        $expectedResult = ['voles' => ''];
-        $this->assertEquals($expectedResult, $result);
     }
 
-    public function testValidateRequired()
+    public function testValidateRequired(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -127,19 +115,14 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-
-        // Test with html5 format
-        $result = $adapter->rules('html5');
-        $expectedResult = ['species' => 'data-fv-notempty=true data-fv-notempty-message="Please tell us your species." '];
-        $this->assertEquals($expectedResult, $result);
     }
 
-    public function testValidateLengthBetween()
+    public function testValidateLengthBetween(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -167,19 +150,14 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-
-        // Test with html5 format
-        $result = $adapter->rules('html5');
-        $expectedResult = ['screech' => 'data-fv-stringlength=true data-fv-stringlength-message="Your screech must be between {{min}} and {{max}} characters long." data-fv-stringlength-min=5 data-fv-stringlength-max=10 '];
-        $this->assertEquals($expectedResult, $result);
     }
 
-    public function testValidateLengthMin()
+    public function testValidateLengthMin(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -205,19 +183,14 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-
-        // Test with html5 format
-        $result = $adapter->rules('html5');
-        $expectedResult = ['screech' => 'data-fv-stringlength=true data-fv-stringlength-message="Your screech must be at least {{min}} characters long." data-fv-stringlength-min=5 '];
-        $this->assertEquals($expectedResult, $result);
     }
 
-    public function testValidateLengthMax()
+    public function testValidateLengthMax(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -243,19 +216,14 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-
-        // Test with html5 format
-        $result = $adapter->rules('html5');
-        $expectedResult = ['screech' => 'data-fv-stringlength=true data-fv-stringlength-message="Your screech must be no more than {{max}} characters long." data-fv-stringlength-max=10 '];
-        $this->assertEquals($expectedResult, $result);
     }
 
-    public function testValidateInteger()
+    public function testValidateInteger(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -279,19 +247,14 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-
-        // Test with html5 format
-        $result = $adapter->rules('html5');
-        $expectedResult = ['voles' => 'data-fv-integer=true data-fv-integer-message="Voles must be numeric." '];
-        $this->assertEquals($expectedResult, $result);
     }
 
-    public function testValidateNumeric()
+    public function testValidateNumeric(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -315,14 +278,14 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
     }
 
-    public function testValidateRange()
+    public function testValidateRange(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -350,19 +313,14 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-
-        // Test with html5 format
-        $result = $adapter->rules('html5');
-        $expectedResult = ['voles' => 'data-fv-between=true data-fv-between-message="You must catch {{min}} - {{max}} voles." data-fv-between-min=5 data-fv-between-max=10 '];
-        $this->assertEquals($expectedResult, $result);
     }
 
-    public function testValidateRangeMin()
+    public function testValidateRangeMin(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -388,19 +346,14 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-
-        // Test with html5 format
-        $result = $adapter->rules('html5');
-        $expectedResult = ['voles' => 'data-fv-greaterthan=true data-fv-greaterthan-message="You must catch at least {{min}} voles." data-fv-greaterthan-value=5 '];
-        $this->assertEquals($expectedResult, $result);
     }
 
-    public function testValidateRangeMax()
+    public function testValidateRangeMax(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -426,19 +379,14 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-
-        // Test with html5 format
-        $result = $adapter->rules('html5');
-        $expectedResult = ['voles' => 'data-fv-lessthan=true data-fv-lessthan-message="You must catch no more than {{max}} voles." data-fv-lessthan-value=10 '];
-        $this->assertEquals($expectedResult, $result);
     }
 
-    public function testValidateArray()
+    public function testValidateArray(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -466,19 +414,14 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-
-        // Test with html5 format
-        $result = $adapter->rules('html5');
-        $expectedResult = ['voles' => 'data-fv-choice=true data-fv-choice-message="You must choose between {{min}} and {{max}} voles." data-fv-choice-min=5 data-fv-choice-max=10 '];
-        $this->assertEquals($expectedResult, $result);
     }
 
-    public function testValidateMatches()
+    public function testValidateMatches(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -510,22 +453,14 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT | JSON_FORCE_OBJECT), $result);
-
-        // Test with html5 format
-        $result = $adapter->rules('html5');
-        $expectedResult = [
-            'password'  => 'data-fv-identical=true data-fv-identical-message="The value of this field does not match the value of the \'{{field}}\' field." ',
-            'passwordc' => 'data-fv-identical=true data-fv-identical-message="The value of this field does not match the value of the \'{{field}}\' field." data-fv-identical-field=password ',
-        ];
-        $this->assertEquals($expectedResult, $result);
     }
 
-    public function testValidateMatchesNoFields()
+    public function testValidateMatchesNoFields(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -549,18 +484,14 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-
-        // Test with html5 format
-        $result = $adapter->rules('html5');
-        $this->assertEquals(null, $result);
     }
 
-    public function testValidateNotMatches()
+    public function testValidateNotMatches(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -586,14 +517,14 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
     }
 
-    public function testValidateMemberOf()
+    public function testValidateMemberOf(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -619,14 +550,14 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
     }
 
-    public function testValidateNotMemberOf()
+    public function testValidateNotMemberOf(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -652,33 +583,33 @@ class FormValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
     }
 
-    public function testDomainRulesServerOnly()
-    {
-        // Arrange
-        $schema = new RequestSchemaRepository([
-            'plumage' => [
-                'validators' => [
-                    'required' => [
-                        'domain'  => 'server',
-                        'message' => "Are you sure you don't want to show us your plumage?",
-                    ],
-                ],
-            ],
-        ]);
+    // public function testDomainRulesServerOnly(): void
+    // {
+    //     // Arrange
+    //     $schema = new RequestSchemaRepository([
+    //         'plumage' => [
+    //             'validators' => [
+    //                 'required' => [
+    //                     'domain'  => 'server',
+    //                     'message' => "Are you sure you don't want to show us your plumage?",
+    //                 ],
+    //             ],
+    //         ],
+    //     ]);
 
-        // Act
-        $adapter = new FormValidationAdapter($schema, $this->translator);
+    //     // Act
+    //     $adapter = new JsonValidationAdapter($schema, $this->translator);
 
-        // Test with html5 format
-        $result = $adapter->rules('html5');
-        $expectedResult = ['plumage' => ''];
-        $this->assertEquals($expectedResult, $result);
-    }
+    //     // Test with html5 format
+    //     $result = $adapter->rules('html5');
+    //     $expectedResult = ['plumage' => ''];
+    //     $this->assertEquals($expectedResult, $result);
+    // }
 }

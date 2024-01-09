@@ -11,11 +11,13 @@
 namespace UserFrosting\Tests\Fortress;
 
 use UserFrosting\I18n\DictionaryInterface;
+use UserFrosting\I18n\Locale;
 use UserFrosting\I18n\LocaleInterface;
 use UserFrosting\Support\Repository\Repository;
 
 class DictionaryStub extends Repository implements DictionaryInterface
 {
+    // @phpstan-ignore-next-line
     public function __construct()
     {
     }
@@ -27,9 +29,11 @@ class DictionaryStub extends Repository implements DictionaryInterface
 
     public function getLocale(): LocaleInterface
     {
+        return new Locale('en_US');
     }
 
     public function getFlattenDictionary(): array
     {
+        return [];
     }
 }

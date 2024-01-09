@@ -15,6 +15,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Messages are now translated at read time ([#1156](https://github.com/userfrosting/UserFrosting/pull/1156), [#811](https://github.com/userfrosting/UserFrosting/issues/811)). Messages will be translated when using `messages` and `getAndClearMessages`. `addMessage` now accept the optional placeholders, which will be stored with the alert message. `addMessageTranslated` is **deprecated**. 
 - Translator is not optional anymore. `setTranslator` method has been removed.
 
+### Fortress
+Complete refactoring of Fortress. Mostly enforcing strict types, updating PHPDocs, simplifying code logic and making uses of new PHP features and method. Plus : 
+- *[Deprecated]*: `FormValidationAdapter` is deprecated. Instead of defining the format in the `rules` method, you simply use of the appropriate class :
+   - json, $stringEncode = true : FormValidationJsonAdapter
+   - json, $stringEncode = false : FormValidationArrayAdapter
+   - html5 : FormValidationHtml5Adapter
+- *[Deprecated]*: `JqueryValidationAdapter` is deprecated. Instead of defining the format in the `rules` method, you simply use of the appropriate class :
+   - json, $stringEncode = true : JqueryValidationJsonAdapter
+   - json, $stringEncode = false : JqueryValidationArrayAdapter
+- `ClientSideValidationAdapter` abstract class replaced with `FromSchemaTrait` trait + `ValidationAdapterInterface` interface.
+- `FormValidationHtml5Adapter` Will now throw an exception on missing field param, instead of returning null
+- In `FormValidationHtml5Adapter`, when using `identical` rule, the validation used to be applied to the "confirmation" field. It will now be applied to the source field, making it consistent with array|json format. For example, if `password` requires to be identical to `passwordc`, the validation was added to the `passwordc` field. Now it's applied to `password`.
+
 ## [5.0.0](https://github.com/userfrosting/framework/compare/4.6.1...5.0.0)
 With version 5, this repo can be used as a bare bone Slim & Symfony Console application. It include the necessary routing class, [PHP-DI](https://php-di.org) as the Dependency Injection Container, a PSR EventDispatcher, etc. SprinkleManager has also been moved from Core/System Sprinkle and completely rewritten. 
 

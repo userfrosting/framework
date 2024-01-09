@@ -17,7 +17,7 @@ use UserFrosting\I18n\Translator;
 
 class ServerSideValidatorTest extends TestCase
 {
-    protected $translator;
+    protected Translator $translator;
 
     public function setUp(): void
     {
@@ -25,11 +25,33 @@ class ServerSideValidatorTest extends TestCase
         $this->translator = new Translator(new DictionaryStub());
     }
 
-    public function testValidateNoValidators()
+    public function testValidateNoValidators(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
             'email' => [],
+        ]);
+
+        // Act
+        $validator = new ServerSideValidator($schema, $this->translator);
+
+        $result = $validator->validate([
+            'email' => 'david@owlfancy.com',
+        ]);
+
+        // Check passing validation
+        $this->assertTrue($result);
+    }
+
+    public function testValidateNoMatch(): void
+    {
+        // Arrange
+        $schema = new RequestSchemaRepository([
+            'email' => [
+                'validators' => [
+                    'foo' => [], // Doesn't exist
+                ],
+            ],
         ]);
 
         // Act
@@ -74,7 +96,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateArray()
+    public function testValidateArray(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -106,7 +128,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateEquals()
+    public function testValidateEquals(): void
     {
         // Arrange
         // TODO: Add missing messages for custom rules.  Maybe upgrade the version of Valitron first.
@@ -141,7 +163,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateInteger()
+    public function testValidateInteger(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -177,7 +199,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateLengthBetween()
+    public function testValidateLengthBetween(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -215,7 +237,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateLengthMin()
+    public function testValidateLengthMin(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -248,7 +270,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateLengthMax()
+    public function testValidateLengthMax(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -280,7 +302,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateMatches()
+    public function testValidateMatches(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -314,7 +336,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateMemberOf()
+    public function testValidateMemberOf(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -346,7 +368,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateNoLeadingWhitespace()
+    public function testValidateNoLeadingWhitespace(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -374,7 +396,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateNoTrailingWhitespace()
+    public function testValidateNoTrailingWhitespace(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -407,7 +429,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateNotEquals()
+    public function testValidateNotEquals(): void
     {
         // Arrange
         // TODO: Add missing messages for custom rules.  Maybe upgrade the version of Valitron first.
@@ -442,7 +464,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateNotMatches()
+    public function testValidateNotMatches(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -476,7 +498,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateNotMemberOf()
+    public function testValidateNotMemberOf(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -508,7 +530,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateNumeric()
+    public function testValidateNumeric(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -551,7 +573,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateRange()
+    public function testValidateRange(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -593,7 +615,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateRegex()
+    public function testValidateRegex(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -629,7 +651,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateRequired()
+    public function testValidateRequired(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -662,7 +684,7 @@ class ServerSideValidatorTest extends TestCase
         $this->assertFalse($validator->validate([]));
     }
 
-    public function testValidateTelephone()
+    public function testValidateTelephone(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -709,7 +731,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateUri()
+    public function testValidateUri(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -761,7 +783,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testValidateUsername()
+    public function testValidateUsername(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -813,7 +835,7 @@ class ServerSideValidatorTest extends TestCase
         ]));
     }
 
-    public function testDomainRulesClientOnly()
+    public function testDomainRulesClientOnly(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -839,7 +861,7 @@ class ServerSideValidatorTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testDomainRulesServerOnly()
+    public function testDomainRulesServerOnly(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -868,7 +890,7 @@ class ServerSideValidatorTest extends TestCase
     /**
      * @depends testValidateUsername
      */
-    public function testValidateWithNoValidatorMessage()
+    public function testValidateWithNoValidatorMessage(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -891,5 +913,30 @@ class ServerSideValidatorTest extends TestCase
 
         // Check passing validation
         $this->assertTrue($result);
+    }
+
+    public function testSetters(): void
+    {
+        $schema = new RequestSchemaRepository();
+        $validator = new ServerSideValidator($schema, $this->translator);
+
+        $this->assertTrue($validator->validate([
+            'email' => 'screeeech',
+        ]));
+
+        $schema = new RequestSchemaRepository([
+            'email' => [
+                'validators' => [
+                    'email' => [
+                    ],
+                ],
+            ],
+        ]);
+        $validator->setSchema($schema);
+        $validator->setTranslator($this->translator);
+
+        $this->assertFalse($validator->validate([
+            'email' => 'screeeech',
+        ]));
     }
 }

@@ -18,9 +18,9 @@ use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 
 class RequestDataTransformerTest extends TestCase
 {
-    protected $basePath;
+    protected string $basePath;
 
-    protected $transformer;
+    protected RequestDataTransformer $transformer;
 
     public function setUp(): void
     {
@@ -32,10 +32,21 @@ class RequestDataTransformerTest extends TestCase
         $this->transformer = new RequestDataTransformer($schema);
     }
 
+    public function testTransformFieldForNotInSchema(): void
+    {
+        $schema = new RequestSchemaRepository([
+            'email'       => [],
+        ]);
+        $transformer = new RequestDataTransformer($schema);
+
+        $result = $transformer->transformField('foo', 'bar');
+        $this->assertSame('bar', $result);
+    }
+
     /**
      * Basic whitelisting.
      */
-    public function testBasic()
+    public function testBasic(): void
     {
         // Arrange
         $rawInput = [
@@ -45,16 +56,14 @@ class RequestDataTransformerTest extends TestCase
         ];
 
         // Arrange
-        $schema = new RequestSchemaRepository();
-
-        $schema->mergeItems(null, [
+        $schema = new RequestSchemaRepository([
             'email'       => [],
             'description' => null,  // Replicating an input that has no validation operations
         ]);
-        $this->transformer = new RequestDataTransformer($schema);
+        $transformer = new RequestDataTransformer($schema);
 
         // Act
-        $result = $this->transformer->transform($rawInput, 'skip');
+        $result = $transformer->transform($rawInput, 'skip');
 
         // Assert
         $transformedData = [
@@ -65,7 +74,7 @@ class RequestDataTransformerTest extends TestCase
         $this->assertEquals($transformedData, $result);
     }
 
-    public function testBasicWithOnUnexpectedVarAllow()
+    public function testBasicWithOnUnexpectedVarAllow(): void
     {
         // Arrange
         $rawInput = [
@@ -75,16 +84,14 @@ class RequestDataTransformerTest extends TestCase
         ];
 
         // Arrange
-        $schema = new RequestSchemaRepository();
-
-        $schema->mergeItems(null, [
+        $schema = new RequestSchemaRepository([
             'email'       => [],
             'description' => null,  // Replicating an input that has no validation operations
         ]);
-        $this->transformer = new RequestDataTransformer($schema);
+        $transformer = new RequestDataTransformer($schema);
 
         // Act
-        $result = $this->transformer->transform($rawInput, 'allow');
+        $result = $transformer->transform($rawInput, 'allow');
 
         // Assert
         $transformedData = [
@@ -96,7 +103,7 @@ class RequestDataTransformerTest extends TestCase
         $this->assertEquals($transformedData, $result);
     }
 
-    public function testBasicWithOnUnexpectedVarError()
+    public function testBasicWithOnUnexpectedVarError(): void
     {
         // Arrange
         $rawInput = [
@@ -106,26 +113,24 @@ class RequestDataTransformerTest extends TestCase
         ];
 
         // Arrange
-        $schema = new RequestSchemaRepository();
-
-        $schema->mergeItems(null, [
+        $schema = new RequestSchemaRepository([
             'email'       => [],
             'description' => null,  // Replicating an input that has no validation operations
         ]);
-        $this->transformer = new RequestDataTransformer($schema);
+        $transformer = new RequestDataTransformer($schema);
 
         // Set expectations
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("The field 'admin' is not a valid input field.");
 
         // Act
-        $this->transformer->transform($rawInput, 'error');
+        $transformer->transform($rawInput, 'error');
     }
 
     /**
      * "Trim" transformer.
      */
-    public function testTrim()
+    public function testTrim(): void
     {
         // Act
         $rawInput = [
@@ -146,7 +151,7 @@ class RequestDataTransformerTest extends TestCase
     /**
      * "Escape" transformer.
      */
-    public function testEscape()
+    public function testEscape(): void
     {
         // Act
         $rawInput = [
@@ -167,7 +172,7 @@ class RequestDataTransformerTest extends TestCase
     /**
      * @depends testEscape
      */
-    public function testEscapeWithArrayValue()
+    public function testEscapeWithArrayValue(): void
     {
         // Act
         $rawInput = [
@@ -213,7 +218,10 @@ class RequestDataTransformerTest extends TestCase
     {
         // Act
         $rawInput = [
-            'user_name' => ['<b>My Super-Important Name</b>'],
+            'user_name' => [
+                '<b>My Super-Important Name</b>',
+                '<i>My Less-Important Name</i>',
+            ],
         ];
 
         $result = $this->transformer->transform($rawInput, 'skip');
@@ -221,7 +229,7 @@ class RequestDataTransformerTest extends TestCase
         // Assert
         $transformedData = [
             'email'     => 'david@owlfancy.com',
-            'user_name' => ['My Super-Important Name'],
+            'user_name' => ['My Super-Important Name', 'My Less-Important Name'],
         ];
 
         $this->assertEquals($transformedData, $result);
@@ -230,7 +238,7 @@ class RequestDataTransformerTest extends TestCase
     /**
      * "Purify" transformer.
      */
-    public function testPurify()
+    public function testPurify(): void
     {
         // Act
         $rawInput = [
@@ -248,10 +256,31 @@ class RequestDataTransformerTest extends TestCase
         $this->assertEquals($transformedData, $result);
     }
 
+    public function testPurifyWithArrayValue(): void
+    {
+        // Act
+        $rawInput = [
+            'puppies' => [
+                "<script>I'm definitely really a puppy  </script><b>0</b>",
+                "<script>   Trust_me('please');  </script>",
+            ],
+        ];
+
+        $result = $this->transformer->transform($rawInput, 'skip');
+
+        // Assert
+        $transformedData = [
+            'email'   => 'david@owlfancy.com',
+            'puppies' => ['<b>0</b>', ''],
+        ];
+
+        $this->assertEquals($transformedData, $result);
+    }
+
     /**
      * default transformer.
      */
-    public function testUnsuportedTransformation()
+    public function testUnsupportedTransformation(): void
     {
         // Act
         $rawInput = [
@@ -267,5 +296,17 @@ class RequestDataTransformerTest extends TestCase
         ];
 
         $this->assertEquals($transformedData, $result);
+    }
+
+    public function testSetters(): void
+    {
+        $this->assertSame(['email' => 'david@owlfancy.com'], $this->transformer->transform([]));
+
+        // New schema removes default
+        $newSchema = new RequestSchemaRepository([
+            'email' => [],
+        ]);
+        $this->transformer->setSchema($newSchema);
+        $this->assertSame([], $this->transformer->transform([]));
     }
 }

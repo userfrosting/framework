@@ -13,16 +13,15 @@ namespace UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Support\Repository\Repository;
 
 /**
- * Represents a schema for an HTTP request, compliant with the WDVSS standard (https://github.com/alexweissman/wdvss).
- *
- * @author Alexander Weissman (https://alexanderweissman.com)
+ * Represents a schema for an HTTP request, compliant with the WDVSS standard
+ * (https://github.com/alexweissman/wdvss).
  */
 class RequestSchemaRepository extends Repository implements RequestSchemaInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function setDefault($field, $value)
+    public function setDefault(string $field, string $value): static
     {
         if (!isset($this->items[$field])) {
             $this->items[$field] = [];
@@ -36,7 +35,7 @@ class RequestSchemaRepository extends Repository implements RequestSchemaInterfa
     /**
      * {@inheritdoc}
      */
-    public function addValidator($field, $validatorName, array $parameters = [])
+    public function addValidator(string $field, string $validatorName, array $parameters = []): static
     {
         if (!isset($this->items[$field])) {
             $this->items[$field] = [];
@@ -54,7 +53,7 @@ class RequestSchemaRepository extends Repository implements RequestSchemaInterfa
     /**
      * {@inheritdoc}
      */
-    public function removeValidator($field, $validatorName)
+    public function removeValidator(string $field, string $validatorName): static
     {
         unset($this->items[$field]['validators'][$validatorName]);
 
@@ -64,7 +63,7 @@ class RequestSchemaRepository extends Repository implements RequestSchemaInterfa
     /**
      * {@inheritdoc}
      */
-    public function setTransformations($field, $transformations = [])
+    public function setTransformations(string $field, string|array $transformations = []): static
     {
         if (!is_array($transformations)) {
             $transformations = [$transformations];

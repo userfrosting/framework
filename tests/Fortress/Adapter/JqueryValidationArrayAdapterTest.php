@@ -8,16 +8,17 @@
  * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Tests\Fortress;
+namespace UserFrosting\Tests\Fortress\Adapter;
 
 use PHPUnit\Framework\TestCase;
-use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
+use UserFrosting\Fortress\Adapter\JqueryValidationArrayAdapter;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
 use UserFrosting\I18n\Translator;
+use UserFrosting\Tests\Fortress\DictionaryStub;
 
-class JqueryValidationAdapterTest extends TestCase
+class JqueryValidationArrayAdapterTest extends TestCase
 {
-    protected $translator;
+    protected Translator $translator;
 
     public function setUp(): void
     {
@@ -25,7 +26,7 @@ class JqueryValidationAdapterTest extends TestCase
         $this->translator = new Translator(new DictionaryStub());
     }
 
-    public function testValidateEmail()
+    public function testValidateEmail(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -52,17 +53,14 @@ class JqueryValidationAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals($expectedResult, $result);
-
-        // Test with stringEncode as true
-        $result = $adapter->rules('json', true);
-        $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
     }
 
-    public function testValidateEquals()
+    public function testValidateEquals(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -78,9 +76,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'voles' => [
@@ -99,7 +98,36 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateInteger()
+    public function testValidateEqualsWithMissingCondition(): void
+    {
+        // Arrange
+        $schema = new RequestSchemaRepository([
+            'voles' => [
+                'validators' => [
+                    'equals' => [
+                        'foo'     => 8, // N.B.: Value is expected here
+                        'message' => 'Voles must be equal to {{foo}}.',
+                    ],
+                ],
+            ],
+        ]);
+
+        // Act
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
+        $result = $adapter->rules();
+
+        // Assert
+        $this->assertEquals([
+            'rules' => [
+                'voles' => [],
+            ],
+            'messages' => [
+                'voles' => [],
+            ],
+        ], $result);
+    }
+
+    public function testValidateInteger(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -113,9 +141,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'voles' => [
@@ -130,7 +159,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateLengthBetween()
+    public function testValidateLengthBetween(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -146,9 +175,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'screech' => [
@@ -163,7 +193,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateLengthMin()
+    public function testValidateLengthMin(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -178,9 +208,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'screech' => [
@@ -195,7 +226,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateLengthMax()
+    public function testValidateLengthMax(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -210,9 +241,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'screech' => [
@@ -227,7 +259,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateMatches()
+    public function testValidateMatches(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -242,9 +274,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'password' => [
@@ -259,7 +292,36 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateMemberOf()
+    public function testValidateMatchesWithMissingCondition(): void
+    {
+        // Arrange
+        $schema = new RequestSchemaRepository([
+            'password' => [
+                'validators' => [
+                    'matches' => [
+                        'value'   => 'passwordc', // N.B.: Should be field here
+                        'message' => "The value of this field does not match the value of the '{{value}}' field.",
+                    ],
+                ],
+            ],
+        ]);
+
+        // Act
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
+        $result = $adapter->rules();
+
+        // Assert
+        $this->assertEquals([
+            'rules' => [
+                'password' => [],
+            ],
+            'messages' => [
+                'password' => [],
+            ],
+        ], $result);
+    }
+
+    public function testValidateMemberOf(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -274,9 +336,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'genus' => [
@@ -291,7 +354,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateNoLeadingWhitespace()
+    public function testValidateNoLeadingWhitespace(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -305,9 +368,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'user_name' => [
@@ -322,7 +386,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateNoTrailingWhitespace()
+    public function testValidateNoTrailingWhitespace(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -336,7 +400,7 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         $this->assertEquals([
@@ -353,7 +417,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateNotEquals()
+    public function testValidateNotEquals(): void
     {
         // Arrange
         // TODO: Add missing messages for custom rules.  Maybe upgrade the version of Valitron first.
@@ -370,9 +434,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'voles' => [
@@ -391,7 +456,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateNotMatches()
+    public function testValidateNotMatches(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -406,9 +471,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'password' => [
@@ -423,7 +489,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateNotMemberOf()
+    public function testValidateNotMemberOf(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -438,9 +504,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'genus' => [
@@ -455,7 +522,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateNumeric()
+    public function testValidateNumeric(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -469,9 +536,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'accuracy' => [
@@ -486,7 +554,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateRange()
+    public function testValidateRange(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -502,9 +570,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'voles' => [
@@ -519,7 +588,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateMin()
+    public function testValidateMin(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -534,9 +603,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'voles' => [
@@ -551,7 +621,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateMax()
+    public function testValidateMax(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -566,9 +636,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'voles' => [
@@ -583,7 +654,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateRegex()
+    public function testValidateRegex(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -598,9 +669,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'screech' => [
@@ -615,7 +687,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateRequired()
+    public function testValidateRequired(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -629,9 +701,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'species' => [
@@ -646,7 +719,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateTelephone()
+    public function testValidateTelephone(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -660,9 +733,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'phone' => [
@@ -677,7 +751,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateUri()
+    public function testValidateUri(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -691,9 +765,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'website' => [
@@ -708,7 +783,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testValidateUsername()
+    public function testValidateUsername(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -722,9 +797,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'user_name' => [
@@ -739,7 +815,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
     }
 
-    public function testDomainRulesClientOnly()
+    public function testDomainRulesClientOnly(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -754,9 +830,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'plumage' => [
@@ -771,8 +848,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
 
         // Adding Test with Form array prefix 'coolform1'
-        $result1 = $adapter->rules('json', false, 'coolform1');
-
+        $result1 = $adapter->rules('coolform1');
         $this->assertEquals([
             'rules' => [
                 'coolform1[plumage]' => [
@@ -787,7 +863,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result1);
     }
 
-    public function testDomainRulesServerOnly()
+    public function testDomainRulesServerOnly(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -802,7 +878,7 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
         $this->assertEquals([
@@ -813,8 +889,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
 
         // Adding Test with Form array prefix 'coolform1'
-        $result1 = $adapter->rules('json', false, 'coolform1');
-
+        $result1 = $adapter->rules('coolform1');
         $this->assertEquals([
             'rules' => [
                 'coolform1[plumage]' => [],
@@ -823,7 +898,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result1);
     }
 
-    public function testManyRules()
+    public function testManyRules(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -943,9 +1018,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'user_name' => [
@@ -1044,8 +1120,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result);
 
         // Adding Test with Form array prefix 'coolform1'
-        $result1 = $adapter->rules('json', false, 'coolform1');
-
+        $result1 = $adapter->rules('coolform1');
         $this->assertEquals([
             'rules' => [
                 'coolform1[user_name]' => [
@@ -1144,7 +1219,7 @@ class JqueryValidationAdapterTest extends TestCase
         ], $result1);
     }
 
-    public function testValidateNoRule()
+    public function testValidateNoRule(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -1158,9 +1233,10 @@ class JqueryValidationAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
         $result = $adapter->rules();
 
+        // Assert
         $this->assertEquals([
             'rules' => [
                 'user_name' => [],

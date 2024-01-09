@@ -1,0 +1,100 @@
+<?php
+
+/*
+ * UserFrosting Framework (http://www.userfrosting.com)
+ *
+ * @link      https://github.com/userfrosting/framework
+ * @copyright Copyright (c) 2013-2021 Alexander Weissman, Louis Charette, Jordan Mele
+ * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
+ */
+
+namespace UserFrosting\Tests\Fortress\Adapter;
+
+use PHPUnit\Framework\TestCase;
+use UserFrosting\Fortress\Adapter\JqueryValidationJsonAdapter;
+use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
+use UserFrosting\I18n\Translator;
+use UserFrosting\Tests\Fortress\DictionaryStub;
+
+/**
+ * This test is only required to test the correct parameter are passed to the
+ * parent JqueryValidationArrayAdapter class.
+ */
+class JqueryValidationJsonAdapterTest extends TestCase
+{
+    protected Translator $translator;
+
+    public function setUp(): void
+    {
+        // Create a message translator
+        $this->translator = new Translator(new DictionaryStub());
+    }
+
+    public function testValidate(): void
+    {
+        // Arrange
+        $schema = new RequestSchemaRepository([
+            'email' => [
+                'validators' => [
+                    'email' => [
+                        'message' => 'Not a valid email address...we think.',
+                    ],
+                ],
+            ],
+        ]);
+
+        $expectedResult = [
+            'rules' => [
+                'email' => [
+                    'email' => true,
+                ],
+            ],
+            'messages' => [
+                'email' => [
+                    'email' => 'Not a valid email address...we think.',
+                ],
+            ],
+        ];
+
+        // Act
+        $adapter = new JqueryValidationJsonAdapter($schema, $this->translator);
+        $result = $adapter->rules();
+
+        // Assert
+        $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
+    }
+
+    public function testValidateWithPrefix(): void
+    {
+        // Arrange
+        $schema = new RequestSchemaRepository([
+            'email' => [
+                'validators' => [
+                    'email' => [
+                        'message' => 'Not a valid email address...we think.',
+                    ],
+                ],
+            ],
+        ]);
+
+        $expectedResult = [
+            'rules' => [
+                'foo[email]' => [
+                    'email' => true,
+                ],
+            ],
+            'messages' => [
+                'foo[email]' => [
+                    'email' => 'Not a valid email address...we think.',
+                ],
+            ],
+        ];
+
+        // Act
+        $adapter = new JqueryValidationJsonAdapter($schema, $this->translator);
+        $result = $adapter->rules('foo');
+
+        // Assert
+        $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
+    }
+}

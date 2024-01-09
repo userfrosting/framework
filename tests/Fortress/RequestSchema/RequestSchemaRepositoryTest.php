@@ -8,7 +8,7 @@
  * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Tests\Fortress;
+namespace UserFrosting\Tests\Fortress\RequestSchema;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
@@ -16,13 +16,14 @@ use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 
 class RequestSchemaRepositoryTest extends TestCase
 {
-    protected $basePath;
+    protected string $schemaPath;
 
-    protected $contactSchema;
+    /** @var mixed[] */
+    protected array $contactSchema;
 
     public function setUp(): void
     {
-        $this->basePath = __DIR__.'/data';
+        $this->schemaPath = __DIR__.'/../data';
 
         $this->contactSchema = [
             'message' => [
@@ -35,10 +36,10 @@ class RequestSchemaRepositoryTest extends TestCase
         ];
     }
 
-    public function testReadJsonSchema()
+    public function testReadJsonSchema(): void
     {
         // Arrange
-        $loader = new YamlFileLoader($this->basePath.'/contact.json');
+        $loader = new YamlFileLoader($this->schemaPath.'/contact.json');
         $schema = new RequestSchemaRepository($loader->load());
 
         // Act
@@ -48,10 +49,10 @@ class RequestSchemaRepositoryTest extends TestCase
         $this->assertSame($this->contactSchema['message'], $result['message']);
     }
 
-    public function testReadYamlSchema()
+    public function testReadYamlSchema(): void
     {
         // Arrange
-        $loader = new YamlFileLoader($this->basePath.'/contact.yaml');
+        $loader = new YamlFileLoader($this->schemaPath.'/contact.yaml');
         $schema = new RequestSchemaRepository($loader->load());
 
         // Act
@@ -61,10 +62,10 @@ class RequestSchemaRepositoryTest extends TestCase
         $this->assertSame($this->contactSchema['message'], $result['message']);
     }
 
-    public function testSetDefault()
+    public function testSetDefault(): void
     {
         // Arrange
-        $loader = new YamlFileLoader($this->basePath.'/contact.yaml');
+        $loader = new YamlFileLoader($this->schemaPath.'/contact.yaml');
         $schema = new RequestSchemaRepository($loader->load());
 
         // Act
@@ -85,10 +86,10 @@ class RequestSchemaRepositoryTest extends TestCase
         $this->assertSame($contactSchema['message'], $result['message']);
     }
 
-    public function testSetDefaultWithMissingField()
+    public function testSetDefaultWithMissingField(): void
     {
         // Arrange
-        $loader = new YamlFileLoader($this->basePath.'/contact.yaml');
+        $loader = new YamlFileLoader($this->schemaPath.'/contact.yaml');
         $schema = new RequestSchemaRepository($loader->load());
 
         // Act
@@ -104,10 +105,10 @@ class RequestSchemaRepositoryTest extends TestCase
         $this->assertSame($contactSchema['foo'], $result['foo']);
     }
 
-    public function testAddValidator()
+    public function testAddValidator(): void
     {
         // Arrange
-        $loader = new YamlFileLoader($this->basePath.'/contact.yaml');
+        $loader = new YamlFileLoader($this->schemaPath.'/contact.yaml');
         $schema = new RequestSchemaRepository($loader->load());
 
         // Act
@@ -134,10 +135,10 @@ class RequestSchemaRepositoryTest extends TestCase
         $this->assertSame($contactSchema['message'], $result['message']);
     }
 
-    public function testAddValidatorWithMissingField()
+    public function testAddValidatorWithMissingField(): void
     {
         // Arrange
-        $loader = new YamlFileLoader($this->basePath.'/contact.yaml');
+        $loader = new YamlFileLoader($this->schemaPath.'/contact.yaml');
         $schema = new RequestSchemaRepository($loader->load());
 
         // Act
@@ -161,7 +162,7 @@ class RequestSchemaRepositoryTest extends TestCase
         $this->assertSame($contactSchema['foo'], $result['foo']);
     }
 
-    public function testRemoveValidator()
+    public function testRemoveValidator(): void
     {
         // Arrange
         $schema = new RequestSchemaRepository([
@@ -201,10 +202,10 @@ class RequestSchemaRepositoryTest extends TestCase
         $this->assertEquals($contactSchema, $result);
     }
 
-    public function testSetTransformation()
+    public function testSetTransformation(): void
     {
         // Arrange
-        $loader = new YamlFileLoader($this->basePath.'/contact.yaml');
+        $loader = new YamlFileLoader($this->schemaPath.'/contact.yaml');
         $schema = new RequestSchemaRepository($loader->load());
 
         // Act
@@ -225,13 +226,13 @@ class RequestSchemaRepositoryTest extends TestCase
                 ],
             ],
         ];
-        $this->assertsame($contactSchema['message'], $result['message']);
+        $this->assertSame($contactSchema['message'], $result['message']);
     }
 
-    public function testSetTransformationNotAnArray()
+    public function testSetTransformationNotAnArray(): void
     {
         // Arrange
-        $loader = new YamlFileLoader($this->basePath.'/contact.yaml');
+        $loader = new YamlFileLoader($this->schemaPath.'/contact.yaml');
         $schema = new RequestSchemaRepository($loader->load());
 
         // Act
@@ -251,13 +252,13 @@ class RequestSchemaRepositoryTest extends TestCase
                 ],
             ],
         ];
-        $this->assertsame($contactSchema['message'], $result['message']);
+        $this->assertSame($contactSchema['message'], $result['message']);
     }
 
-    public function testSetTransformationWithMissingField()
+    public function testSetTransformationWithMissingField(): void
     {
         // Arrange
-        $loader = new YamlFileLoader($this->basePath.'/contact.yaml');
+        $loader = new YamlFileLoader($this->schemaPath.'/contact.yaml');
         $schema = new RequestSchemaRepository($loader->load());
 
         // Act

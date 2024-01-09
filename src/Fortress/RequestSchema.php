@@ -17,6 +17,9 @@ use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 /**
  * Represents a schema for an HTTP request, compliant with the WDVSS standard
  * (https://github.com/alexweissman/wdvss).
+ *
+ * Same as \UserFrosting\Fortress\RequestSchema\RequestSchemaRepository, but
+ * loads the schema from a file instead of an array.
  */
 class RequestSchema extends RequestSchemaRepository
 {
@@ -30,15 +33,17 @@ class RequestSchema extends RequestSchemaRepository
      *
      * @param string|null $path The full path to the file containing the [WDVSS schema](https://github.com/alexweissman/wdvss).
      */
-    // @phpstan-ignore-next-line - Parent constructor is not called on purpose
+    // TODO : Loader should be injected/injectable
+    // TODO : Could accept both a path and an array of item, making it more flexible and Repository redundant?
     public function __construct(?string $path = null)
     {
-        $this->items = [];
+        $items = [];
 
         if (!is_null($path)) {
             $this->loader = new YamlFileLoader($path);
-
-            $this->items = $this->loader->load(false);
+            $items = $this->loader->load(false);
         }
+
+        parent::__construct($items);
     }
 }

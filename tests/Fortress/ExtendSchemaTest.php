@@ -14,12 +14,13 @@ use PHPUnit\Framework\TestCase;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 use UserFrosting\Support\Repository\PathBuilder\StreamPathBuilder;
+use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
+use UserFrosting\UniformResourceLocator\ResourceStream;
 
 class ExtendSchemaTest extends TestCase
 {
     protected string $basePath;
-
     protected ResourceLocator $locator;
 
     public function setUp(): void
@@ -28,13 +29,12 @@ class ExtendSchemaTest extends TestCase
 
         // Arrange
         $this->locator = new ResourceLocator($this->basePath);
-
-        $this->locator->registerStream('schema');
+        $this->locator->addStream(new ResourceStream('schema'));
 
         // Add them one at a time to simulate how they are added in SprinkleManager
-        $this->locator->registerLocation('core');
-        $this->locator->registerLocation('account');
-        $this->locator->registerLocation('admin');
+        $this->locator->addLocation(new ResourceLocation('core'));
+        $this->locator->addLocation(new ResourceLocation('account'));
+        $this->locator->addLocation(new ResourceLocation('admin'));
     }
 
     public function testExtendYamlSchema(): void

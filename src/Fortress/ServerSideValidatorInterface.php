@@ -14,11 +14,7 @@ use UserFrosting\Fortress\RequestSchema\RequestSchemaInterface;
 use UserFrosting\I18n\Translator;
 
 /**
- * ServerSideValidator Interface.
- *
  * Loads validation rules from a schema and validates a target array of data.
- *
- * @author Alexander Weissman (https://alexanderweissman.com)
  */
 interface ServerSideValidatorInterface
 {
@@ -27,35 +23,35 @@ interface ServerSideValidatorInterface
      *
      * @param RequestSchemaInterface $schema A RequestSchemaInterface object, containing the validation rules.
      */
-    public function setSchema(RequestSchemaInterface $schema);
+    public function setSchema(RequestSchemaInterface $schema): void;
 
     /**
      * Set the translator for this validator, as a valid Translator object.
      *
      * @param Translator $translator A Translator to be used to translate message ids found in the schema.
      */
-    public function setTranslator(Translator $translator);
+    public function setTranslator(Translator $translator): void;
 
     /**
      * Validate the specified data against the schema rules.
      *
-     * @param array $data An array of data, mapping field names to field values.
+     * @param mixed[] $data An array of data, mapping field names to field values.
      *
      * @return bool True if the data was successfully validated, false otherwise.
      */
-    public function validate(array $data);
+    public function validate(array $data): bool;
 
     /**
      *  Get array of fields and data.
      *
-     * @return array
+     * @return mixed[]
      */
     public function data();
 
     /**
      * Get array of error messages.
      *
-     * @return array|bool
+     * @return mixed[]|bool
      */
     public function errors();
 }
