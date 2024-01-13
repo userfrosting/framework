@@ -8,27 +8,16 @@
  * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Fortress;
+namespace UserFrosting\Fortress\Transformer;
 
 use UserFrosting\Fortress\RequestSchema\RequestSchemaInterface;
 
 /**
  * Perform a series of transformations on a set of data fields, as specified by
  * a RequestSchemaInterface.
- *
- * @deprecated 5.1 Use `\UserFrosting\Fortress\Transformer\RequestDataTransformerInterface` instead
  */
 interface RequestDataTransformerInterface
 {
-    /**
-     * Set the schema for this transformer, as a valid RequestSchemaInterface object.
-     *
-     * @param RequestSchemaInterface $schema A RequestSchemaInterface object, containing the transformation rules.
-     *
-     * @return $this
-     */
-    public function setSchema(RequestSchemaInterface $schema): static;
-
     /**
      * Process each field in the specified data array, applying transformations in the specified order.
      *
@@ -43,7 +32,7 @@ interface RequestDataTransformerInterface
      *
      * @return mixed[] The array of transformed data, mapping field names => values.
      */
-    public function transform(array $data, string $onUnexpectedVar = 'skip'): array;
+    public function transform(RequestSchemaInterface $schema, array $data, string $onUnexpectedVar = 'skip'): array;
 
     /**
      * Transform a raw field value.
@@ -53,5 +42,5 @@ interface RequestDataTransformerInterface
      *
      * @return mixed[]|string The transformed value.
      */
-    public function transformField(string $name, array|string $value): array|string;
+    public function transformField(RequestSchemaInterface $schema, string $name, array|string $value): array|string;
 }
