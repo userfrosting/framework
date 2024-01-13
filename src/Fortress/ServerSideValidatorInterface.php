@@ -53,5 +53,6 @@ interface ServerSideValidatorInterface
      *
      * @return mixed[]|bool
      */
+    // TODO : Conditional return type + optional argument
     public function errors();
 }

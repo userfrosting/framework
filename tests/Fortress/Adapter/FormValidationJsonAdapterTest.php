@@ -51,8 +51,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -85,8 +85,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT | JSON_FORCE_OBJECT), $result);
     }
@@ -115,8 +115,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -150,8 +150,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -183,8 +183,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -216,8 +216,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -247,8 +247,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -278,8 +278,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -313,8 +313,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -346,8 +346,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -379,8 +379,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -414,8 +414,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -453,8 +453,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT | JSON_FORCE_OBJECT), $result);
@@ -484,8 +484,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -517,8 +517,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -550,8 +550,8 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -583,33 +583,10 @@ class FormValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
     }
-
-    // public function testDomainRulesServerOnly(): void
-    // {
-    //     // Arrange
-    //     $schema = new RequestSchemaRepository([
-    //         'plumage' => [
-    //             'validators' => [
-    //                 'required' => [
-    //                     'domain'  => 'server',
-    //                     'message' => "Are you sure you don't want to show us your plumage?",
-    //                 ],
-    //             ],
-    //         ],
-    //     ]);
-
-    //     // Act
-    //     $adapter = new JsonValidationAdapter($schema, $this->translator);
-
-    //     // Test with html5 format
-    //     $result = $adapter->rules('html5');
-    //     $expectedResult = ['plumage' => ''];
-    //     $this->assertEquals($expectedResult, $result);
-    // }
 }

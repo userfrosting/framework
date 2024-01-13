@@ -53,8 +53,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -76,8 +76,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -113,8 +113,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -141,8 +141,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -175,8 +175,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -208,8 +208,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -241,8 +241,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -274,8 +274,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -307,8 +307,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -336,8 +336,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -368,8 +368,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -400,8 +400,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         $this->assertEquals([
             'rules' => [
@@ -434,8 +434,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -471,8 +471,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -504,8 +504,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -536,8 +536,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -570,8 +570,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -603,8 +603,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -636,8 +636,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -669,8 +669,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -701,8 +701,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -733,8 +733,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -765,8 +765,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -797,8 +797,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -830,8 +830,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -848,7 +848,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ], $result);
 
         // Adding Test with Form array prefix 'coolform1'
-        $result1 = $adapter->rules('coolform1');
+        $result1 = $adapter->rules($schema, 'coolform1');
         $this->assertEquals([
             'rules' => [
                 'coolform1[plumage]' => [
@@ -878,8 +878,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         $this->assertEquals([
             'rules' => [
@@ -889,7 +889,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ], $result);
 
         // Adding Test with Form array prefix 'coolform1'
-        $result1 = $adapter->rules('coolform1');
+        $result1 = $adapter->rules($schema, 'coolform1');
         $this->assertEquals([
             'rules' => [
                 'coolform1[plumage]' => [],
@@ -1018,8 +1018,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([
@@ -1120,7 +1120,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ], $result);
 
         // Adding Test with Form array prefix 'coolform1'
-        $result1 = $adapter->rules('coolform1');
+        $result1 = $adapter->rules($schema, 'coolform1');
         $this->assertEquals([
             'rules' => [
                 'coolform1[user_name]' => [
@@ -1233,8 +1233,8 @@ class JqueryValidationArrayAdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new JqueryValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals([

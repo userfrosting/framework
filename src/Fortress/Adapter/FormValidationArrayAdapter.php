@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace UserFrosting\Fortress\Adapter;
 
 use UnhandledMatchError;
+use UserFrosting\Fortress\RequestSchema\RequestSchemaInterface;
+use UserFrosting\I18n\Translator;
 
 /**
  * Loads validation rules from a schema and generates client-side rules
@@ -20,20 +22,25 @@ use UnhandledMatchError;
  */
 final class FormValidationArrayAdapter implements ValidationAdapterInterface
 {
-    use FromSchemaTrait;
+    /**
+     * @param Translator $translator A Translator to be used to translate message ids found in the schema.
+     */
+    public function __construct(protected Translator $translator)
+    {
+    }
 
     /**
      * {@inheritdoc}
      *
      * @return array<string, mixed[]>
      */
-    public function rules(): array
+    public function rules(RequestSchemaInterface $schema): array
     {
         // Return container
         $rules = [];
 
         // Loop through each field from the schema
-        foreach ($this->schema->all() as $fieldName => $field) {
+        foreach ($schema->all() as $fieldName => $field) {
             // Build default container for field name
             $rules[$fieldName] = [];
             $rules[$fieldName]['validators'] = [];

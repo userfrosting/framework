@@ -27,33 +27,6 @@ class FormValidationArrayAdapterTest extends TestCase
         $this->translator = new Translator(new DictionaryStub());
     }
 
-    /**
-     * @deprecated
-     */
-    public function testSetters(): void
-    {
-        // Arrange
-        $schema = new RequestSchemaRepository();
-        $expectedResult = [
-            'email' => [
-                'validators' => [],
-            ],
-        ];
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-
-        // Act
-        $schema = new RequestSchemaRepository([
-            'email' => [],
-        ]);
-        $adapter->setSchema($schema);
-        $newTranslator = new Translator(new DictionaryStub());
-        $adapter->setTranslator($newTranslator);
-        $result = $adapter->rules();
-
-        // Assert
-        $this->assertEquals($expectedResult, $result);
-    }
-
     public function testValidateEmail(): void
     {
         // Arrange
@@ -78,8 +51,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -112,8 +85,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         $this->assertEquals($expectedResult, $result);
     }
@@ -142,8 +115,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -177,8 +150,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -210,8 +183,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -243,8 +216,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -274,8 +247,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -305,8 +278,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -340,8 +313,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -373,8 +346,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -406,8 +379,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -441,8 +414,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -480,8 +453,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -511,8 +484,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -544,8 +517,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -577,8 +550,8 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
@@ -610,33 +583,10 @@ class FormValidationArrayAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new FormValidationArrayAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationArrayAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals($expectedResult, $result);
     }
-
-    // public function testDomainRulesServerOnly(): void
-    // {
-    //     // Arrange
-    //     $schema = new RequestSchemaRepository([
-    //         'plumage' => [
-    //             'validators' => [
-    //                 'required' => [
-    //                     'domain'  => 'server',
-    //                     'message' => "Are you sure you don't want to show us your plumage?",
-    //                 ],
-    //             ],
-    //         ],
-    //     ]);
-
-    //     // Act
-    //     $adapter = new ArrayValidationAdapter($schema, $this->translator);
-
-    //     // Test with html5 format
-    //     $result = $adapter->rules('html5');
-    //     $expectedResult = ['plumage' => ''];
-    //     $this->assertEquals($expectedResult, $result);
-    // }
 }

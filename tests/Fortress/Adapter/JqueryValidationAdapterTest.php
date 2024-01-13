@@ -68,4 +68,29 @@ class JqueryValidationAdapterTest extends TestCase
         $result = $adapter->rules('json', true);
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
     }
+
+    public function testSetters(): void
+    {
+        // Arrange
+        $schema = new RequestSchemaRepository();
+        $expectedResult = [
+            'rules' => [
+                'email' => [],
+            ],
+            'messages' => [],
+        ];
+        $adapter = new JqueryValidationAdapter($schema, $this->translator);
+
+        // Act
+        $schema = new RequestSchemaRepository([
+            'email' => [],
+        ]);
+        $adapter->setSchema($schema);
+        $newTranslator = new Translator(new DictionaryStub());
+        $adapter->setTranslator($newTranslator);
+        $result = $adapter->rules('json', true);
+
+        // Assert
+        $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT | JSON_FORCE_OBJECT), $result);
+    }
 }

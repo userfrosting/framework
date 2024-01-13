@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace UserFrosting\Fortress\Adapter;
 
+use UserFrosting\Fortress\RequestSchema\RequestSchemaInterface;
+use UserFrosting\I18n\Translator;
+
 /**
  * Loads validation rules from a schema and generates client-side rules
  * compatible with the jQuery Validation (http://http://jqueryvalidation.org)
@@ -27,7 +30,12 @@ namespace UserFrosting\Fortress\Adapter;
  */
 final class JqueryValidationJsonAdapter implements ValidationAdapterInterface
 {
-    use FromSchemaTrait;
+    /**
+     * @param Translator $translator A Translator to be used to translate message ids found in the schema.
+     */
+    public function __construct(protected Translator $translator)
+    {
+    }
 
     /**
      * {@inheritdoc}
@@ -36,10 +44,10 @@ final class JqueryValidationJsonAdapter implements ValidationAdapterInterface
      *
      * @return string
      */
-    public function rules(string $arrayPrefix = ''): string
+    public function rules(RequestSchemaInterface $schema, string $arrayPrefix = ''): string
     {
-        $arrayAdapter = new JqueryValidationArrayAdapter($this->schema, $this->translator);
+        $arrayAdapter = new JqueryValidationArrayAdapter($this->translator);
 
-        return json_encode($arrayAdapter->rules($arrayPrefix), JSON_PRETTY_PRINT | JSON_FORCE_OBJECT | JSON_THROW_ON_ERROR);
+        return json_encode($arrayAdapter->rules($schema, $arrayPrefix), JSON_PRETTY_PRINT | JSON_FORCE_OBJECT | JSON_THROW_ON_ERROR);
     }
 }

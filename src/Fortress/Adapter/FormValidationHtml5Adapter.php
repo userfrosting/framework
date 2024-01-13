@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace UserFrosting\Fortress\Adapter;
 
 use UnhandledMatchError;
+use UserFrosting\Fortress\RequestSchema\RequestSchemaInterface;
 
 /**
  * Loads validation rules from a schema and generates client-side rules
@@ -25,21 +26,19 @@ use UnhandledMatchError;
  */
 final class FormValidationHtml5Adapter implements ValidationAdapterInterface
 {
-    use FromSchemaTrait;
-
     /**
      * {@inheritdoc}
      *
      * @return array<string> Returns an array of rules, mapping field names -> string of data-* attributes, separated by spaces.
      *                       Example: `data-fv-notempty data-fv-notempty-message="The gender is required"`.
      */
-    public function rules(): array
+    public function rules(RequestSchemaInterface $schema): array
     {
         // Return container
         $rules = [];
 
         // Loop through each field from the schema
-        foreach ($this->schema->all() as $fieldName => $field) {
+        foreach ($schema->all() as $fieldName => $field) {
             // Build default container for field name
             $fieldRules = [];
 

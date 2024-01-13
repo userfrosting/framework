@@ -57,8 +57,8 @@ class JqueryValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new JqueryValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new JqueryValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema);
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
@@ -91,8 +91,8 @@ class JqueryValidationJsonAdapterTest extends TestCase
         ];
 
         // Act
-        $adapter = new JqueryValidationJsonAdapter($schema, $this->translator);
-        $result = $adapter->rules('foo');
+        $adapter = new JqueryValidationJsonAdapter($this->translator);
+        $result = $adapter->rules($schema, 'foo');
 
         // Assert
         $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);

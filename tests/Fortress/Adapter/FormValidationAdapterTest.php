@@ -73,4 +73,28 @@ class FormValidationAdapterTest extends TestCase
         $expectedResult = ['email' => 'data-fv-emailaddress=true data-fv-emailaddress-message="Not a valid email address...we think." '];
         $this->assertEquals($expectedResult, $result);
     }
+
+    public function testSetters(): void
+    {
+        // Arrange
+        $schema = new RequestSchemaRepository();
+        $expectedResult = [
+            'email' => [
+                'validators' => [],
+            ],
+        ];
+        $adapter = new FormValidationAdapter($schema, $this->translator);
+
+        // Act
+        $schema = new RequestSchemaRepository([
+            'email' => [],
+        ]);
+        $adapter->setSchema($schema);
+        $newTranslator = new Translator(new DictionaryStub());
+        $adapter->setTranslator($newTranslator);
+        $result = $adapter->rules('json', false);
+
+        // Assert
+        $this->assertEquals($expectedResult, $result);
+    }
 }

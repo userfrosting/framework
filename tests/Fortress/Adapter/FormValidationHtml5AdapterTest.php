@@ -41,8 +41,8 @@ class FormValidationHtml5AdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationHtml5Adapter();
+        $result = $adapter->rules($schema);
 
         // Assert
         $expectedResult = ['email' => 'data-fv-emailaddress=true data-fv-emailaddress-message="Not a valid email address...we think." '];
@@ -69,8 +69,8 @@ class FormValidationHtml5AdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationHtml5Adapter();
+        $result = $adapter->rules($schema);
 
         // Assert
         $expectedResult = ['voles' => ''];
@@ -91,8 +91,8 @@ class FormValidationHtml5AdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationHtml5Adapter();
+        $result = $adapter->rules($schema);
 
         // Assert
         $expectedResult = ['species' => 'data-fv-notempty=true data-fv-notempty-message="Please tell us your species." '];
@@ -115,8 +115,8 @@ class FormValidationHtml5AdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationHtml5Adapter();
+        $result = $adapter->rules($schema);
 
         // Assert
         $expectedResult = ['screech' => 'data-fv-stringlength=true data-fv-stringlength-message="Your screech must be between {{min}} and {{max}} characters long." data-fv-stringlength-min=5 data-fv-stringlength-max=10 '];
@@ -138,8 +138,8 @@ class FormValidationHtml5AdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationHtml5Adapter();
+        $result = $adapter->rules($schema);
 
         // Assert
         $expectedResult = ['screech' => 'data-fv-stringlength=true data-fv-stringlength-message="Your screech must be at least {{min}} characters long." data-fv-stringlength-min=5 '];
@@ -161,8 +161,8 @@ class FormValidationHtml5AdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationHtml5Adapter();
+        $result = $adapter->rules($schema);
 
         // Assert
         $expectedResult = ['screech' => 'data-fv-stringlength=true data-fv-stringlength-message="Your screech must be no more than {{max}} characters long." data-fv-stringlength-max=10 '];
@@ -183,44 +183,13 @@ class FormValidationHtml5AdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationHtml5Adapter();
+        $result = $adapter->rules($schema);
 
         // Assert
         $expectedResult = ['voles' => 'data-fv-integer=true data-fv-integer-message="Voles must be numeric." '];
         $this->assertEquals($expectedResult, $result);
     }
-
-    // public function testValidateNumeric(): void
-    // {
-    //     // Arrange
-    //     $schema = new RequestSchemaRepository([
-    //         'accuracy' => [
-    //             'validators' => [
-    //                 'numeric' => [
-    //                     'message' => 'Sorry, your strike accuracy must be a number.',
-    //                 ],
-    //             ],
-    //         ],
-    //     ]);
-
-    //     $expectedResult = [
-    //         'accuracy' => [
-    //             'validators' => [
-    //                 'numeric' => [
-    //                     'message' => 'Sorry, your strike accuracy must be a number.',
-    //                 ],
-    //             ],
-    //         ],
-    //     ];
-
-    //     // Act
-    //     $adapter = new Html5FormValidationAdapter($schema, $this->translator);
-    //     $result = $adapter->rules();
-
-    //     // Assert
-    //     $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-    // }
 
     public function testValidateRange(): void
     {
@@ -238,8 +207,8 @@ class FormValidationHtml5AdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationHtml5Adapter();
+        $result = $adapter->rules($schema);
 
         // Assert
         $expectedResult = ['voles' => 'data-fv-between=true data-fv-between-message="You must catch {{min}} - {{max}} voles." data-fv-between-min=5 data-fv-between-max=10 '];
@@ -261,8 +230,8 @@ class FormValidationHtml5AdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationHtml5Adapter();
+        $result = $adapter->rules($schema);
 
         // Assert
         $expectedResult = ['voles' => 'data-fv-greaterthan=true data-fv-greaterthan-message="You must catch at least {{min}} voles." data-fv-greaterthan-value=5 '];
@@ -284,8 +253,8 @@ class FormValidationHtml5AdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationHtml5Adapter();
+        $result = $adapter->rules($schema);
 
         // Assert
         $expectedResult = ['voles' => 'data-fv-lessthan=true data-fv-lessthan-message="You must catch no more than {{max}} voles." data-fv-lessthan-value=10 '];
@@ -307,8 +276,8 @@ class FormValidationHtml5AdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationHtml5Adapter();
+        $result = $adapter->rules($schema);
 
         // Assert
         $expectedResult = ['voles' => ''];
@@ -331,8 +300,8 @@ class FormValidationHtml5AdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationHtml5Adapter();
+        $result = $adapter->rules($schema);
 
         // Assert
         $expectedResult = ['voles' => 'data-fv-choice=true data-fv-choice-message="You must choose between {{min}} and {{max}} voles." data-fv-choice-min=5 data-fv-choice-max=10 '];
@@ -355,8 +324,8 @@ class FormValidationHtml5AdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
-        $result = $adapter->rules();
+        $adapter = new FormValidationHtml5Adapter();
+        $result = $adapter->rules($schema);
 
         // Assert
         $expectedResult = [
@@ -383,108 +352,9 @@ class FormValidationHtml5AdapterTest extends TestCase
         $this->expectException(\Exception::class); // TODO: Custom Exception
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
-        $adapter->rules();
+        $adapter = new FormValidationHtml5Adapter();
+        $adapter->rules($schema);
     }
-
-    // public function testValidateNotMatches(): void
-    // {
-    //     // Arrange
-    //     $schema = new RequestSchemaRepository([
-    //         'password' => [
-    //             'validators' => [
-    //                 'not_matches' => [
-    //                     'field'   => 'user_name',
-    //                     'message' => 'Your password cannot be the same as your username.',
-    //                 ],
-    //             ],
-    //         ],
-    //     ]);
-
-    //     $expectedResult = [
-    //         'password' => [
-    //             'validators' => [
-    //                 'different' => [
-    //                     'message' => 'Your password cannot be the same as your username.',
-    //                     'field'   => 'user_name',
-    //                 ],
-    //             ],
-    //         ],
-    //     ];
-
-    //     // Act
-    //     $adapter = new Html5FormValidationAdapter($schema, $this->translator);
-    //     $result = $adapter->rules();
-
-    //     // Assert
-    //     $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-    // }
-
-    // public function testValidateMemberOf(): void
-    // {
-    //     // Arrange
-    //     $schema = new RequestSchemaRepository([
-    //         'genus' => [
-    //             'validators' => [
-    //                 'member_of' => [
-    //                     'values'  => ['Megascops', 'Bubo', 'Glaucidium', 'Tyto', 'Athene'],
-    //                     'message' => 'Sorry, that is not one of the permitted genuses.',
-    //                 ],
-    //             ],
-    //         ],
-    //     ]);
-
-    //     $expectedResult = [
-    //         'genus' => [
-    //             'validators' => [
-    //                 'regexp' => [
-    //                     'message' => 'Sorry, that is not one of the permitted genuses.',
-    //                     'regexp'  => '^Megascops|Bubo|Glaucidium|Tyto|Athene$',
-    //                 ],
-    //             ],
-    //         ],
-    //     ];
-
-    //     // Act
-    //     $adapter = new Html5FormValidationAdapter($schema, $this->translator);
-    //     $result = $adapter->rules();
-
-    //     // Assert
-    //     $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-    // }
-
-    // public function testValidateNotMemberOf(): void
-    // {
-    //     // Arrange
-    //     $schema = new RequestSchemaRepository([
-    //         'genus' => [
-    //             'validators' => [
-    //                 'not_member_of' => [
-    //                     'values'  => ['Myodes', 'Microtus', 'Neodon', 'Alticola'],
-    //                     'message' => 'Sorry, it would appear that you are not an owl.',
-    //                 ],
-    //             ],
-    //         ],
-    //     ]);
-
-    //     $expectedResult = [
-    //         'genus' => [
-    //             'validators' => [
-    //                 'regexp' => [
-    //                     'message' => 'Sorry, it would appear that you are not an owl.',
-    //                     'regexp'  => '^(?!Myodes|Microtus|Neodon|Alticola$).*$',
-    //                 ],
-    //             ],
-    //         ],
-    //     ];
-
-    //     // Act
-    //     $adapter = new Html5FormValidationAdapter($schema, $this->translator);
-    //     $result = $adapter->rules();
-
-    //     // Assert
-    //     $this->assertEquals(json_encode($expectedResult, JSON_PRETTY_PRINT), $result);
-    // }
 
     public function testDomainRulesServerOnly(): void
     {
@@ -501,10 +371,10 @@ class FormValidationHtml5AdapterTest extends TestCase
         ]);
 
         // Act
-        $adapter = new FormValidationHtml5Adapter($schema, $this->translator);
+        $adapter = new FormValidationHtml5Adapter();
 
         // Test with html5 format
-        $result = $adapter->rules();
+        $result = $adapter->rules($schema);
         $expectedResult = ['plumage' => ''];
         $this->assertEquals($expectedResult, $result);
     }
