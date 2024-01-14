@@ -8,23 +8,23 @@
  * @license   https://github.com/userfrosting/framework/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Tests\Fortress;
+namespace UserFrosting\Tests\Fortress\Validator;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
-use UserFrosting\Fortress\ServerSideValidator;
+use UserFrosting\Fortress\Validator\ServerSideValidator;
 use UserFrosting\I18n\Translator;
+use UserFrosting\Tests\Fortress\DictionaryStub;
 
-/**
- * @deprecated 5.1
- */
 class ServerSideValidatorTest extends TestCase
 {
     protected Translator $translator;
+    protected ServerSideValidator $validator;
 
     public function setUp(): void
     {
         $this->translator = new Translator(new DictionaryStub());
+        $this->validator = new ServerSideValidator($this->translator);
     }
 
     public function testValidateNoValidators(): void
@@ -34,14 +34,11 @@ class ServerSideValidatorTest extends TestCase
             'email' => [],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'email' => 'david@owlfancy.com',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
+        // Valid, as no validators are defined
+        $this->assertEmpty($this->validator->validate($schema, [
+            'email' => 'david',
+        ]));
     }
 
     public function testValidateNoMatch(): void
@@ -55,19 +52,15 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'email' => 'david@owlfancy.com',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
+        // Valid, as foo is not a validator
+        $this->assertEmpty($this->validator->validate($schema, [
+            'email' => 'david@owlfancy.com',
+        ]));
     }
 
     public function testValidateEmail(): void
     {
-        // Arrange
         $schema = new RequestSchemaRepository([
             'email' => [
                 'validators' => [
@@ -77,20 +70,17 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'email' => 'david@owlfancy.com',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
+        $this->assertEmpty($this->validator->validate($schema, [
+            'email' => 'david@owlfancy.com',
+        ]));
 
         // Check failing validation
-        $this->assertFalse($validator->validate([
+        $errors = $this->validator->validate($schema, [
             'email' => 'screeeech',
-        ]));
-        $this->assertSame(['Email is not a valid email address'], $validator->errors('email'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Email is not a valid email address'], $errors['email']);
     }
 
     public function testValidateArray(): void
@@ -106,26 +96,23 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'screech' => ['foo', 'bar'],
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
+        $this->assertEmpty($this->validator->validate($schema, [
+            'screech' => ['foo', 'bar'],
+        ]));
 
         // Check failing validation
-        $this->assertFalse($validator->validate([
+        $errors = $this->validator->validate($schema, [
             'screech' => 'screeeech',
-        ]));
-        $this->assertSame(['Array must be an array.'], $validator->errors('screech'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Array must be an array.'], $errors['screech']);
     }
 
     public function testValidateEquals(): void
     {
         // Arrange
-        // TODO: Add missing messages for custom rules.  Maybe upgrade the version of Valitron first.
+        // TODO: Add missing messages for custom rules.
         $schema = new RequestSchemaRepository([
             'voles' => [
                 'validators' => [
@@ -138,20 +125,17 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'voles' => 8,
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
+        $this->assertEmpty($this->validator->validate($schema, [
+            'voles' => 8,
+        ]));
 
         // Check failing validation
-        $this->assertFalse($validator->validate([
+        $errors = $this->validator->validate($schema, [
             'voles' => 3,
-        ]));
-        $this->assertSame(['Voles must be equal to 8.'], $validator->errors('voles'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Voles must be equal to 8.'], $errors['voles']);
     }
 
     public function testValidateInteger(): void
@@ -161,31 +145,30 @@ class ServerSideValidatorTest extends TestCase
             'voles' => [
                 'validators' => [
                     'integer' => [
-                        'message' => 'Voles must be numeric.',
+                        'message' => 'Voles must be integer.',
                     ],
                 ],
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'voles' => 8,
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
+        $this->assertEmpty($this->validator->validate($schema, [
+            'voles' => 8,
+        ]));
 
         // Check failing validations
-        $this->assertFalse($validator->validate([
+        $errors = $this->validator->validate($schema, [
             'voles' => 'yes',
-        ]));
-        $this->assertSame(['Voles must be numeric.'], $validator->errors('voles'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Voles must be integer.'], $errors['voles']);
 
-        $this->assertFalse($validator->validate([
+        // Failing too, as decimal is not integer
+        $errors = $this->validator->validate($schema, [
             'voles' => 0.5,
-        ]));
-        $this->assertSame(['Voles must be numeric.'], $validator->errors('voles'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Voles must be integer.'], $errors['voles']);
     }
 
     public function testValidateLengthBetween(): void
@@ -203,25 +186,24 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'screech' => 'cawwwwww',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
+        $this->assertEmpty($this->validator->validate($schema, [
+            'screech' => 'cawwwwww',
+        ]));
 
-        // Check failing validations
-        $this->assertFalse($validator->validate([
+        // Check failing validations - Too short
+        $errors = $this->validator->validate($schema, [
             'screech' => 'caw',
-        ]));
-        $this->assertSame(['Your screech must be between 5 and 10 characters long.'], $validator->errors('screech'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Your screech must be between 5 and 10 characters long.'], $errors['screech']);
 
-        $this->assertFalse($validator->validate([
+        // Check failing validations - Too long
+        $errors = $this->validator->validate($schema, [
             'screech' => 'cawwwwwwwwwwwwwwwwwww',
-        ]));
-        $this->assertSame(['Your screech must be between 5 and 10 characters long.'], $validator->errors('screech'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Your screech must be between 5 and 10 characters long.'], $errors['screech']);
     }
 
     public function testValidateLengthMin(): void
@@ -238,20 +220,17 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'screech' => 'cawwwwww',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
+        $this->assertEmpty($this->validator->validate($schema, [
+            'screech' => 'cawwwwww',
+        ]));
 
         // Check failing validations
-        $this->assertFalse($validator->validate([
+        $errors = $this->validator->validate($schema, [
             'screech' => 'caw',
-        ]));
-        $this->assertSame(['Your screech must be at least 5 characters long.'], $validator->errors('screech'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Your screech must be at least 5 characters long.'], $errors['screech']);
     }
 
     public function testValidateLengthMax(): void
@@ -268,19 +247,17 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'screech' => 'cawwwwww',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
-
-        $this->assertFalse($validator->validate([
-            'screech' => 'cawwwwwwwwwwwwwwwwwww',
+        $this->assertEmpty($this->validator->validate($schema, [
+            'screech' => 'cawwwwww',
         ]));
-        $this->assertSame(['Your screech must be no more than 10 characters long.'], $validator->errors('screech'));
+
+        // Check failing validations
+        $errors = $this->validator->validate($schema, [
+            'screech' => 'cawwwwwwwwwwwwwwwwwww',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Your screech must be no more than 10 characters long.'], $errors['screech']);
     }
 
     public function testValidateMatches(): void
@@ -297,21 +274,19 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
+        // Check passing validation
+        $this->assertEmpty($this->validator->validate($schema, [
             'password'  => 'secret',
             'passwordc' => 'secret',
-        ]);
+        ]));
 
-        // Check passing validation
-        $this->assertTrue($result);
-
-        $this->assertFalse($validator->validate([
+        // Check failing validations
+        $errors = $this->validator->validate($schema, [
             'password'  => 'secret',
             'passwordc' => 'hoothoot',
-        ]));
-        $this->assertSame(["The value of this field does not match the value of the 'passwordc' field."], $validator->errors('password'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(["The value of this field does not match the value of the 'passwordc' field."], $errors['password']);
     }
 
     public function testValidateMemberOf(): void
@@ -328,19 +303,17 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'genus' => 'Megascops',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
-
-        $this->assertFalse($validator->validate([
-            'genus' => 'Dolomedes',
+        $this->assertEmpty($this->validator->validate($schema, [
+            'genus' => 'Megascops',
         ]));
-        $this->assertSame(['Sorry, that is not one of the permitted genuses.'], $validator->errors('genus'));
+
+        // Check failing validations
+        $errors = $this->validator->validate($schema, [
+            'genus' => 'Dolomedes',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Sorry, that is not one of the permitted genuses.'], $errors['genus']);
     }
 
     public function testValidateNoLeadingWhitespace(): void
@@ -356,19 +329,17 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'user_name' => 'alexw',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
-
-        $this->assertFalse($validator->validate([
-            'user_name' => ' alexw',
+        $this->assertEmpty($this->validator->validate($schema, [
+            'user_name' => 'alexw',
         ]));
-        $this->assertSame(['user_name cannot begin with whitespace characters'], $validator->errors('user_name'));
+
+        // Check failing validation
+        $errors = $this->validator->validate($schema, [
+            'user_name' => ' alexw',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['user_name cannot begin with whitespace characters'], $errors['user_name']);
     }
 
     public function testValidateNoTrailingWhitespace(): void
@@ -384,30 +355,61 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'user_name' => 'alexw',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
+        $this->assertEmpty($this->validator->validate($schema, [
+            'user_name' => 'alexw',
+        ]));
 
         // Should still allow starting with whitespace
-        $this->assertTrue($validator->validate([
+        $this->assertEmpty($this->validator->validate($schema, [
             'user_name' => ' alexw',
         ]));
 
-        $this->assertFalse($validator->validate([
+        // Check failing validation
+        $errors = $this->validator->validate($schema, [
             'user_name' => 'alexw ',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['user_name cannot end with whitespace characters'], $errors['user_name']);
+    }
+
+    // Also serve as multiple validators test
+    public function testValidateNoTrailingAndNoLeadingWhitespace(): void
+    {
+        // Arrange
+        $schema = new RequestSchemaRepository([
+            'user_name' => [
+                'validators' => [
+                    'no_trailing_whitespace' => [
+                        'message' => '{{self}} cannot end with whitespace characters',
+                    ],
+                    'no_leading_whitespace' => [
+                        'message' => '{{self}} cannot begin with whitespace characters',
+                    ],
+                ],
+            ],
+        ]);
+
+        // Check passing validation
+        $this->assertEmpty($this->validator->validate($schema, [
+            'user_name' => 'alexw',
         ]));
-        $this->assertSame(['user_name cannot end with whitespace characters'], $validator->errors('user_name'));
+
+        // Check failing validation
+        $errors = $this->validator->validate($schema, [
+            'user_name' => '  alexw ',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame([
+            'user_name cannot end with whitespace characters',
+            'user_name cannot begin with whitespace characters',
+        ], $errors['user_name']);
     }
 
     public function testValidateNotEquals(): void
     {
         // Arrange
-        // TODO: Add missing messages for custom rules.  Maybe upgrade the version of Valitron first.
+        // TODO: Add missing messages for custom rules.
         $schema = new RequestSchemaRepository([
             'voles' => [
                 'validators' => [
@@ -420,20 +422,17 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'voles' => 8,
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
+        $this->assertEmpty($this->validator->validate($schema, [
+            'voles' => 8,
+        ]));
 
         // Check failing validation
-        $this->assertFalse($validator->validate([
+        $errors = $this->validator->validate($schema, [
             'voles' => 0,
-        ]));
-        $this->assertSame(['Voles must be not be equal to 0.'], $validator->errors('voles'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Voles must be not be equal to 0.'], $errors['voles']);
     }
 
     public function testValidateNotMatches(): void
@@ -450,21 +449,19 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
+        // Check passing validation
+        $this->assertEmpty($this->validator->validate($schema, [
             'password'  => 'secret',
             'user_name' => 'alexw',
-        ]);
+        ]));
 
-        // Check passing validation
-        $this->assertTrue($result);
-
-        $this->assertFalse($validator->validate([
+        // Check failing validation
+        $errors = $this->validator->validate($schema, [
             'password'  => 'secret',
             'user_name' => 'secret',
-        ]));
-        $this->assertSame(['Your password cannot be the same as your username.'], $validator->errors('password'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Your password cannot be the same as your username.'], $errors['password']);
     }
 
     public function testValidateNotMemberOf(): void
@@ -481,19 +478,17 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'genus' => 'Megascops',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
-
-        $this->assertFalse($validator->validate([
-            'genus' => 'Myodes',
+        $this->assertEmpty($this->validator->validate($schema, [
+            'genus' => 'Megascops',
         ]));
-        $this->assertSame(['Sorry, it would appear that you are not an owl.'], $validator->errors('genus'));
+
+        // Check failing validations
+        $errors = $this->validator->validate($schema, [
+            'genus' => 'Myodes',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Sorry, it would appear that you are not an owl.'], $errors['genus']);
     }
 
     public function testValidateNumeric(): void
@@ -509,32 +504,34 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'accuracy' => 0.99,
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
+        $this->assertEmpty($this->validator->validate($schema, [
+            'accuracy' => 0.99,
+        ]));
 
-        $this->assertTrue($validator->validate([
+        // Check passing even if it's a string
+        $this->assertEmpty($this->validator->validate($schema, [
             'accuracy' => '0.99',
         ]));
 
-        $this->assertTrue($validator->validate([
+        // Check passing if empty, as it's not required
+        $this->assertEmpty($this->validator->validate($schema, [
             'accuracy' => '',
         ]));
 
-        $this->assertFalse($validator->validate([
+        // Check failing validations
+        $errors = $this->validator->validate($schema, [
             'accuracy' => false,
-        ]));
-        $this->assertSame(['Sorry, your strike accuracy must be a number.'], $validator->errors('accuracy'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Sorry, your strike accuracy must be a number.'], $errors['accuracy']);
 
-        $this->assertFalse($validator->validate([
-            'accuracy' => 'yes',
-        ]));
-        $this->assertSame(['Sorry, your strike accuracy must be a number.'], $validator->errors('accuracy'));
+        // Check failing validations - String
+        $errors = $this->validator->validate($schema, [
+            'accuracy' => 'good',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Sorry, your strike accuracy must be a number.'], $errors['accuracy']);
     }
 
     public function testValidateRange(): void
@@ -552,34 +549,36 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'voles' => 6,
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
+        $this->assertEmpty($this->validator->validate($schema, [
+            'voles' => 6,
+        ]));
 
-        $this->assertFalse($validator->validate([
+        // Check failing validations - Too low
+        $errors = $this->validator->validate($schema, [
             'voles' => 2,
-        ]));
-        $this->assertSame(['You must catch 5 - 10 voles.'], $validator->errors('voles'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['You must catch 5 - 10 voles.'], $errors['voles']);
 
-        $this->assertFalse($validator->validate([
+        // Check failing validations - Too high
+        $errors = $this->validator->validate($schema, [
             'voles' => 10000,
-        ]));
-        $this->assertSame(['You must catch 5 - 10 voles.'], $validator->errors('voles'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['You must catch 5 - 10 voles.'], $errors['voles']);
 
-        $this->assertFalse($validator->validate([
-            'voles' => 'yes',
-        ]));
+        // Check failing validations - Not numeric
         // N.B.: Valitron doesn't have a rule for 'between' or 'range'. There's
         // twice the same message, because it doesn't respect both "min" and "max".
+        $errors = $this->validator->validate($schema, [
+            'voles' => 'yes',
+        ]);
+        $this->assertNotEmpty($errors);
         $this->assertSame([
             'You must catch 5 - 10 voles.',
             'You must catch 5 - 10 voles.',
-        ], $validator->errors('voles'));
+        ], $errors['voles']);
     }
 
     public function testValidateRegex(): void
@@ -596,24 +595,24 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'screech' => 'whooooooooo',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
+        $this->assertEmpty($this->validator->validate($schema, [
+            'screech' => 'whooooooooo',
+        ]));
 
-        $this->assertFalse($validator->validate([
+        // Check failing validations - Can't have a 't' at the end
+        $errors = $this->validator->validate($schema, [
             'screech' => 'whoot',
-        ]));
-        $this->assertSame(['You did not provide a valid screech.'], $validator->errors('screech'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['You did not provide a valid screech.'], $errors['screech']);
 
-        $this->assertFalse($validator->validate([
+        // Check failing validations - No match
+        $errors = $this->validator->validate($schema, [
             'screech' => 'ribbit',
-        ]));
-        $this->assertSame(['You did not provide a valid screech.'], $validator->errors('screech'));
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['You did not provide a valid screech.'], $errors['screech']);
     }
 
     public function testValidateRequired(): void
@@ -629,22 +628,22 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'species' => 'Athene noctua',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
-
-        $this->assertFalse($validator->validate([
-            'species' => '',
+        $this->assertEmpty($this->validator->validate($schema, [
+            'species' => 'Athene noctua',
         ]));
-        $this->assertSame(['Please tell us your species.'], $validator->errors('species'));
 
-        $this->assertFalse($validator->validate([]));
-        $this->assertSame(['Please tell us your species.'], $validator->errors('species'));
+        // Check failing validations - Empty string
+        $errors = $this->validator->validate($schema, [
+            'species' => '',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Please tell us your species.'], $errors['species']);
+
+        // Check failing validations - Null
+        $errors = $this->validator->validate($schema, []);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Please tell us your species.'], $errors['species']);
     }
 
     public function testValidateTelephone(): void
@@ -660,36 +659,33 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'phone' => '1(212)-999-2345',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
-
-        $this->assertTrue($validator->validate([
+        $this->assertEmpty($this->validator->validate($schema, [
+            'phone' => '1(212)-999-2345',
+        ]));
+        $this->assertEmpty($this->validator->validate($schema, [
             'phone' => '212 999 2344',
         ]));
-
-        $this->assertTrue($validator->validate([
+        $this->assertEmpty($this->validator->validate($schema, [
             'phone' => '212-999-0983',
         ]));
-
-        $this->assertFalse($validator->validate([
-            'phone' => '111-123-5434',
-        ]));
-        $this->assertSame(['Whoa there, check your phone number again.'], $validator->errors('phone'));
-
-        $this->assertFalse($validator->validate([
-            'phone' => '212 123 4567',
-        ]));
-        $this->assertSame(['Whoa there, check your phone number again.'], $validator->errors('phone'));
-
-        $this->assertTrue($validator->validate([
+        $this->assertEmpty($this->validator->validate($schema, [
             'phone' => '',
         ]));
+
+        // Check failing validations - Area code may not start with 1
+        $errors = $this->validator->validate($schema, [
+            'phone' => '111-123-5434',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Whoa there, check your phone number again.'], $errors['phone']);
+
+        // Check failing validations - Prefix may not start with 1
+        $errors = $this->validator->validate($schema, [
+            'phone' => '212 123 4567',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Whoa there, check your phone number again.'], $errors['phone']);
     }
 
     public function testValidateUri(): void
@@ -705,42 +701,40 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'website' => 'http://www.owlfancy.com',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
-
-        $this->assertTrue($validator->validate([
+        $this->assertEmpty($this->validator->validate($schema, [
+            'website' => 'http://www.owlfancy.com',
+        ]));
+        $this->assertEmpty($this->validator->validate($schema, [
             'website' => 'http://owlfancy.com',
         ]));
-
-        $this->assertTrue($validator->validate([
+        $this->assertEmpty($this->validator->validate($schema, [
             'website' => 'https://learn.userfrosting.com',
         ]));
-
-        // Note that we require URLs to begin with http(s)://
-        $this->assertFalse($validator->validate([
-            'website' => 'www.owlfancy.com',
-        ]));
-        $this->assertSame(["That's not even a valid URL..."], $validator->errors('website'));
-
-        $this->assertFalse($validator->validate([
-            'website' => 'owlfancy.com',
-        ]));
-        $this->assertSame(["That's not even a valid URL..."], $validator->errors('website'));
-
-        $this->assertFalse($validator->validate([
-            'website' => 'owls',
-        ]));
-        $this->assertSame(["That's not even a valid URL..."], $validator->errors('website'));
-
-        $this->assertTrue($validator->validate([
+        $this->assertEmpty($this->validator->validate($schema, [
             'website' => '',
         ]));
+
+        // Check failing validations - we require URLs to begin with http(s)://
+        $errors = $this->validator->validate($schema, [
+            'website' => 'www.owlfancy.com',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(["That's not even a valid URL..."], $errors['website']);
+
+        // Check failing validations
+        $errors = $this->validator->validate($schema, [
+            'website' => 'owlfancy.com',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(["That's not even a valid URL..."], $errors['website']);
+
+        // Check failing validations
+        $errors = $this->validator->validate($schema, [
+            'website' => 'owls',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(["That's not even a valid URL..."], $errors['website']);
     }
 
     public function testValidateUsername(): void
@@ -756,42 +750,40 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'user_name' => 'alex.weissman',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
-
-        $this->assertTrue($validator->validate([
+        $this->assertEmpty($this->validator->validate($schema, [
+            'user_name' => 'alex.weissman',
+        ]));
+        $this->assertEmpty($this->validator->validate($schema, [
             'user_name' => 'alexweissman',
         ]));
-
-        $this->assertTrue($validator->validate([
+        $this->assertEmpty($this->validator->validate($schema, [
             'user_name' => 'alex-weissman-the-wise',
         ]));
-
-        // Note that we require URLs to begin with http(s)://
-        $this->assertFalse($validator->validate([
-            'user_name' => "<script>alert('I got you');</script>",
-        ]));
-        $this->assertSame(["Sorry buddy, that's not a valid username."], $validator->errors('user_name'));
-
-        $this->assertFalse($validator->validate([
-            'user_name' => '#owlfacts',
-        ]));
-        $this->assertSame(["Sorry buddy, that's not a valid username."], $validator->errors('user_name'));
-
-        $this->assertFalse($validator->validate([
-            'user_name' => 'Did you ever hear the tragedy of Darth Plagueis the Wise?',
-        ]));
-        $this->assertSame(["Sorry buddy, that's not a valid username."], $validator->errors('user_name'));
-
-        $this->assertTrue($validator->validate([
+        $this->assertEmpty($this->validator->validate($schema, [
             'user_name' => '',
         ]));
+
+        // Check failing validations - Code not allowed
+        $errors = $this->validator->validate($schema, [
+            'user_name' => "<script>alert('I got you');</script>",
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(["Sorry buddy, that's not a valid username."], $errors['user_name']);
+
+        // Check failing validations - # not allowed
+        $errors = $this->validator->validate($schema, [
+            'user_name' => '#owlfacts',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(["Sorry buddy, that's not a valid username."], $errors['user_name']);
+
+        // Check failing validations - ? and space not allowed
+        $errors = $this->validator->validate($schema, [
+            'user_name' => 'Did you ever hear the tragedy of Darth Plagueis the Wise?',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(["Sorry buddy, that's not a valid username."], $errors['user_name']);
     }
 
     public function testDomainRulesClientOnly(): void
@@ -808,12 +800,8 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([]);
-
-        // Check passing validation
-        $this->assertTrue($result);
+        // Check passing validation - Client are skipped even if plumage is empty
+        $this->assertEmpty($this->validator->validate($schema, []));
     }
 
     public function testDomainRulesServerOnly(): void
@@ -830,18 +818,12 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([]);
-
-        // Check passing validation
-        $this->assertFalse($result);
-        $this->assertSame(["Are you sure you don't want to show us your plumage?"], $validator->errors('plumage'));
+        // Check failing validation - Server are not skipped, so empty plumage return array
+        $errors = $this->validator->validate($schema, []);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(["Are you sure you don't want to show us your plumage?"], $errors['plumage']);
     }
 
-    /**
-     * @depends testValidateUsername
-     */
     public function testValidateWithNoValidatorMessage(): void
     {
         // Arrange
@@ -853,43 +835,16 @@ class ServerSideValidatorTest extends TestCase
             ],
         ]);
 
-        // Act
-        $validator = new ServerSideValidator($schema, $this->translator);
-        $result = $validator->validate([
-            'user_name' => 'alex.weissman',
-        ]);
-
         // Check passing validation
-        $this->assertTrue($result);
-    }
-
-    public function testSetters(): void
-    {
-        $schema = new RequestSchemaRepository();
-        $validator = new ServerSideValidator($schema, $this->translator);
-
-        $data = [
-            'email' => 'screeeech',
-        ];
-        $this->assertTrue($validator->validate($data));
-
-        $schema = new RequestSchemaRepository([
-            'email' => [
-                'validators' => [
-                    'email' => [
-                    ],
-                ],
-            ],
-        ]);
-        $validator->setSchema($schema);
-        $validator->setTranslator($this->translator);
-
-        $this->assertFalse($validator->validate([
-            'email' => 'screeeech',
+        $this->assertEmpty($this->validator->validate($schema, [
+            'user_name' => 'alex.weissman',
         ]));
-        $this->assertSame(['Email is not a valid email address'], $validator->errors()['email']); // @phpstan-ignore-line
 
-        // Assert data
-        $this->assertSame($data, $validator->data());
+        // Check failing validation message - Should fallback to default message
+        $errors = $this->validator->validate($schema, [
+            'user_name' => '#owlfacts',
+        ]);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['User Name Invalid'], $errors['user_name']);
     }
 }

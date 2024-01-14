@@ -15,6 +15,8 @@ use UserFrosting\I18n\Translator;
 
 /**
  * Loads validation rules from a schema and validates a target array of data.
+ *
+ * @deprecated 5.1 Use `\UserFrosting\Fortress\Validator\ServerSideValidatorInterface` instead.
  */
 interface ServerSideValidatorInterface
 {
