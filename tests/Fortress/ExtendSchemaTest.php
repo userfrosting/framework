@@ -11,7 +11,7 @@
 namespace UserFrosting\Tests\Fortress;
 
 use PHPUnit\Framework\TestCase;
-use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
+use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 use UserFrosting\Support\Repository\PathBuilder\StreamPathBuilder;
 use UserFrosting\UniformResourceLocator\ResourceLocation;
@@ -42,7 +42,7 @@ class ExtendSchemaTest extends TestCase
         // Arrange
         $builder = new StreamPathBuilder($this->locator, 'schema://contact.yaml');
         $loader = new YamlFileLoader($builder->buildPaths());
-        $schema = new RequestSchemaRepository($loader->load());
+        $schema = new RequestSchema($loader->load());
 
         // Act
         $result = $schema->all();

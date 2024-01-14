@@ -10,9 +10,9 @@
 
 namespace UserFrosting\Fortress;
 
-use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
-use UserFrosting\Support\Repository\Loader\FileRepositoryLoader;
+use UserFrosting\Fortress\RequestSchema\RequestSchemaInterface;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
+use UserFrosting\Support\Repository\Repository;
 
 /**
  * Represents a schema for an HTTP request, compliant with the WDVSS standard
@@ -21,29 +21,84 @@ use UserFrosting\Support\Repository\Loader\YamlFileLoader;
  * Same as \UserFrosting\Fortress\RequestSchema\RequestSchemaRepository, but
  * loads the schema from a file instead of an array.
  */
-class RequestSchema extends RequestSchemaRepository
+class RequestSchema extends Repository implements RequestSchemaInterface
 {
-    /**
-     * @var FileRepositoryLoader
-     */
-    protected FileRepositoryLoader $loader;
-
     /**
      * Loads the request schema from a file.
      *
-     * @param string|null $path The full path to the file containing the [WDVSS schema](https://github.com/alexweissman/wdvss).
+     * @param string|mixed[]|null $input Either the full path to the file containing the [WDVSS schema](https://github.com/alexweissman/wdvss),
+     *                                   the schema itself, or null to load an empty schema.
+     *
+     * @throws \UserFrosting\Support\Exception\FileNotFoundException If $input is string, and the file does not exist.
      */
-    // TODO : Loader should be injected/injectable
-    // TODO : Could accept both a path and an array of item, making it more flexible and Repository redundant?
-    public function __construct(?string $path = null)
+    public function __construct(string|array|null $input = null)
     {
-        $items = [];
-
-        if (!is_null($path)) {
-            $this->loader = new YamlFileLoader($path);
-            $items = $this->loader->load(false);
-        }
+        $items = match (true) {
+            is_string($input) => (new YamlFileLoader($input))->load(false),
+            is_array($input)  => $input,
+            default           => [],
+        };
 
         parent::__construct($items);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefault(string $field, string $value): static
+    {
+        if (!isset($this->items[$field])) {
+            $this->items[$field] = [];
+        }
+
+        $this->items[$field]['default'] = $value;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addValidator(string $field, string $validatorName, array $parameters = []): static
+    {
+        if (!isset($this->items[$field])) {
+            $this->items[$field] = [];
+        }
+
+        if (!isset($this->items[$field]['validators'])) {
+            $this->items[$field]['validators'] = [];
+        }
+
+        $this->items[$field]['validators'][$validatorName] = $parameters;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeValidator(string $field, string $validatorName): static
+    {
+        unset($this->items[$field]['validators'][$validatorName]);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTransformations(string $field, string|array $transformations = []): static
+    {
+        if (!is_array($transformations)) {
+            $transformations = [$transformations];
+        }
+
+        if (!isset($this->items[$field])) {
+            $this->items[$field] = [];
+        }
+
+        $this->items[$field]['transformations'] = $transformations;
+
+        return $this;
     }
 }

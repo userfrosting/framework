@@ -10,11 +10,13 @@
 
 namespace UserFrosting\Fortress\RequestSchema;
 
+use Illuminate\Contracts\Config\Repository as ConfigContract;
+
 /**
  * Represents a schema for an HTTP request, compliant with the WDVSS standard
  * (https://github.com/alexweissman/wdvss).
  */
-interface RequestSchemaInterface
+interface RequestSchemaInterface extends ConfigContract
 {
     /**
      * Get all items in the schema.

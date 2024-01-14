@@ -11,7 +11,7 @@
 namespace UserFrosting\Tests\Fortress\Validator;
 
 use PHPUnit\Framework\TestCase;
-use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
+use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\Validator\ServerSideValidator;
 use UserFrosting\I18n\Translator;
 use UserFrosting\Tests\Fortress\DictionaryStub;
@@ -30,7 +30,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateNoValidators(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'email' => [],
         ]);
 
@@ -44,7 +44,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateNoMatch(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'email' => [
                 'validators' => [
                     'foo' => [], // Doesn't exist
@@ -61,7 +61,7 @@ class ServerSideValidatorTest extends TestCase
 
     public function testValidateEmail(): void
     {
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'email' => [
                 'validators' => [
                     'email' => [
@@ -86,7 +86,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateArray(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'array' => [
@@ -113,7 +113,7 @@ class ServerSideValidatorTest extends TestCase
     {
         // Arrange
         // TODO: Add missing messages for custom rules.
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'equals' => [
@@ -141,7 +141,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateInteger(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'integer' => [
@@ -174,7 +174,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateLengthBetween(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'length' => [
@@ -209,7 +209,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateLengthMin(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'length' => [
@@ -236,7 +236,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateLengthMax(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'length' => [
@@ -263,7 +263,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateMatches(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'password' => [
                 'validators' => [
                     'matches' => [
@@ -292,7 +292,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateMemberOf(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'genus' => [
                 'validators' => [
                     'member_of' => [
@@ -319,7 +319,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateNoLeadingWhitespace(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'user_name' => [
                 'validators' => [
                     'no_leading_whitespace' => [
@@ -345,7 +345,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateNoTrailingWhitespace(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'user_name' => [
                 'validators' => [
                     'no_trailing_whitespace' => [
@@ -377,7 +377,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateNoTrailingAndNoLeadingWhitespace(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'user_name' => [
                 'validators' => [
                     'no_trailing_whitespace' => [
@@ -410,7 +410,7 @@ class ServerSideValidatorTest extends TestCase
     {
         // Arrange
         // TODO: Add missing messages for custom rules.
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'not_equals' => [
@@ -438,7 +438,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateNotMatches(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'password' => [
                 'validators' => [
                     'not_matches' => [
@@ -467,7 +467,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateNotMemberOf(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'genus' => [
                 'validators' => [
                     'not_member_of' => [
@@ -494,7 +494,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateNumeric(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'accuracy' => [
                 'validators' => [
                     'numeric' => [
@@ -537,7 +537,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateRange(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'range' => [
@@ -584,7 +584,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateRegex(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'regex' => [
@@ -618,7 +618,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateRequired(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'species' => [
                 'validators' => [
                     'required' => [
@@ -649,7 +649,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateTelephone(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'phone' => [
                 'validators' => [
                     'telephone' => [
@@ -691,7 +691,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateUri(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'website' => [
                 'validators' => [
                     'uri' => [
@@ -740,7 +740,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateUsername(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'user_name' => [
                 'validators' => [
                     'username' => [
@@ -789,7 +789,7 @@ class ServerSideValidatorTest extends TestCase
     public function testDomainRulesClientOnly(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'plumage' => [
                 'validators' => [
                     'required' => [
@@ -807,7 +807,7 @@ class ServerSideValidatorTest extends TestCase
     public function testDomainRulesServerOnly(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'plumage' => [
                 'validators' => [
                     'required' => [
@@ -827,7 +827,7 @@ class ServerSideValidatorTest extends TestCase
     public function testValidateWithNoValidatorMessage(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'user_name' => [
                 'validators' => [
                     'username' => [],

@@ -12,8 +12,8 @@ namespace UserFrosting\Tests\Fortress\Transformer;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaInterface;
-use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
 use UserFrosting\Fortress\Transformer\RequestDataTransformer;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 
@@ -29,13 +29,13 @@ class RequestDataTransformerTest extends TestCase
 
         // Arrange
         $loader = new YamlFileLoader($this->basePath.'/register.yaml');
-        $this->schema = new RequestSchemaRepository($loader->load());
+        $this->schema = new RequestSchema($loader->load());
         $this->transformer = new RequestDataTransformer();
     }
 
     public function testTransformFieldForNotInSchema(): void
     {
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'email'       => [],
         ]);
 
@@ -56,7 +56,7 @@ class RequestDataTransformerTest extends TestCase
         ];
 
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'email'       => [],
             'description' => null,  // Replicating an input that has no validation operations
         ]);
@@ -83,7 +83,7 @@ class RequestDataTransformerTest extends TestCase
         ];
 
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'email'       => [],
             'description' => null,  // Replicating an input that has no validation operations
         ]);
@@ -111,7 +111,7 @@ class RequestDataTransformerTest extends TestCase
         ];
 
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'email'       => [],
             'description' => null,  // Replicating an input that has no validation operations
         ]);

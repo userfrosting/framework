@@ -14,7 +14,7 @@ namespace UserFrosting\Tests\Fortress\Adapter;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Fortress\Adapter\FormValidationHtml5Adapter;
-use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
+use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\I18n\Translator;
 use UserFrosting\Tests\Fortress\DictionaryStub;
 
@@ -30,7 +30,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testValidateEmail(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'email' => [
                 'validators' => [
                     'email' => [
@@ -56,7 +56,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testValidateEquals(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'equals' => [
@@ -80,7 +80,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testValidateRequired(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'species' => [
                 'validators' => [
                     'required' => [
@@ -102,7 +102,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testValidateLengthBetween(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'length' => [
@@ -126,7 +126,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testValidateLengthMin(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'length' => [
@@ -149,7 +149,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testValidateLengthMax(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'length' => [
@@ -172,7 +172,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testValidateInteger(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'integer' => [
@@ -194,7 +194,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testValidateRange(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'range' => [
@@ -218,7 +218,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testValidateRangeMin(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'range' => [
@@ -241,7 +241,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testValidateRangeMax(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'range' => [
@@ -264,7 +264,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testValidateRangeNone(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'range' => [
@@ -287,7 +287,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testValidateArray(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'array' => [
@@ -311,7 +311,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testValidateMatches(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'password'  => [],
             'passwordc' => [
                 'validators' => [
@@ -338,7 +338,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testValidateMatchesNoFields(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'password' => [
                 'validators' => [
                     'matches' => [
@@ -359,7 +359,7 @@ class FormValidationHtml5AdapterTest extends TestCase
     public function testDomainRulesServerOnly(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'plumage' => [
                 'validators' => [
                     'required' => [

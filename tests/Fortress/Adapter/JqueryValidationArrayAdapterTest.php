@@ -12,7 +12,7 @@ namespace UserFrosting\Tests\Fortress\Adapter;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Fortress\Adapter\JqueryValidationArrayAdapter;
-use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
+use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\I18n\Translator;
 use UserFrosting\Tests\Fortress\DictionaryStub;
 
@@ -29,7 +29,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateEmail(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'email' => [
                 'validators' => [
                     'email' => [
@@ -63,7 +63,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateEquals(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'equals' => [
@@ -101,7 +101,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateEqualsWithMissingCondition(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'equals' => [
@@ -130,7 +130,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateInteger(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'integer' => [
@@ -162,7 +162,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateLengthBetween(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'length' => [
@@ -196,7 +196,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateLengthMin(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'length' => [
@@ -229,7 +229,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateLengthMax(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'length' => [
@@ -262,7 +262,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateMatches(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'password' => [
                 'validators' => [
                     'matches' => [
@@ -295,7 +295,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateMatchesWithMissingCondition(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'password' => [
                 'validators' => [
                     'matches' => [
@@ -324,7 +324,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateMemberOf(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'genus' => [
                 'validators' => [
                     'member_of' => [
@@ -357,7 +357,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateNoLeadingWhitespace(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'user_name' => [
                 'validators' => [
                     'no_leading_whitespace' => [
@@ -389,7 +389,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateNoTrailingWhitespace(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'user_name' => [
                 'validators' => [
                     'no_trailing_whitespace' => [
@@ -421,7 +421,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     {
         // Arrange
         // TODO: Add missing messages for custom rules.  Maybe upgrade the version of Valitron first.
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'not_equals' => [
@@ -459,7 +459,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateNotMatches(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'password' => [
                 'validators' => [
                     'not_matches' => [
@@ -492,7 +492,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateNotMemberOf(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'genus' => [
                 'validators' => [
                     'not_member_of' => [
@@ -525,7 +525,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateNumeric(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'accuracy' => [
                 'validators' => [
                     'numeric' => [
@@ -557,7 +557,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateRange(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'range' => [
@@ -591,7 +591,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateMin(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'range' => [
@@ -624,7 +624,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateMax(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'range' => [
@@ -657,7 +657,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateRegex(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'regex' => [
@@ -690,7 +690,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateRequired(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'species' => [
                 'validators' => [
                     'required' => [
@@ -722,7 +722,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateTelephone(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'phone' => [
                 'validators' => [
                     'telephone' => [
@@ -754,7 +754,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateUri(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'website' => [
                 'validators' => [
                     'uri' => [
@@ -786,7 +786,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateUsername(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'user_name' => [
                 'validators' => [
                     'username' => [
@@ -818,7 +818,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testDomainRulesClientOnly(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'plumage' => [
                 'validators' => [
                     'required' => [
@@ -866,7 +866,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testDomainRulesServerOnly(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'plumage' => [
                 'validators' => [
                     'required' => [
@@ -901,7 +901,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testManyRules(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'user_name' => [
                 'validators' => [
                     'length' => [
@@ -1222,7 +1222,7 @@ class JqueryValidationArrayAdapterTest extends TestCase
     public function testValidateNoRule(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'user_name' => [
                 'validators' => [
                     'foo' => [

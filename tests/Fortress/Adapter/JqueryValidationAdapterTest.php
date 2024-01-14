@@ -12,7 +12,7 @@ namespace UserFrosting\Tests\Fortress\Adapter;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
-use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
+use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\I18n\Translator;
 use UserFrosting\Tests\Fortress\DictionaryStub;
 
@@ -36,7 +36,7 @@ class JqueryValidationAdapterTest extends TestCase
     public function testValidate(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'email' => [
                 'validators' => [
                     'email' => [
@@ -72,7 +72,7 @@ class JqueryValidationAdapterTest extends TestCase
     public function testSetters(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository();
+        $schema = new RequestSchema();
         $expectedResult = [
             'rules' => [
                 'email' => [],
@@ -82,7 +82,7 @@ class JqueryValidationAdapterTest extends TestCase
         $adapter = new JqueryValidationAdapter($schema, $this->translator);
 
         // Act
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'email' => [],
         ]);
         $adapter->setSchema($schema);

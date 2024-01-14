@@ -14,7 +14,7 @@ namespace UserFrosting\Tests\Fortress\Adapter;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\Fortress\Adapter\FormValidationJsonAdapter;
-use UserFrosting\Fortress\RequestSchema\RequestSchemaRepository;
+use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\I18n\Translator;
 use UserFrosting\Tests\Fortress\DictionaryStub;
 
@@ -30,7 +30,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateEmail(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'email' => [
                 'validators' => [
                     'email' => [
@@ -65,7 +65,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateEquals(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'equals' => [
@@ -94,7 +94,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateRequired(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'species' => [
                 'validators' => [
                     'required' => [
@@ -125,7 +125,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateLengthBetween(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'length' => [
@@ -160,7 +160,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateLengthMin(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'length' => [
@@ -193,7 +193,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateLengthMax(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'screech' => [
                 'validators' => [
                     'length' => [
@@ -226,7 +226,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateInteger(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'integer' => [
@@ -257,7 +257,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateNumeric(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'accuracy' => [
                 'validators' => [
                     'numeric' => [
@@ -288,7 +288,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateRange(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'range' => [
@@ -323,7 +323,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateRangeMin(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'range' => [
@@ -356,7 +356,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateRangeMax(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'range' => [
@@ -389,7 +389,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateArray(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'voles' => [
                 'validators' => [
                     'array' => [
@@ -424,7 +424,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateMatches(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'password' => [
                 'validators' => [
                     'matches' => [
@@ -463,7 +463,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateMatchesNoFields(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'password' => [
                 'validators' => [
                     'matches' => [
@@ -494,7 +494,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateNotMatches(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'password' => [
                 'validators' => [
                     'not_matches' => [
@@ -527,7 +527,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateMemberOf(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'genus' => [
                 'validators' => [
                     'member_of' => [
@@ -560,7 +560,7 @@ class FormValidationJsonAdapterTest extends TestCase
     public function testValidateNotMemberOf(): void
     {
         // Arrange
-        $schema = new RequestSchemaRepository([
+        $schema = new RequestSchema([
             'genus' => [
                 'validators' => [
                     'not_member_of' => [
