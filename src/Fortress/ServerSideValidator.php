@@ -78,7 +78,7 @@ class ServerSideValidator implements ServerSideValidatorInterface
     }
 
     /**
-     * Get array of error messages
+     * Get array of error messages.
      *
      * @param null|string $field
      *

@@ -65,8 +65,6 @@ class FormValidationAdapter
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return mixed[]|string
      */
     public function rules(string $format = 'json', bool $stringEncode = true): array|string
