@@ -163,7 +163,7 @@ class SprinkleManager
         }
 
         if (!class_exists($class)) {
-            throw new BadClassNameException("Class `$class` not found");
+            throw new BadClassNameException("Sprinkle recipe class `$class` not found.");
         }
 
         // Get class instance
@@ -195,7 +195,7 @@ class SprinkleManager
         }
 
         if (!class_exists($class)) {
-            throw new BadClassNameException("Class `$class` not found");
+            throw new BadClassNameException("Services provider class `$class` not found. Make sure the class is correctly defined in your sprinkle's recipe.");
         }
 
         // Get class instance
