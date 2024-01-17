@@ -5,28 +5,95 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [5.1.0](https://github.com/userfrosting/framework/compare/5.0.0...5.1.0)
-- Drop PHP 8.1 support, add PHP 8.3 support
 - Removed Assets
+- Drop PHP 8.1 support, add PHP 8.3 support
 - Update to Laravel 10
 - Update to PHPUnit 10
-- [Config] Methods `getBool`, `getString`, `getInt` & `getArray` now return `null` if key doesn't exist, to make it on par with parent `get` method.
+
+### Fortress
+Complete refactoring of Fortress. Mostly enforcing strict types, updating PHPDocs, simplifying code logic and making uses of new PHP features and method. Most classes have been deprecated and replaced by new classes with updated implementation. In general, instead of passing the *schema* in the constructor of Adapters, Transformers and Validators class, you pass it directly to theses class methods. This makes it easier to inject the classes as services and reuse the same instance with different schemas. Checkout the documentation for more information on new class usage. 
+
+- `UserFrosting\Fortress\RequestSchema` constructor first argument now accept the schema data as an array, as well as a string representing a path to the schema json or yaml file. The argument can still be omitted to create an empty schema. This change makes `UserFrosting\Fortress\RequestSchema\RequestSchemaRepository` obsolete and and such been ***deprecated***. For example:
+  ```php
+  // Before
+  $schemaFromFile = new \UserFrosting\Fortress\RequestSchema('path/to/schema.json');
+  $schemaFromArray = new \UserFrosting\Fortress\RequestSchema\RequestSchemaRepository([
+    // ...
+  ]);
+
+  // After
+  $schemaFromFile = new \UserFrosting\Fortress\RequestSchema('path/to/schema.json');
+  $schemaFromArray = new \UserFrosting\Fortress\RequestSchema([
+    // ...
+  ]);
+  ```
+
+- `UserFrosting\Fortress\RequestSchema\RequestSchemaInterface` now extends `\Illuminate\Contracts\Config\Repository`. The interface itself is otherwise unchanged.
+
+- `UserFrosting\Fortress\RequestDataTransformer` is ***deprecated*** and replaced by `\UserFrosting\Fortress\Transformer\RequestDataTransformer`. `\UserFrosting\Fortress\RequestDataTransformerInterface` is also ***deprecated*** and replaced by `\UserFrosting\Fortress\Transformer\RequestDataTransformerInterface`. When using the new class, instead of passing the schema in the constructor, you pass it directly to `transform()` or `transformField()`. For example : 
+  ```php
+  // Before
+  $transformer = new \UserFrosting\Fortress\RequestDataTransformer($schema);
+  $result = $transformer->transform($data, 'skip');
+
+  // After
+  $transformer = new \UserFrosting\Fortress\Transformer\RequestDataTransformer();
+  $result = $transformer->transform($schema, $data, 'skip');
+  ```
+
+- `\UserFrosting\Fortress\ServerSideValidator` is ***deprecated*** and replaced by `\UserFrosting\Fortress\Validator\ServerSideValidator`. `\UserFrosting\Fortress\ServerSideValidatorInterface` is also ***deprecated*** and replaced by `\UserFrosting\Fortress\Validator\ServerSideValidatorInterface`. When using the new class, instead of passing the schema in the constructor, you pass it directly to `validate()`. For example : 
+  ```php
+  // Before
+  $validator = new \UserFrosting\Fortress\ServerSideValidator($schema, $this->translator);
+  $result = $validator->validate($data);
+
+  // After
+  $adapter = new \UserFrosting\Fortress\Validator\ServerSideValidator($this->translator);
+  $result = $validator->validate($schema, $data);
+  ```
+  
+- `UserFrosting\Fortress\Adapter\FormValidationAdapter` is ***deprecated***. 
+  Instead of defining the format in the `rules` method, you simply use of the appropriate class for the associated format.
+  | `rules(...)`                               | Replacement class                                          |
+  |--------------------------------------------|------------------------------------------------------------|
+  | `$format = json` & `$stringEncode = true`  | `UserFrosting\Fortress\Adapter\FormValidationJsonAdapter`  |
+  | `$format = json` & `$stringEncode = false` | `UserFrosting\Fortress\Adapter\FormValidationArrayAdapter` |
+  | `$format = html5`                          | `UserFrosting\Fortress\Adapter\FormValidationHtml5Adapter` |
+
+  `UserFrosting\Fortress\Adapter\JqueryValidationAdapter` is ***deprecated***. 
+  Instead of defining the format in the `rules` method, you simply use of the appropriate class for the associated format.
+  | `rules(...)`                               | Replacement class                                            |
+  |--------------------------------------------|--------------------------------------------------------------|
+  | `$format = json` & `$stringEncode = true`  | `UserFrosting\Fortress\Adapter\JqueryValidationJsonAdapter`  |
+  | `$format = json` & `$stringEncode = false` | `UserFrosting\Fortress\Adapter\JqueryValidationArrayAdapter` |
+
+  All adapters above now implements `UserFrosting\Fortress\Adapter\ValidationAdapterInterface` for easier type-hinting. 
+  
+  Finally, instead of passing the schema in the constructor, you now pass it directly to `rules()`. 
+  
+  For example : 
+  ```php
+  // Before
+  $adapter = new FormValidationAdapter($schema, $this->translator);
+  $result = $adapter->rules('json', false);
+
+  // After
+  $adapter = new FormValidationArrayAdapter($this->translator);
+  $result = $adapter->rules($schema);
+  ```
+
+- `ClientSideValidationAdapter` abstract class replaced with `FromSchemaTrait` trait + `ValidationAdapterInterface` interface.
+
+- `FormValidationHtml5Adapter` Will now throw an exception on missing field param, instead of returning null.
+
+- In `FormValidationHtml5Adapter`, when using `identical` rule, the validation used to be applied to the "confirmation" field. It will now be applied to the source field, making it consistent with array|json format. For example, if `password` requires to be identical to `passwordc`, the validation was added to the `passwordc` field. Now it's applied to `password`.
+
+### Config
+- Methods `getBool`, `getString`, `getInt` & `getArray` now return `null` if key doesn't exist, to make it on par with parent `get` method.
 
 ### Alert
 - Messages are now translated at read time ([#1156](https://github.com/userfrosting/UserFrosting/pull/1156), [#811](https://github.com/userfrosting/UserFrosting/issues/811)). Messages will be translated when using `messages` and `getAndClearMessages`. `addMessage` now accept the optional placeholders, which will be stored with the alert message. `addMessageTranslated` is **deprecated**. 
 - Translator is not optional anymore. `setTranslator` method has been removed.
-
-### Fortress
-Complete refactoring of Fortress. Mostly enforcing strict types, updating PHPDocs, simplifying code logic and making uses of new PHP features and method. Plus : 
-- *[Deprecated]*: `FormValidationAdapter` is deprecated. Instead of defining the format in the `rules` method, you simply use of the appropriate class :
-   - json, $stringEncode = true : FormValidationJsonAdapter
-   - json, $stringEncode = false : FormValidationArrayAdapter
-   - html5 : FormValidationHtml5Adapter
-- *[Deprecated]*: `JqueryValidationAdapter` is deprecated. Instead of defining the format in the `rules` method, you simply use of the appropriate class :
-   - json, $stringEncode = true : JqueryValidationJsonAdapter
-   - json, $stringEncode = false : JqueryValidationArrayAdapter
-- `ClientSideValidationAdapter` abstract class replaced with `FromSchemaTrait` trait + `ValidationAdapterInterface` interface.
-- `FormValidationHtml5Adapter` Will now throw an exception on missing field param, instead of returning null
-- In `FormValidationHtml5Adapter`, when using `identical` rule, the validation used to be applied to the "confirmation" field. It will now be applied to the source field, making it consistent with array|json format. For example, if `password` requires to be identical to `passwordc`, the validation was added to the `passwordc` field. Now it's applied to `password`.
 
 ## [5.0.0](https://github.com/userfrosting/framework/compare/4.6.1...5.0.0)
 With version 5, this repo can be used as a bare bone Slim & Symfony Console application. It include the necessary routing class, [PHP-DI](https://php-di.org) as the Dependency Injection Container, a PSR EventDispatcher, etc. SprinkleManager has also been moved from Core/System Sprinkle and completely rewritten. 
