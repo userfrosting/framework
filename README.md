@@ -1,4 +1,4 @@
-# UserFrosting 5.0 Framework
+# UserFrosting 5.1 Framework
 
 [![Version](https://img.shields.io/github/v/release/userfrosting/framework.svg?include_prereleases)](https://github.com/userfrosting/framework/releases)
 ![PHP](https://img.shields.io/badge/php-%5E8.0-brightgreen)
@@ -8,10 +8,8 @@
 [![StyleCI](https://github.styleci.io/repos/360994768/shield?branch=5.0&style=flat)](https://github.styleci.io/repos/360994768)
 [![PHPStan](https://img.shields.io/github/actions/workflow/status/userfrosting/framework/PHPStan.yml?branch=5.0&label=PHPStan)](https://github.com/userfrosting/framework/actions/workflows/PHPStan.yml)
 [![Join the chat](https://img.shields.io/badge/Chat-UserFrosting-brightgreen?logo=Rocket.Chat)](https://chat.userfrosting.com)
-[![Donate](https://img.shields.io/badge/Open_Collective-Donate-blue?logo=Open%20Collective
-)](https://opencollective.com/userfrosting#backer)
-[![Donate](https://img.shields.io/badge/Ko--fi-Donate-blue?logo=ko-fi&logoColor=white
-)](https://ko-fi.com/lcharette)
+[![Donate](https://img.shields.io/badge/Open_Collective-Donate-blue?logo=Open%20Collective)](https://opencollective.com/userfrosting#backer)
+[![Donate](https://img.shields.io/badge/Ko--fi-Donate-blue?logo=ko-fi&logoColor=white)](https://ko-fi.com/lcharette)
 
 ## Installation
 ```

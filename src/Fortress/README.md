@@ -1,4 +1,4 @@
-# Fortress 4
+# Fortress
 
 A schema-driven system for elegant whitelisting, transformation and validation of user input on both the client and server sides from a unified set of rules.
 
@@ -23,7 +23,7 @@ An example request schema, written using the [WDVSS standard](https://github.com
 
 **schema.yaml**
 
-```
+```yaml
 name:
     validators:
         length:
@@ -56,21 +56,36 @@ message:
 
 ### Request schema
 
-To read a YAML or JSON schema, use a `YamlFileLoader`:
+To read a YAML or JSON schema, simply pass the file path to the `RequestSchema` object:
 
+```php
+$schema = new \UserFrosting\Fortress\RequestSchema('schema/forms/contact.yaml');
 ```
+
+Behind the scene, `\UserFrosting\Support\Repository\Loader\YamlFileLoader` will be used to load the schema file. The previous code is equivalent to : 
+
+```php
 $loader = new \UserFrosting\Support\Repository\Loader\YamlFileLoader('schema/forms/contact.yaml');
+$schema = new \UserFrosting\Fortress\RequestSchema($loader->load());
 ```
 
-To use it, it must be read and loaded into a `RequestSchemaRepository` object:
+Alternatively, the schema can be passed directly as an array : 
 
-```
-$schema = new \UserFrosting\Fortress\RequestSchema\RequestSchemaRepository($loader->load());
+```php
+$schema = new \UserFrosting\Fortress\RequestSchema([
+    'messages' => [
+        'validators' => [
+            'required' => [
+                'message'       => 'Please enter a message',
+            ],
+        ],
+    ],
+]);
 ```
 
 You can add additional validation rules to a schema at runtime, if you wish:
 
-```
+```php
 $schema->addValidator("puppies", "required");
 
 $schema->addValidator("minions", "range", [
@@ -94,16 +109,16 @@ The data transformer performs the following tasks:
 2. Perform a series of transformations on the input data. For example, `trim` or `purify`.
 3. Set any default values for fields in the schema which are not present in the input array.
 
-```
+```php
 $post = [
     "puppies" => "<script>I'm definitely really a puppy  </script>0  ",
     "horses" => "seven pretty horses"
 ];
 
-$transformer = new \UserFrosting\Fortress\RequestDataTransformer($schema);
+$transformer = new \UserFrosting\Fortress\Transformer\RequestDataTransformer();
 
 // Transform, and print transformed data for demo purposes
-$transformedData = $transformer->transform($post, "skip");
+$transformedData = $transformer->transform($schema, $post, "skip");
 
 echo "<h2>Transformed data</h2>";
 echo "<pre>";
@@ -119,35 +134,34 @@ To process an array of user input, create a `ServerSideValidator` object with th
 
 Fortress requires a `Translator` (see [i18n](https://github.com/userfrosting/i18n)) object to translate message keys that may appear in rules:
 
-```
+```php
 $locale = new \UserFrosting\I18n\Locale('en_US');
-$dictionary = new \UserFrosting\I18n\Dictionary($locale, $this->ci->locator);
+$dictionary = new \UserFrosting\I18n\Dictionary($locale, $this->locator);
 $translator = new \UserFrosting\I18n\Translator($dictionary);
 ```
 
 Then, call `validate` on the input array. `validate` will return false if any of the rules are failed. Call `errors` to get the list of generated error messages. You might want to store these error messages to a flash messaging system so they can be shown to the user.
 
-```
-$validator = new \UserFrosting\Fortress\ServerSideValidator($schema, $translator);
+```php
+$validator = new \UserFrosting\Fortress\Validator\ServerSideValidator($translator);
 
-if (!$validator->validate($transformedData)) {
-    echo "<h2>Validation results</h2>";
-    echo "<pre>";
-    print_r($validator->errors());
-    echo "</pre>";
-}
+$errors = $validator->validate($schema, $transformedData);
+echo "<h2>Validation results</h2>";
+echo "<pre>";
+print_r($errors);
+echo "</pre>";
 ```
 
 ### Client-side data validation
 
 When generating a page or form, you will use one of the `Adapter` classes to generate a compatible set of rules from your WDVSS schema:
 
-```
+```php
 // Test client validators
-$clientVal = new \UserFrosting\Fortress\Adapter\JqueryValidationAdapter($schema, $translator);
+$clientVal = new \UserFrosting\Fortress\Adapter\JqueryValidationJsonAdapter($translator);
 echo "<h2>Client-side validation schema (JSON)</h2>";
 echo "<pre>";
-print_r($clientVal->rules());
+print_r($clientVal->rules($schema));
 echo "</pre>";
 ```
 
@@ -155,12 +169,12 @@ echo "</pre>";
 
 You can also add an array prefix to the field names to generate validation rules for the input schema that will wrap all the field names with the namespace of the form for which the validation rules are being generated.
 
-```
+```php
 // Test client validators
-$clientVal = new \UserFrosting\Fortress\Adapter\JqueryValidationAdapter($schema, $translator);
+$clientVal = new \UserFrosting\Fortress\Adapter\JqueryValidationJsonAdapter($translator);
 echo "<h2>Client-side validation schema (JSON)</h2>";
 echo "<pre>";
-print_r($clientVal->rules('json',false,'mycoolform1'));
+print_r($clientVal->rules($schema, 'mycoolform1'));
 echo "</pre>";
 ```
 
@@ -178,7 +192,7 @@ In the definitions of translatable message keys, the keyword "self" is reserved 
 
 for a field defined as:
 
-```
+```yaml
 tagline:
   validators:
     length:
