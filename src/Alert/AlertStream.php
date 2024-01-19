@@ -100,6 +100,8 @@ abstract class AlertStream
      * Add error messages from a ServerSideValidator object to the message stream.
      *
      * @param ServerSideValidator $validator
+     *
+     * @deprecated 5.1 This should be manually done in code.
      */
     public function addValidationErrors(ServerSideValidator $validator): void
     {

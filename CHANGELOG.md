@@ -94,6 +94,7 @@ Complete refactoring of Fortress. Mostly enforcing strict types, updating PHPDoc
 ### Alert
 - Messages are now translated at read time ([#1156](https://github.com/userfrosting/UserFrosting/pull/1156), [#811](https://github.com/userfrosting/UserFrosting/issues/811)). Messages will be translated when using `messages` and `getAndClearMessages`. `addMessage` now accept the optional placeholders, which will be stored with the alert message. `addMessageTranslated` is **deprecated**. 
 - Translator is not optional anymore. `setTranslator` method has been removed.
+- `addValidationErrors` is deprecated (N.B.: It can't accept the new `\UserFrosting\Fortress\Validator\ServerSideValidatorInterface`)
 
 ## [5.0.0](https://github.com/userfrosting/framework/compare/4.6.1...5.0.0)
 With version 5, this repo can be used as a bare bone Slim & Symfony Console application. It include the necessary routing class, [PHP-DI](https://php-di.org) as the Dependency Injection Container, a PSR EventDispatcher, etc. SprinkleManager has also been moved from Core/System Sprinkle and completely rewritten. 

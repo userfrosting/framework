@@ -197,6 +197,7 @@ class CacheAlertStreamTest extends TestCase
 
     /**
      * @depends testAddMessage
+     * @deprecated 5.1
      */
     public function testAddValidationErrors(): void
     {
