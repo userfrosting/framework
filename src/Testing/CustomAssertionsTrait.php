@@ -107,7 +107,7 @@ trait CustomAssertionsTrait
     /**
      * Asserts Json equals the passed structure.
      *
-     * @param array                    $expected Expected structure
+     * @param mixed[]                  $expected Expected structure
      * @param string|ResponseInterface $json     The json string
      * @param string|null              $key      Scope to the key if required. Support dot notation.
      */
