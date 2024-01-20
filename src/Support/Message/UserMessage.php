@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -11,13 +13,9 @@
 namespace UserFrosting\Support\Message;
 
 /**
- * UserMessage.
- *
  * A user-viewable message, consisting of a message string or message token, and zero or more parameters for the message.
  * Parameters can be used, for example, to fill in placeholders in dynamically generated messages.
  */
-// TODO : Rename to translatable message
-// TODO : Add __toString(), which will return a translated message (depend on Translator... or have Translator accept a TranslatableMessage)
 class UserMessage
 {
     /**

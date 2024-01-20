@@ -11,6 +11,7 @@
 namespace UserFrosting\Tests\I18n;
 
 use Mockery;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\I18n\Dictionary;
 use UserFrosting\I18n\DictionaryInterface;
@@ -22,9 +23,11 @@ use UserFrosting\UniformResourceLocator\ResourceLocator;
 
 class DictionaryTest extends TestCase
 {
-    protected $basePath;
+    use MockeryPHPUnitIntegration;
 
-    protected $locator;
+    protected string $basePath;
+
+    protected ResourceLocator $locator;
 
     public function setUp(): void
     {
@@ -32,11 +35,6 @@ class DictionaryTest extends TestCase
         $this->locator = new ResourceLocator($this->basePath);
 
         $this->locator->registerSharedStream('locale');
-    }
-
-    public function tearDown(): void
-    {
-        Mockery::close();
     }
 
     public function testConstructor(): void
@@ -186,12 +184,12 @@ class DictionaryTest extends TestCase
         // Prepare first mock Resource - File `Foo/Bar/File1.php`
         $file1 = Mockery::mock(Resource::class);
         $file1->shouldReceive('getExtension')->once()->andReturn('php');
-        $file1->shouldReceive('__toString')->once()->andReturn('Foo/Bar/File1.php');
+        $file1->shouldReceive('__toString')->times(2)->andReturn('Foo/Bar/File1.php');
 
         // Prepare second mock Resource - File `Bar/Foo/File2.php`
         $file2 = Mockery::mock(Resource::class);
         $file2->shouldReceive('getExtension')->once()->andReturn('php');
-        $file2->shouldReceive('__toString')->once()->andReturn('Bar/Foo/File2.php');
+        $file2->shouldReceive('__toString')->times(2)->andReturn('Bar/Foo/File2.php');
 
         // Prepare Third mock Resource - non `.php` file
         $file3 = Mockery::mock(Resource::class);

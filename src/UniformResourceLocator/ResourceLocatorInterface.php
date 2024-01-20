@@ -207,7 +207,7 @@ interface ResourceLocatorInterface
      *
      * @param string $uri  Input URI to be searched (can be a uri/path ONLY)
      * @param bool   $all  If true, all resources will be returned, not only topmost ones
-     * @param bool   $sort Set to true to sort results alphabetically by absolute path. Set to false to sort by absolute priority, higest location first. Default to true.
+     * @param bool   $sort Set to true to sort results alphabetically by absolute path. Set to false to sort by absolute priority, highest location first. Default to true.
      *
      * @return ResourceInterface[] The resources list
      */

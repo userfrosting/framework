@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -15,7 +17,7 @@ use UserFrosting\Support\Util\Util;
 
 class UtilTest extends TestCase
 {
-    public function testStringMatchesSuccess()
+    public function testStringMatchesSuccess(): void
     {
         $str = 'assets-raw/admin/assets/local/widgets/js/users.js';
 
@@ -40,7 +42,7 @@ class UtilTest extends TestCase
         ], $matches);
     }
 
-    public function testStringMatchesFail()
+    public function testStringMatchesFail(): void
     {
         $str = 'admin/owls/voles';
 
@@ -63,7 +65,7 @@ class UtilTest extends TestCase
      *           ["owls::", "voles"]
      *           ["owls::voles", ""]
      */
-    public function testStripPrefix($prefix, $expectedResult)
+    public function testStripPrefix($prefix, $expectedResult): void
     {
         $str = 'owls::voles';
         $this->assertSame($expectedResult, Util::stripPrefix($str, $prefix));

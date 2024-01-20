@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -16,15 +18,18 @@ use UserFrosting\Support\Exception\JsonException;
 use UserFrosting\Support\Repository\Loader\ArrayFileLoader;
 use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 use UserFrosting\Support\Repository\PathBuilder\SimpleGlobBuilder;
+use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
+use UserFrosting\UniformResourceLocator\ResourceStream;
 
 class RepositoryLoaderTest extends TestCase
 {
-    protected $basePath;
+    protected string $basePath;
 
-    protected $locator;
+    protected ResourceLocator $locator;
 
-    protected $targetData = [
+    /** @var mixed[] */
+    protected array $targetData = [
         'voles' => [
             'caught'   => 8,
             'devoured' => 8,
@@ -38,15 +43,15 @@ class RepositoryLoaderTest extends TestCase
         $this->basePath = __DIR__.'/data';
         $this->locator = new ResourceLocator($this->basePath);
 
-        $this->locator->registerStream('owls');
+        $this->locator->addStream(new ResourceStream('owls'));
 
         // Add them one at a time to simulate how they are added in SprinkleManager
-        $this->locator->registerLocation('core');
-        $this->locator->registerLocation('account');
-        $this->locator->registerLocation('admin');
+        $this->locator->addLocation(new ResourceLocation('core'));
+        $this->locator->addLocation(new ResourceLocation('account'));
+        $this->locator->addLocation(new ResourceLocation('admin'));
     }
 
-    public function testGlobLoadArrays()
+    public function testGlobLoadArrays(): void
     {
         // Arrange
         $builder = new SimpleGlobBuilder($this->locator, 'owls://');
@@ -58,7 +63,7 @@ class RepositoryLoaderTest extends TestCase
         $this->assertEquals($this->targetData, $data);
     }
 
-    public function testYamlFileLoader()
+    public function testYamlFileLoader(): void
     {
         // Arrange
         $builder = new SimpleGlobBuilder($this->locator, 'owls://');
@@ -73,7 +78,7 @@ class RepositoryLoaderTest extends TestCase
     /**
      * @depends testYamlFileLoader
      */
-    public function testYamlFileLoaderWithGetPaths()
+    public function testYamlFileLoaderWithGetPaths(): void
     {
         $data = [
             __DIR__.'data/core/owls/megascops.yaml',
@@ -88,7 +93,7 @@ class RepositoryLoaderTest extends TestCase
     /**
      * @depends testYamlFileLoader
      */
-    public function testYamlFileLoaderWithStringPath()
+    public function testYamlFileLoaderWithStringPath(): void
     {
         $loaderA = new YamlFileLoader([__DIR__.'data/core/owls/tyto.yaml']);
         $loaderB = new YamlFileLoader(__DIR__.'data/core/owls/tyto.yaml');
@@ -99,7 +104,7 @@ class RepositoryLoaderTest extends TestCase
     /**
      * @depends testYamlFileLoader
      */
-    public function testYamlFileLoaderWithPrependPath()
+    public function testYamlFileLoaderWithPrependPath(): void
     {
         $loaderA = new YamlFileLoader([
             __DIR__.'data/core/owls/megascops.yaml',
@@ -114,7 +119,7 @@ class RepositoryLoaderTest extends TestCase
     /**
      * @depends testYamlFileLoader
      */
-    public function testYamlFileLoaderWithFileNotFoundException()
+    public function testYamlFileLoaderWithFileNotFoundException(): void
     {
         // Arrange
         $loader = new YamlFileLoader([
@@ -125,13 +130,13 @@ class RepositoryLoaderTest extends TestCase
         $this->expectException(FileNotFoundException::class);
 
         // Act
-        $data = $loader->load(false);
+        $loader->load(false);
     }
 
     /**
      * @depends testYamlFileLoader
      */
-    public function testYamlFileLoaderWithSkipMissing()
+    public function testYamlFileLoaderWithSkipMissing(): void
     {
         // Arrange
         $loader = new YamlFileLoader([
@@ -148,7 +153,7 @@ class RepositoryLoaderTest extends TestCase
      * @depends testYamlFileLoader
      * @depends testYamlFileLoaderWithStringPath
      */
-    public function testYamlFileLoaderWithNotReadable()
+    public function testYamlFileLoaderWithNotReadable(): void
     {
         // Need to mock `is_readable`. That's why it's wrapped in a method, so we can properly test the exception.
         // @see https://stackoverflow.com/a/20080850
@@ -164,14 +169,14 @@ class RepositoryLoaderTest extends TestCase
         $this->expectExceptionMessage("The repository file '$path' exists, but it could not be read.");
 
         // Act
-        $data = $loader->load();
+        $loader->load();
     }
 
     /**
      * @depends testYamlFileLoader
      * @depends testYamlFileLoaderWithStringPath
      */
-    public function testYamlFileLoaderWithFalseFileContent()
+    public function testYamlFileLoaderWithFalseFileContent(): void
     {
         // Need to mock `file_get_contents`. That's why it's wrapped in a method, so we can properly test the exception.
         // @see https://stackoverflow.com/a/53905681/445757
@@ -187,7 +192,7 @@ class RepositoryLoaderTest extends TestCase
         $this->expectExceptionMessage("The file '$path' could not be read.");
 
         // Act
-        $data = $loader->load();
+        $loader->load();
     }
 
     /**
@@ -196,7 +201,7 @@ class RepositoryLoaderTest extends TestCase
      * @depends testYamlFileLoader
      * @depends testYamlFileLoaderWithStringPath
      */
-    public function testYamlFileLoaderWithNoFileContent()
+    public function testYamlFileLoaderWithNoFileContent(): void
     {
         $loader = new YamlFileLoader(__DIR__.'/data/core/owls/empty.yaml');
 
@@ -211,7 +216,7 @@ class RepositoryLoaderTest extends TestCase
      *
      * @depends testYamlFileLoaderWithNoFileContent
      */
-    public function testYamlFileLoaderWithNoFileContentOnFirstFile()
+    public function testYamlFileLoaderWithNoFileContentOnFirstFile(): void
     {
         $loader = new YamlFileLoader([
             __DIR__.'/data/core/owls/empty.yaml',
@@ -231,7 +236,7 @@ class RepositoryLoaderTest extends TestCase
      *
      * @depends testYamlFileLoaderWithNoFileContent
      */
-    public function testYamlFileLoaderWithNoFileContentOnSecondFile()
+    public function testYamlFileLoaderWithNoFileContentOnSecondFile(): void
     {
         $loader = new YamlFileLoader([
             __DIR__.'/data/core/owls/tyto.yaml',
@@ -249,7 +254,7 @@ class RepositoryLoaderTest extends TestCase
     /**
      * @depends testYamlFileLoader
      */
-    public function testLoadYamlWithJsonData()
+    public function testLoadYamlWithJsonData(): void
     {
         // Arrange
         $builder = new SimpleGlobBuilder($this->locator, 'owls://');
@@ -266,7 +271,7 @@ class RepositoryLoaderTest extends TestCase
     /**
      * @depends testYamlFileLoader
      */
-    public function testLoadYamlWithPhpData()
+    public function testLoadYamlWithPhpData(): void
     {
         // Arrange
         $builder = new SimpleGlobBuilder($this->locator, 'owls://');
@@ -276,6 +281,6 @@ class RepositoryLoaderTest extends TestCase
         $this->expectException(JsonException::class);
 
         // Act
-        $data = $loader->load(false);
+        $loader->load(false);
     }
 }

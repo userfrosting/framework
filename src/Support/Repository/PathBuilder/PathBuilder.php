@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -14,8 +16,6 @@ use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 /**
  * Base PathBuilder class.
- *
- * @author Alexander Weissman (https://alexanderweissman.com)
  */
 abstract class PathBuilder
 {
@@ -34,7 +34,7 @@ abstract class PathBuilder
     /**
      * Build out the ordered list of file paths, using the designated locator and uri for this loader.
      *
-     * @return array
+     * @return string[]
      */
-    abstract public function buildPaths();
+    abstract public function buildPaths(): array;
 }

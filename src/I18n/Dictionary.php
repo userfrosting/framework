@@ -129,6 +129,7 @@ class Dictionary extends Repository implements DictionaryInterface
         // Get list of files to load
         $files = $this->getFiles();
         $files = $this->filterDictionaryFiles($files);
+        $files = array_map('strval', $files);
 
         // Load all files content if files are present
         if (count($files) !== 0) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -14,7 +16,9 @@ use PHPUnit\Framework\TestCase;
 use UserFrosting\Support\Repository\PathBuilder\SimpleGlobBuilder;
 use UserFrosting\Support\Repository\PathBuilder\StreamPathBuilder;
 use UserFrosting\UniformResourceLocator\Normalizer;
+use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
+use UserFrosting\UniformResourceLocator\ResourceStream;
 
 class PathBuilderTest extends TestCase
 {
@@ -27,12 +31,12 @@ class PathBuilderTest extends TestCase
         $this->basePath = Normalizer::normalizePath(__DIR__.'/data');
         $this->locator = new ResourceLocator($this->basePath);
 
-        $this->locator->registerStream('owls');
+        $this->locator->addStream(new ResourceStream('owls'));
 
         // Add them one at a time to simulate how they are added in SprinkleManager
-        $this->locator->registerLocation('core');
-        $this->locator->registerLocation('account');
-        $this->locator->registerLocation('admin');
+        $this->locator->addLocation(new ResourceLocation('core'));
+        $this->locator->addLocation(new ResourceLocation('account'));
+        $this->locator->addLocation(new ResourceLocation('admin'));
     }
 
     public function testGlobBuildPaths(): void

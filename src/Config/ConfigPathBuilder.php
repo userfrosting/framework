@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -34,7 +36,7 @@ class ConfigPathBuilder extends PathBuilder
 
         $filePaths = [];
         foreach ($searchPaths as $path) {
-            $cleanPath = rtrim($path, '/\\') . '/';
+            $cleanPath = rtrim((string) $path, '/\\') . '/';
 
             $filePaths[] = $cleanPath . 'default.php';
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -11,12 +13,7 @@
 namespace UserFrosting\Support\Util;
 
 /**
- * Util Class.
- *
  * Static utility functions for UserFrosting.
- *
- * @author Alex Weissman (https://alexanderweissman.com)
- * @author RocketTheme (http://www.rockettheme.com/)
  */
 class Util
 {
@@ -28,10 +25,9 @@ class Util
      *
      * @return string
      */
-    public static function stripPrefix($str, $prefix = '')
+    public static function stripPrefix(string $str, string $prefix = ''): string
     {
         // if string is same as prefix, return empty string
-        // Otherwise PHP 5.6 will return false
         if ($str === $prefix) {
             return '';
         }
@@ -46,22 +42,28 @@ class Util
     /**
      * Determine if a given string matches one or more regular expressions.
      *
-     * @param string|array $patterns
-     * @param string       $subject
-     * @param array        $matches
-     * @param string       $delimiter
-     * @param int          $flags
-     * @param int          $offset
+     * @param string|string[] $patterns
+     * @param string          $subject
+     * @param mixed[]|null    $matches
+     * @param string          $delimiter
+     * @param 0|256|512|768   $flags
+     * @param int             $offset
      *
      * @return bool
      */
-    public static function stringMatches($patterns, $subject, array &$matches = null, $delimiter = '~', $flags = 0, $offset = 0)
-    {
+    public static function stringMatches(
+        string|array $patterns,
+        string $subject,
+        ?array &$matches = null,
+        string $delimiter = '~',
+        int $flags = 0,
+        int $offset = 0
+    ): bool {
         $matches = [];
         $result = false;
         foreach ((array) $patterns as $pattern) {
             $currMatches = [];
-            if ($pattern != '' && preg_match($delimiter . $pattern . $delimiter, $subject, $currMatches, $flags, $offset)) {
+            if ($pattern != '' && preg_match($delimiter . $pattern . $delimiter, $subject, $currMatches, $flags, $offset) === 1) {
                 $result = true;
                 $matches[$pattern] = $currMatches;
             }
@@ -73,12 +75,12 @@ class Util
     /**
      * Recursively apply a callback to members of an array.
      *
-     * @param array    $input
-     * @param callable $callback
+     * @param mixed[]       $input
+     * @param callable|null $callback
      *
-     * @return array
+     * @return mixed[]
      */
-    public static function arrayFilterRecursive($input, $callback = null)
+    public static function arrayFilterRecursive(array $input, $callback = null): array
     {
         foreach ($input as &$value) {
             if (is_array($value)) {

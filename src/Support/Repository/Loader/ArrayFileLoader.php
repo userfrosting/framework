@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -12,8 +14,6 @@ namespace UserFrosting\Support\Repository\Loader;
 
 /**
  * Load files from a PHP array.
- *
- * @author Alexander Weissman (https://alexanderweissman.com)
  */
 class ArrayFileLoader extends FileRepositoryLoader
 {

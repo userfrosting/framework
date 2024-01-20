@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -14,22 +16,20 @@ use UserFrosting\Support\Exception\FileNotFoundException;
 
 /**
  * Loads repository data from a list of file paths.
- *
- * @author Alexander Weissman (https://alexanderweissman.com)
  */
 abstract class FileRepositoryLoader
 {
     /**
      * @var string[] An array of paths to ultimately load the data from.
      */
-    protected $paths = [];
+    protected array $paths = [];
 
     /**
      * Create the loader.
      *
      * @param string|string[] $paths
      */
-    public function __construct($paths)
+    public function __construct(string|array $paths)
     {
         $this->setPaths($paths);
     }
@@ -66,13 +66,13 @@ abstract class FileRepositoryLoader
      * Fetch content from a single file path.
      *
      * @param string $path
-     * @param bool   $skipMissing True to ignore bad file paths.  If set to false, will throw an exception instead.
+     * @param bool   $skipMissing True to ignore bad file paths. If set to false, will throw an exception instead.
      *
      * @throws FileNotFoundException
      *
      * @return mixed[]
      */
-    public function loadFile(string $path, $skipMissing = true): array
+    public function loadFile(string $path, bool $skipMissing = true): array
     {
         if (!file_exists($path)) {
             if ($skipMissing) {
@@ -106,8 +106,10 @@ abstract class FileRepositoryLoader
      * Add a file path to the top of the stack.
      *
      * @param string $path
+     *
+     * @return static
      */
-    public function addPath(string $path): self
+    public function addPath(string $path): static
     {
         $this->paths[] = rtrim($path, '/\\');
 
@@ -118,8 +120,10 @@ abstract class FileRepositoryLoader
      * Add a file path to the bottom of the stack.
      *
      * @param string $path
+     *
+     * @return static
      */
-    public function prependPath($path): self
+    public function prependPath($path): static
     {
         array_unshift($this->paths, rtrim($path, '/\\'));
 
@@ -130,8 +134,10 @@ abstract class FileRepositoryLoader
      * Set the internal array of file paths.
      *
      * @param string|string[] $paths
+     *
+     * @return static
      */
-    public function setPaths($paths): self
+    public function setPaths(string|array $paths): static
     {
         if (!is_array($paths)) {
             $paths = [$paths];

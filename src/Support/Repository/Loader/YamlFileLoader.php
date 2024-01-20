@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -17,8 +19,6 @@ use UserFrosting\Support\Exception\JsonException;
 
 /**
  * Load content from yaml/json files.
- *
- * @author Alexander Weissman (https://alexanderweissman.com)
  */
 class YamlFileLoader extends FileRepositoryLoader
 {
@@ -57,7 +57,7 @@ class YamlFileLoader extends FileRepositoryLoader
      *
      * @return string|false
      */
-    protected function fileGetContents(string $path)
+    protected function fileGetContents(string $path): string|false
     {
         return file_get_contents($path);
     }

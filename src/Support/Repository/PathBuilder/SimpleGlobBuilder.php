@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -30,7 +32,7 @@ class SimpleGlobBuilder extends PathBuilder
 
         $filePaths = [];
         foreach ($searchPaths as $path) {
-            $globs = glob(rtrim($path, '/\\') . '/*.' . $extension);
+            $globs = glob(rtrim((string) $path, '/\\') . '/*.' . $extension);
             $globs = ($globs === false) ? [] : $globs;
             $filePaths = array_merge($filePaths, $globs);
         }
