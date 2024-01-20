@@ -10,9 +10,9 @@
 
 namespace UserFrosting\Fortress\Transformer;
 
-use Exception;
 use HTMLPurifier;
 use HTMLPurifier_Config;
+use UserFrosting\Fortress\FortressException;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaInterface;
 
 /**
@@ -53,8 +53,7 @@ final class RequestDataTransformer implements RequestDataTransformerInterface
             if (array_key_exists($name, $schemaFields) || $onUnexpectedVar === 'allow') {
                 $transformedData[$name] = $this->transformField($schema, $name, $value);
             } elseif ($onUnexpectedVar === 'error') {
-                // TODO : Custom exception
-                $e = new Exception("The field '$name' is not a valid input field.");
+                $e = new FortressException("The field '$name' is not a valid input field.");
 
                 throw $e;
             }

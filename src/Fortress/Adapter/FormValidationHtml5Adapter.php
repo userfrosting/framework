@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace UserFrosting\Fortress\Adapter;
 
 use UnhandledMatchError;
+use UserFrosting\Fortress\FortressException;
 use UserFrosting\Fortress\RequestSchema\RequestSchemaInterface;
 
 /**
@@ -173,8 +174,7 @@ final class FormValidationHtml5Adapter implements ValidationAdapterInterface
     private function transformMatch(array $validator): string
     {
         if (!isset($validator['field'])) {
-            // TODO: Custom Exception
-            throw new \Exception('Match validator must have a field parameter');
+            throw new FortressException('Match validator must have a field parameter');
         }
 
         $prefix = 'data-fv-identical';

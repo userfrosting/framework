@@ -65,7 +65,7 @@ final class JqueryValidationArrayAdapter implements ValidationAdapterInterface
                         continue;
                     }
 
-                    $newRules = $this->transformValidator($fieldNamePrefixed, $validatorName, $validator); // TODO : Prefixed? Really?
+                    $newRules = $this->transformValidator($fieldNamePrefixed, $validatorName, $validator);
                     $rules[$fieldNamePrefixed] = array_merge($rules[$fieldNamePrefixed], $newRules);
 
                     // Message
