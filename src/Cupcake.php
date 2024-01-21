@@ -35,7 +35,7 @@ abstract class Cupcake
     /**
      * Constructor.
      *
-     * @param string $mainSprinkle
+     * @param class-string<\UserFrosting\Sprinkle\SprinkleRecipe> $mainSprinkle
      */
     public function __construct(protected string $mainSprinkle)
     {

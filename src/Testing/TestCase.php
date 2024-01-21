@@ -44,6 +44,8 @@ class TestCase extends BaseTestCase
 
     /**
      * String reference to SprinkleRecipe.
+     *
+     * @var class-string<\UserFrosting\Sprinkle\SprinkleRecipe>
      */
     protected string $mainSprinkle;
 

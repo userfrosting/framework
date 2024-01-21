@@ -20,7 +20,7 @@ interface BakeryRecipe
     /**
      * Return an array of all registered Bakery Commands.
      *
-     * @return string[]
+     * @return class-string<\Symfony\Component\Console\Command\Command>[]
      */
     public function getBakeryCommands(): array;
 }

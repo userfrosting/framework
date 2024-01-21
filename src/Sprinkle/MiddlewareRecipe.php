@@ -20,7 +20,7 @@ interface MiddlewareRecipe
     /**
      * Returns a list of all Middlewares classes.
      *
-     * @return string[]
+     * @return class-string<\Psr\Http\Server\MiddlewareInterface>[]
      */
     public function getMiddlewares(): array;
 }

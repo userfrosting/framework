@@ -39,9 +39,9 @@ class SprinkleManager
     /**
      * Load sprinkles on construction.
      *
-     * @param string|SprinkleRecipe $mainSprinkle
+     * @param class-string<SprinkleRecipe> $mainSprinkle
      */
-    public function __construct(string|SprinkleRecipe $mainSprinkle)
+    public function __construct(string $mainSprinkle)
     {
         $this->mainSprinkle = $this->validateClassIsRecipe($mainSprinkle);
         $this->loadSprinkles();
@@ -91,16 +91,12 @@ class SprinkleManager
      * Return if a Sprinkle class is available.
      * Can be used by other Sprinkles to test if their dependencies are met.
      *
-     * @param string|SprinkleRecipe $sprinkle The class of the Sprinkle
+     * @param class-string<SprinkleRecipe> $sprinkle The class of the Sprinkle
      *
      * @return bool
      */
-    public function isAvailable(string|SprinkleRecipe $sprinkle): bool
+    public function isAvailable(string $sprinkle): bool
     {
-        if (!is_string($sprinkle)) {
-            $sprinkle = $sprinkle::class;
-        }
-
         return array_key_exists($sprinkle, $this->sprinkles);
     }
 
@@ -149,19 +145,15 @@ class SprinkleManager
      * Instantiate a class string into an instance of SprinkleRecipe.
      * Provides flexibility, allowing string and object to be referenced.
      *
-     * @param string|SprinkleRecipe $class
+     * @param class-string $class
      *
      * @throws BadClassNameException  If $class is not found
      * @throws BadInstanceOfException If $class doesn't implement SprinkleRecipe interface.
      *
      * @return SprinkleRecipe
      */
-    protected function validateClassIsRecipe(string|SprinkleRecipe $class): SprinkleRecipe
+    protected function validateClassIsRecipe(string $class): SprinkleRecipe
     {
-        if (!is_string($class)) {
-            return $class;
-        }
-
         if (!class_exists($class)) {
             throw new BadClassNameException("Sprinkle recipe class `$class` not found.");
         }
@@ -181,19 +173,15 @@ class SprinkleManager
      * Instantiate a class string into an instance of ServicesProviderInterface.
      * Provides flexibility, allowing string and object to be referenced.
      *
-     * @param string|ServicesProviderInterface $class
+     * @param class-string $class
      *
      * @throws BadClassNameException  If $class is not found
      * @throws BadInstanceOfException If $class doesn't implement ServicesProviderInterface interface.
      *
      * @return ServicesProviderInterface
      */
-    protected function validateClassIsServicesProvider(string|ServicesProviderInterface $class): ServicesProviderInterface
+    protected function validateClassIsServicesProvider(string $class): ServicesProviderInterface
     {
-        if (!is_string($class)) {
-            return $class;
-        }
-
         if (!class_exists($class)) {
             throw new BadClassNameException("Services provider class `$class` not found. Make sure the class is correctly defined in your sprinkle's recipe.");
         }

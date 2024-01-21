@@ -59,6 +59,7 @@ class BadCommandSprinkleStub extends TestSprinkle
 {
     public function getBakeryCommands(): array
     {
+        // @phpstan-ignore-next-line
         return [
             \stdClass::class,
         ];

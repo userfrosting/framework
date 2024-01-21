@@ -34,21 +34,21 @@ interface SprinkleRecipe
     /**
      * Return dependent sprinkles.
      *
-     * @return string[]|SprinkleRecipe[]
+     * @return class-string<SprinkleRecipe>[]
      */
     public function getSprinkles(): array;
 
     /**
      * Returns a list of routes definition in PHP files.
      *
-     * @return string[]
+     * @return class-string<\UserFrosting\Routes\RouteDefinitionInterface>[]
      */
     public function getRoutes(): array;
 
     /**
      * Returns a list of all PHP-DI services/container definitions class.
      *
-     * @return string[]|\UserFrosting\ServicesProvider\ServicesProviderInterface[]
+     * @return class-string<\UserFrosting\ServicesProvider\ServicesProviderInterface>[]
      */
     public function getServices(): array;
 }

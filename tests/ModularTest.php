@@ -39,7 +39,7 @@ class ServiceSprinkleStub extends TestSprinkle
     public function getServices(): array
     {
         return [
-            new TestServicesProviders(),
+            TestServicesProviders::class,
         ];
     }
 }

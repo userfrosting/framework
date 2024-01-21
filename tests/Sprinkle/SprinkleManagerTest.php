@@ -43,15 +43,13 @@ class SprinkleManagerTest extends TestCase
      */
     public function testGetSprinklesWithNoDependentAndObject(): void
     {
-        $core = new CoreStub();
-        $manager = new SprinkleManager($core);
+        $manager = new SprinkleManager(CoreStub::class);
         $sprinkles = $manager->getSprinkles();
 
         $this->assertCount(1, $sprinkles);
         $this->assertContainsOnlyInstancesOf(CoreStub::class, $sprinkles);
 
         // Test isAvailable while at it
-        $this->assertTrue($manager->isAvailable($core));
         $this->assertTrue($manager->isAvailable(CoreStub::class));
         $this->assertFalse($manager->isAvailable(AdminStub::class));
     }
@@ -121,7 +119,7 @@ class SprinkleManagerTest extends TestCase
     public function testConstructorWithBadSprinkleClass(): void
     {
         $this->expectException(BadInstanceOfException::class);
-        new SprinkleManager(\stdClass::class);
+        new SprinkleManager(\stdClass::class); // @phpstan-ignore-line
     }
 
     public function testConstructorWithNonExistingClass(): void
@@ -270,7 +268,7 @@ class NotSprinkleStub extends TestSprinkle
 {
     public function getSprinkles(): array
     {
-        return [\stdClass::class];
+        return [\stdClass::class]; // @phpstan-ignore-line
     }
 }
 
@@ -278,22 +276,22 @@ class BadInstanceOfSprinkleStub extends TestSprinkle
 {
     public function getRoutes(): array
     {
-        return [\stdClass::class];
+        return [\stdClass::class]; // @phpstan-ignore-line
     }
 
     public function getServices(): array
     {
-        return [\stdClass::class];
+        return [\stdClass::class]; // @phpstan-ignore-line
     }
 
     public function getBakeryCommands(): array
     {
-        return [\stdClass::class];
+        return [\stdClass::class]; // @phpstan-ignore-line
     }
 
     public function getMiddlewares(): array
     {
-        return [\stdClass::class];
+        return [\stdClass::class]; // @phpstan-ignore-line
     }
 }
 
@@ -301,20 +299,17 @@ class NotFoundStub extends TestSprinkle
 {
     public function getServices(): array
     {
-        // @phpstan-ignore-next-line
-        return [NotFound::class];
+        return [NotFound::class]; // @phpstan-ignore-line
     }
 
     public function getBakeryCommands(): array
     {
-        // @phpstan-ignore-next-line
-        return [NotFound::class];
+        return [NotFound::class]; // @phpstan-ignore-line
     }
 
     public function getMiddlewares(): array
     {
-        // @phpstan-ignore-next-line
-        return [NotFound::class];
+        return [NotFound::class]; // @phpstan-ignore-line
     }
 }
 
@@ -323,7 +318,7 @@ class ServiceSprinkleStub extends TestSprinkle
     public function getServices(): array
     {
         return [
-            new TestServicesProviders(),
+            TestServicesProviders::class,
         ];
     }
 }
@@ -333,7 +328,7 @@ class ChildServiceSprinkleStub extends TestSprinkle
     public function getServices(): array
     {
         return [
-            new OverwriteTestServicesProviders(),
+            OverwriteTestServicesProviders::class,
             OtherTestServicesProviders::class,
         ];
     }

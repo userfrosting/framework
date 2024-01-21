@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Drop PHP 8.1 support, add PHP 8.3 support
 - Update to Laravel 10
 - Update to PHPUnit 10
+- SprinkleManager is a bit more strict on argument types. Recipe classed must be a `class-string`. The actual instance of the class will now be rejected (it wasn't a documented feature anyway).
 
 ### Fortress
 Complete refactoring of Fortress. Mostly enforcing strict types, updating PHPDocs, simplifying code logic and making uses of new PHP features and method. Most classes have been deprecated and replaced by new classes with updated implementation. In general, instead of passing the *schema* in the constructor of Adapters, Transformers and Validators class, you pass it directly to theses class methods. This makes it easier to inject the classes as services and reuse the same instance with different schemas. Checkout the documentation for more information on new class usage. 
