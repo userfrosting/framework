@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -11,28 +13,31 @@
 namespace UserFrosting\Tests\I18n;
 
 use Mockery;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\I18n\Compare;
 use UserFrosting\I18n\DictionaryInterface;
 
 class CompareTest extends TestCase
 {
-    /**
-     * @var DictionaryInterface
-     */
-    protected $left;
+    use MockeryPHPUnitIntegration;
 
     /**
      * @var DictionaryInterface
      */
-    protected $right;
+    protected DictionaryInterface $left;
+
+    /**
+     * @var DictionaryInterface
+     */
+    protected DictionaryInterface $right;
 
     /**
      * {@inheritdoc}
      */
-    public function setup(): void
+    public function setUp(): void
     {
-        parent::setup();
+        parent::setUp();
 
         $this->left = Mockery::mock(DictionaryInterface::class);
         $this->left->shouldReceive('getFlattenDictionary')->andReturn([
@@ -56,14 +61,6 @@ class CompareTest extends TestCase
             'color.@TRANSLATION' => 'Color',
             'color.red'          => 'Red',
         ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function tearDown(): void
-    {
-        Mockery::close();
     }
 
     public function testDictionaries(): void

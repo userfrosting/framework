@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,16 +12,16 @@
 
 namespace UserFrosting\Tests\I18n;
 
+use LogicException;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 use UserFrosting\I18n\Dictionary;
-use UserFrosting\I18n\DictionaryInterface;
 use UserFrosting\I18n\Locale;
-use UserFrosting\I18n\LocaleInterface;
 use UserFrosting\Support\Repository\Loader\ArrayFileLoader;
 use UserFrosting\UniformResourceLocator\Resource;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
+use UserFrosting\UniformResourceLocator\ResourceStream;
 
 class DictionaryTest extends TestCase
 {
@@ -34,61 +36,44 @@ class DictionaryTest extends TestCase
         $this->basePath = __DIR__.'/data/dictionary';
         $this->locator = new ResourceLocator($this->basePath);
 
-        $this->locator->registerSharedStream('locale');
+        $this->locator->addStream(new ResourceStream('locale', shared: true));
     }
 
-    public function testConstructor(): void
-    {
-        $locale = Mockery::mock(Locale::class);
-
-        $dictionary = new Dictionary($locale, $this->locator);
-        $this->assertInstanceOf(DictionaryInterface::class, $dictionary);
-    }
-
-    /**
-     * @depends testConstructor
-     */
     public function testGetLocale(): void
     {
         $locale = Mockery::mock(Locale::class);
         $locator = Mockery::mock(ResourceLocator::class);
         $dictionary = new Dictionary($locale, $locator); //<-- Test no fileLoader too
 
-        // Make sure constructor works
-        $this->assertInstanceOf(DictionaryInterface::class, $dictionary);
-        $this->assertInstanceOf(LocaleInterface::class, $dictionary->getLocale());
+        $this->assertSame($locale, $dictionary->getLocale());
     }
 
-    /**
-     * @depends testConstructor
-     */
     public function testGetDictionary_withNoDependentLocaleNoData(): void
     {
         // Prepare mocked locale - aa_bb
-        $locale = Mockery::mock(Locale::class);
-        $locale->shouldReceive('getDependentLocales')->andReturn([]);
-        $locale->shouldReceive('getDependentLocalesIdentifier')->andReturn([]);
-        $locale->shouldReceive('getIdentifier')->andReturn('aa_bb');
+        /** @var Locale */
+        $locale = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->andReturn([])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn([])
+            ->shouldReceive('getIdentifier')->andReturn('aa_bb')
+            ->getMock();
 
         // Prepare mock Locator - Return no file
-        $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->with('locale://aa_bb', true, false)->andReturn([]);
+        /** @var ResourceLocator */
+        $locator = Mockery::mock(ResourceLocator::class)
+            ->shouldReceive('listResources')->with('locale://aa_bb', true, false)->andReturn([])
+            ->getMock();
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
-        $fileLoader = Mockery::mock(ArrayFileLoader::class);
-        $fileLoader->shouldNotReceive('setPaths');
-        $fileLoader->shouldNotReceive('load');
-
-        // Set expectations
-        $expectedResult = [];
-
-        // Get dictionary
-        $dictionary = new Dictionary($locale, $locator, $fileLoader);
-        $data = $dictionary->getDictionary();
+        /** @var ArrayFileLoader */
+        $fileLoader = Mockery::mock(ArrayFileLoader::class)
+            ->shouldNotReceive('setPaths')
+            ->shouldNotReceive('load')
+            ->getMock();
 
         // Perform assertions
-        $this->assertIsArray($data);
-        $this->assertEquals($expectedResult, $data);
+        $dictionary = new Dictionary($locale, $locator, $fileLoader);
+        $this->assertEquals([], $dictionary->getDictionary());
     }
 
     /**
@@ -97,31 +82,30 @@ class DictionaryTest extends TestCase
     public function testSetUri(): void
     {
         // Prepare mocked locale - aa_bb
-        $locale = Mockery::mock(Locale::class);
-        $locale->shouldReceive('getDependentLocales')->andReturn([]);
-        $locale->shouldReceive('getDependentLocalesIdentifier')->andReturn([]);
-        $locale->shouldReceive('getIdentifier')->andReturn('aa_bb');
+        /** @var Locale */
+        $locale = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->andReturn([])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn([])
+            ->shouldReceive('getIdentifier')->andReturn('aa_bb')
+            ->getMock();
 
         // Prepare mock Locator - Return no file
-        $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->with('foo://aa_bb', true, false)->andReturn([]);
+        /** @var ResourceLocator */
+        $locator = Mockery::mock(ResourceLocator::class)
+            ->shouldReceive('listResources')->with('foo://aa_bb', true, false)->andReturn([])
+            ->getMock();
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
-        $fileLoader = Mockery::mock(ArrayFileLoader::class);
-        $fileLoader->shouldNotReceive('setPaths');
-        $fileLoader->shouldNotReceive('load');
-
-        // Set expectations
-        $expectedResult = [];
-
-        // Get dictionary
-        $dictionary = new Dictionary($locale, $locator, $fileLoader);
-        $dictionary->setUri('foo://');
-        $data = $dictionary->getDictionary();
+        /** @var ArrayFileLoader */
+        $fileLoader = Mockery::mock(ArrayFileLoader::class)
+            ->shouldNotReceive('setPaths')
+            ->shouldNotReceive('load')
+            ->getMock();
 
         // Perform assertions
-        $this->assertIsArray($data);
-        $this->assertEquals($expectedResult, $data);
+        $dictionary = new Dictionary($locale, $locator, $fileLoader);
+        $dictionary->setUri('foo://');
+        $this->assertEquals([], $dictionary->getDictionary());
     }
 
     /**
@@ -133,32 +117,36 @@ class DictionaryTest extends TestCase
         $expectedResult = ['Foo' => 'Bar'];
 
         // Prepare mocked locale - aa_bb
-        $locale = Mockery::mock(Locale::class);
-        $locale->shouldReceive('getDependentLocales')->andReturn([]);
-        $locale->shouldReceive('getDependentLocalesIdentifier')->andReturn([]);
-        $locale->shouldReceive('getIdentifier')->andReturn('aa_bb');
+        /** @var Locale */
+        $locale = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->andReturn([])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn([])
+            ->shouldReceive('getIdentifier')->andReturn('aa_bb')
+            ->getMock();
 
         // Prepare mock Resource - File `Foo/Bar/File1.php`
-        $file = Mockery::mock(Resource::class);
-        $file->shouldReceive('getExtension')->andReturn('php');
-        $file->shouldReceive('__toString')->andReturn('Foo/Bar/File1.php');
+        /** @var \UserFrosting\UniformResourceLocator\Resource */
+        $file = Mockery::mock(Resource::class)
+            ->shouldReceive('getExtension')->andReturn('php')
+            ->shouldReceive('__toString')->andReturn('Foo/Bar/File1.php')
+            ->getMock();
 
         // Prepare mock Locator - Return the file
-        $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->with('locale://aa_bb', true, false)->andReturn([$file]);
+        /** @var ResourceLocator */
+        $locator = Mockery::mock(ResourceLocator::class)
+            ->shouldReceive('listResources')->with('locale://aa_bb', true, false)->andReturn([$file])
+            ->getMock();
 
         // Prepare mock FileLoader - Will return the mock file, with a mock data
-        $fileLoader = Mockery::mock(ArrayFileLoader::class);
-        $fileLoader->shouldReceive('setPaths')->with(['Foo/Bar/File1.php']);
-        $fileLoader->shouldReceive('load')->andReturn($expectedResult);
-
-        // Get dictionary
-        $dictionary = new Dictionary($locale, $locator, $fileLoader);
-        $data = $dictionary->getDictionary();
+        /** @var ArrayFileLoader */
+        $fileLoader = Mockery::mock(ArrayFileLoader::class)
+            ->shouldReceive('setPaths')->with(['Foo/Bar/File1.php'])
+            ->shouldReceive('load')->andReturn($expectedResult)
+            ->getMock();
 
         // Perform assertions
-        $this->assertIsArray($data);
-        $this->assertEquals($expectedResult, $data);
+        $dictionary = new Dictionary($locale, $locator, $fileLoader);
+        $this->assertEquals($expectedResult, $dictionary->getDictionary());
     }
 
     /**
@@ -177,41 +165,44 @@ class DictionaryTest extends TestCase
         ];
 
         // Prepare mocked locale - aa_bb
-        $locale = Mockery::mock(Locale::class);
-        $locale->shouldReceive('getDependentLocales')->once()->andReturn([]);
-        $locale->shouldReceive('getIdentifier')->twice()->andReturn('aa_bb');
+        $locale = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->once()->andReturn([])
+            ->shouldReceive('getIdentifier')->twice()->andReturn('aa_bb')
+            ->getMock();
 
         // Prepare first mock Resource - File `Foo/Bar/File1.php`
-        $file1 = Mockery::mock(Resource::class);
-        $file1->shouldReceive('getExtension')->once()->andReturn('php');
-        $file1->shouldReceive('__toString')->times(2)->andReturn('Foo/Bar/File1.php');
+        $file1 = Mockery::mock(Resource::class)
+            ->shouldReceive('getExtension')->once()->andReturn('php')
+            ->shouldReceive('__toString')->times(2)->andReturn('Foo/Bar/File1.php')
+            ->getMock();
 
         // Prepare second mock Resource - File `Bar/Foo/File2.php`
-        $file2 = Mockery::mock(Resource::class);
-        $file2->shouldReceive('getExtension')->once()->andReturn('php');
-        $file2->shouldReceive('__toString')->times(2)->andReturn('Bar/Foo/File2.php');
+        $file2 = Mockery::mock(Resource::class)
+            ->shouldReceive('getExtension')->once()->andReturn('php')
+            ->shouldReceive('__toString')->times(2)->andReturn('Bar/Foo/File2.php')
+            ->getMock();
 
         // Prepare Third mock Resource - non `.php` file
-        $file3 = Mockery::mock(Resource::class);
-        $file3->shouldReceive('getExtension')->once()->andReturn('txt');
-        $file3->shouldNotReceive('__toString');
+        $file3 = Mockery::mock(Resource::class)
+            ->shouldReceive('getExtension')->once()->andReturn('txt')
+            ->shouldNotReceive('__toString')
+            ->getMock();
 
         // Prepare mock Locator - Return the file
-        $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->with('locale://aa_bb', true, false)->once()->andReturn([$file1, $file2, $file3]);
+        /** @var ResourceLocator */
+        $locator = Mockery::mock(ResourceLocator::class)
+            ->shouldReceive('listResources')->with('locale://aa_bb', true, false)->once()->andReturn([$file1, $file2, $file3])
+            ->getMock();
 
         // Prepare mock FileLoader - Will return the mock file, with a mock data
-        $fileLoader = Mockery::mock(ArrayFileLoader::class);
-        $fileLoader->shouldReceive('setPaths')->once();
-        $fileLoader->shouldReceive('load')->once()->andReturn($expectedResult);
-
-        // Get dictionary
-        $dictionary = new Dictionary($locale, $locator, $fileLoader);
-        $data = $dictionary->getDictionary();
+        $fileLoader = Mockery::mock(ArrayFileLoader::class)
+            ->shouldReceive('setPaths')->once()
+            ->shouldReceive('load')->once()->andReturn($expectedResult)
+            ->getMock();
 
         // Perform assertions
-        $this->assertIsArray($data);
-        $this->assertEquals($expectedResult, $data);
+        $dictionary = new Dictionary($locale, $locator, $fileLoader);
+        $this->assertEquals($expectedResult, $dictionary->getDictionary());
     }
 
     /**
@@ -220,37 +211,35 @@ class DictionaryTest extends TestCase
     public function testGetDictionary_withDependentLocaleNoDataOnBoth(): void
     {
         // Prepare dependent mocked locale - ff_FF
-        $localeDependent = Mockery::mock(Locale::class);
-        $localeDependent->shouldReceive('getDependentLocales')->andReturn([]);
-        $localeDependent->shouldReceive('getDependentLocalesIdentifier')->andReturn([]);
-        $localeDependent->shouldReceive('getIdentifier')->andReturn('ff_FF');
+        $localeDependent = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->andReturn([])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn([])
+            ->shouldReceive('getIdentifier')->andReturn('ff_FF')
+            ->getMock();
 
         // Prepare mocked locale - aa_bb
-        $locale = Mockery::mock(Locale::class);
-        $locale->shouldReceive('getDependentLocales')->andReturn([$localeDependent]);
-        $locale->shouldReceive('getDependentLocalesIdentifier')->andReturn(['ff_FF']);
-        $locale->shouldReceive('getIdentifier')->andReturn('aa_bb');
+        $locale = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->andReturn([$localeDependent])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn(['ff_FF'])
+            ->shouldReceive('getIdentifier')->andReturn('aa_bb')
+            ->getMock();
 
         // Prepare mock Locator - Return no file
-        $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([]);
-        $locator->shouldReceive('listResources')->once()->with('locale://ff_FF', true, false)->andReturn([]);
+        /** @var ResourceLocator */
+        $locator = Mockery::mock(ResourceLocator::class)
+            ->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([])
+            ->shouldReceive('listResources')->once()->with('locale://ff_FF', true, false)->andReturn([])
+            ->getMock();
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
-        $fileLoader = Mockery::mock(ArrayFileLoader::class);
-        $fileLoader->shouldNotReceive('setPaths');
-        $fileLoader->shouldNotReceive('load');
-
-        // Set expectations
-        $expectedResult = [];
-
-        // Get dictionary
-        $dictionary = new Dictionary($locale, $locator, $fileLoader);
-        $data = $dictionary->getDictionary();
+        $fileLoader = Mockery::mock(ArrayFileLoader::class)
+            ->shouldNotReceive('setPaths')
+            ->shouldNotReceive('load')
+            ->getMock();
 
         // Perform assertions
-        $this->assertIsArray($data);
-        $this->assertEquals($expectedResult, $data);
+        $dictionary = new Dictionary($locale, $locator, $fileLoader);
+        $this->assertEquals([], $dictionary->getDictionary());
     }
 
     /**
@@ -268,39 +257,41 @@ class DictionaryTest extends TestCase
         ];
 
         // Prepare dependent mocked locale - ff_FF
-        $localeDependent = Mockery::mock(Locale::class);
-        $localeDependent->shouldReceive('getDependentLocales')->andReturn([]);
-        $localeDependent->shouldReceive('getDependentLocalesIdentifier')->andReturn([]);
-        $localeDependent->shouldReceive('getIdentifier')->andReturn('ff_FF');
+        $localeDependent = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->andReturn([])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn([])
+            ->shouldReceive('getIdentifier')->andReturn('ff_FF')
+            ->getMock();
 
         // Prepare mocked locale - aa_bb
-        $locale = Mockery::mock(Locale::class);
-        $locale->shouldReceive('getDependentLocales')->andReturn([$localeDependent]);
-        $locale->shouldReceive('getDependentLocalesIdentifier')->andReturn(['ff_FF']);
-        $locale->shouldReceive('getIdentifier')->andReturn('aa_bb');
+        $locale = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->andReturn([$localeDependent])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn(['ff_FF'])
+            ->shouldReceive('getIdentifier')->andReturn('aa_bb')
+            ->getMock();
 
         // Prepare first mock Resource - File `Foo/Bar/File1.php`
-        $file1 = Mockery::mock(Resource::class);
-        $file1->shouldReceive('getExtension')->andReturn('php');
-        $file1->shouldReceive('__toString')->andReturn('Foo/Bar/File1.php');
+        $file1 = Mockery::mock(Resource::class)
+            ->shouldReceive('getExtension')->andReturn('php')
+            ->shouldReceive('__toString')->andReturn('Foo/Bar/File1.php')
+            ->getMock();
 
         // Prepare mock Locator - Return no file on ff_FF
-        $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([$file1]);
-        $locator->shouldReceive('listResources')->once()->with('locale://ff_FF', true, false)->andReturn([]);
+        /** @var ResourceLocator */
+        $locator = Mockery::mock(ResourceLocator::class)
+            ->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([$file1])
+            ->shouldReceive('listResources')->once()->with('locale://ff_FF', true, false)->andReturn([])
+            ->getMock();
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
-        $fileLoader = Mockery::mock(ArrayFileLoader::class);
-        $fileLoader->shouldReceive('setPaths')->with(['Foo/Bar/File1.php']);
-        $fileLoader->shouldReceive('load')->andReturn($expectedResult);
-
-        // Get dictionary
-        $dictionary = new Dictionary($locale, $locator, $fileLoader);
-        $data = $dictionary->getDictionary();
+        $fileLoader = Mockery::mock(ArrayFileLoader::class)
+            ->shouldReceive('setPaths')->with(['Foo/Bar/File1.php'])
+            ->shouldReceive('load')->andReturn($expectedResult)
+            ->getMock();
 
         // Perform assertions
-        $this->assertIsArray($data);
-        $this->assertEquals($expectedResult, $data);
+        $dictionary = new Dictionary($locale, $locator, $fileLoader);
+        $this->assertEquals($expectedResult, $dictionary->getDictionary());
     }
 
     /**
@@ -318,39 +309,40 @@ class DictionaryTest extends TestCase
         ];
 
         // Prepare dependent mocked locale - ff_FF
-        $localeDependent = Mockery::mock(Locale::class);
-        $localeDependent->shouldReceive('getDependentLocales')->andReturn([]);
-        $localeDependent->shouldReceive('getDependentLocalesIdentifier')->andReturn([]);
-        $localeDependent->shouldReceive('getIdentifier')->andReturn('ff_FF');
+        $localeDependent = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->andReturn([])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn([])
+            ->shouldReceive('getIdentifier')->andReturn('ff_FF')
+            ->getMock();
 
         // Prepare mocked locale - aa_bb
-        $locale = Mockery::mock(Locale::class);
-        $locale->shouldReceive('getDependentLocales')->andReturn([$localeDependent]);
-        $locale->shouldReceive('getDependentLocalesIdentifier')->andReturn(['ff_FF']);
-        $locale->shouldReceive('getIdentifier')->andReturn('aa_bb');
+        $locale = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->andReturn([$localeDependent])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn(['ff_FF'])
+            ->shouldReceive('getIdentifier')->andReturn('aa_bb')
+            ->getMock();
 
         // Prepare first mock Resource - File `Foo/Bar/File1.php`
-        $file1 = Mockery::mock(Resource::class);
-        $file1->shouldReceive('getExtension')->andReturn('php');
-        $file1->shouldReceive('__toString')->andReturn('Bar/Foo/File2.php');
+        $file1 = Mockery::mock(Resource::class)
+            ->shouldReceive('getExtension')->andReturn('php')
+            ->shouldReceive('__toString')->andReturn('Bar/Foo/File2.php')
+            ->getMock();
 
         // Prepare mock Locator - Return no file on ff_FF
-        $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([]);
-        $locator->shouldReceive('listResources')->once()->with('locale://ff_FF', true, false)->andReturn([$file1]);
+        $locator = Mockery::mock(ResourceLocator::class)
+            ->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([])
+            ->shouldReceive('listResources')->once()->with('locale://ff_FF', true, false)->andReturn([$file1])
+            ->getMock();
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
-        $fileLoader = Mockery::mock(ArrayFileLoader::class);
-        $fileLoader->shouldReceive('setPaths')->with(['Bar/Foo/File2.php']);
-        $fileLoader->shouldReceive('load')->andReturn($expectedResult);
-
-        // Get dictionary
-        $dictionary = new Dictionary($locale, $locator, $fileLoader);
-        $data = $dictionary->getDictionary();
+        $fileLoader = Mockery::mock(ArrayFileLoader::class)
+            ->shouldReceive('setPaths')->with(['Bar/Foo/File2.php'])
+            ->shouldReceive('load')->andReturn($expectedResult)
+            ->getMock();
 
         // Perform assertions
-        $this->assertIsArray($data);
-        $this->assertEquals($expectedResult, $data);
+        $dictionary = new Dictionary($locale, $locator, $fileLoader);
+        $this->assertEquals($expectedResult, $dictionary->getDictionary());
     }
 
     /**
@@ -371,8 +363,8 @@ class DictionaryTest extends TestCase
             'Bar'  => 'Foo',
             'test' => [
                 'bbb' => 'BBB',
-                'ccc' => 'CCC', // Overwriten by ""
-                'ddd' => '', //Overwriten by "DDD"
+                'ccc' => 'CCC', // Overwritten by ""
+                'ddd' => '', //Overwritten by "DDD"
             ],
         ];
 
@@ -389,47 +381,50 @@ class DictionaryTest extends TestCase
         ];
 
         // Prepare dependent mocked locale - en_US
-        $localeDependent = Mockery::mock(Locale::class);
-        $localeDependent->shouldReceive('getDependentLocales')->andReturn([]);
-        $localeDependent->shouldReceive('getDependentLocalesIdentifier')->andReturn([]);
-        $localeDependent->shouldReceive('getIdentifier')->andReturn('en_US');
+        $localeDependent = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->andReturn([])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn([])
+            ->shouldReceive('getIdentifier')->andReturn('en_US')
+            ->getMock();
 
         // Prepare mocked locale - fr_FR
-        $locale = Mockery::mock(Locale::class);
-        $locale->shouldReceive('getDependentLocales')->andReturn([$localeDependent]);
-        $locale->shouldReceive('getDependentLocalesIdentifier')->andReturn(['en_US']);
-        $locale->shouldReceive('getIdentifier')->andReturn('fr_FR');
+        $locale = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->andReturn([$localeDependent])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn(['en_US'])
+            ->shouldReceive('getIdentifier')->andReturn('fr_FR')
+            ->getMock();
 
         // Prepare first mock Resource - File `Foo/Bar/File1.php`
-        $file_FR = Mockery::mock(Resource::class);
-        $file_FR->shouldReceive('getExtension')->andReturn('php');
-        $file_FR->shouldReceive('__toString')->andReturn('Locale/fr_FR/file.php');
+        $file_FR = Mockery::mock(Resource::class)
+            ->shouldReceive('getExtension')->andReturn('php')
+            ->shouldReceive('__toString')->andReturn('Locale/fr_FR/file.php')
+            ->getMock();
 
         // Prepare first mock Resource - File `Foo/Bar/File1.php`
-        $file_EN = Mockery::mock(Resource::class);
-        $file_EN->shouldReceive('getExtension')->andReturn('php');
-        $file_EN->shouldReceive('__toString')->andReturn('Locale/en_US/file.php');
+        $file_EN = Mockery::mock(Resource::class)
+            ->shouldReceive('getExtension')->andReturn('php')
+            ->shouldReceive('__toString')->andReturn('Locale/en_US/file.php')
+            ->getMock();
 
         // Prepare mock Locator - Return no file on ff_FF
-        $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->once()->with('locale://fr_FR', true, false)->andReturn([$file_FR]);
-        $locator->shouldReceive('listResources')->once()->with('locale://en_US', true, false)->andReturn([$file_EN]);
+        $locator = Mockery::mock(ResourceLocator::class)
+            ->shouldReceive('listResources')->once()->with('locale://fr_FR', true, false)->andReturn([$file_FR])
+            ->shouldReceive('listResources')->once()->with('locale://en_US', true, false)->andReturn([$file_EN])
+            ->getMock();
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
-        $fileLoader = Mockery::mock(ArrayFileLoader::class);
-        $fileLoader->shouldReceive('setPaths')->once()->with(['Locale/fr_FR/file.php']);
-        $fileLoader->shouldReceive('load')->once()->andReturn($fr_FR_FILE);
+        $fileLoader = Mockery::mock(ArrayFileLoader::class)
+            ->shouldReceive('setPaths')->once()->with(['Locale/fr_FR/file.php'])
+            ->shouldReceive('load')->once()->andReturn($fr_FR_FILE)
+            ->getMock();
 
-        $fileLoader->shouldReceive('setPaths')->once()->with(['Locale/en_US/file.php']);
-        $fileLoader->shouldReceive('load')->once()->andReturn($en_US_FILE);
-
-        // Get dictionary
-        $dictionary = new Dictionary($locale, $locator, $fileLoader);
-        $data = $dictionary->getDictionary();
+        $fileLoader->shouldReceive('setPaths')->once()->with(['Locale/en_US/file.php'])
+            ->shouldReceive('load')->once()->andReturn($en_US_FILE)
+            ->getMock();
 
         // Perform assertions
-        $this->assertIsArray($data);
-        $this->assertEquals($expectedResult, $data);
+        $dictionary = new Dictionary($locale, $locator, $fileLoader);
+        $this->assertEquals($expectedResult, $dictionary->getDictionary());
     }
 
     /**
@@ -438,41 +433,42 @@ class DictionaryTest extends TestCase
     public function testGetDictionary_withManyDependentLocale(): void
     {
         // Prepare dependent mocked locale - ee_EE
-        $localeSubDependent = Mockery::mock(Locale::class);
-        $localeSubDependent->shouldReceive('getDependentLocales')->andReturn([]);
-        $localeSubDependent->shouldReceive('getDependentLocalesIdentifier')->andReturn([]);
-        $localeSubDependent->shouldReceive('getIdentifier')->andReturn('ee_EE');
+        $localeSubDependent = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->andReturn([])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn([])
+            ->shouldReceive('getIdentifier')->andReturn('ee_EE')
+            ->getMock();
 
         // Prepare dependent mocked locale - ff_FF
-        $localeDependent = Mockery::mock(Locale::class);
-        $localeDependent->shouldReceive('getDependentLocales')->andReturn([$localeSubDependent]);
-        $localeDependent->shouldReceive('getDependentLocalesIdentifier')->andReturn(['ee_EE']);
-        $localeDependent->shouldReceive('getIdentifier')->andReturn('ff_FF');
+        $localeDependent = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->andReturn([$localeSubDependent])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn(['ee_EE'])
+            ->shouldReceive('getIdentifier')->andReturn('ff_FF')
+            ->getMock();
 
         // Prepare mocked locale - aa_bb
-        $locale = Mockery::mock(Locale::class);
-        $locale->shouldReceive('getDependentLocales')->andReturn([$localeDependent]);
-        $locale->shouldReceive('getDependentLocalesIdentifier')->andReturn(['ff_FF']);
-        $locale->shouldReceive('getIdentifier')->andReturn('aa_bb');
+        $locale = Mockery::mock(Locale::class)
+            ->shouldReceive('getDependentLocales')->andReturn([$localeDependent])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn(['ff_FF'])
+            ->shouldReceive('getIdentifier')->andReturn('aa_bb')
+            ->getMock();
 
         // Prepare mock Locator - Return no file on ff_FF
-        $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([]);
-        $locator->shouldReceive('listResources')->once()->with('locale://ff_FF', true, false)->andReturn([]);
-        $locator->shouldReceive('listResources')->once()->with('locale://ee_EE', true, false)->andReturn([]);
+        $locator = Mockery::mock(ResourceLocator::class)
+            ->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([])
+            ->shouldReceive('listResources')->once()->with('locale://ff_FF', true, false)->andReturn([])
+            ->shouldReceive('listResources')->once()->with('locale://ee_EE', true, false)->andReturn([])
+            ->getMock();
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
-        $fileLoader = Mockery::mock(ArrayFileLoader::class);
-        $fileLoader->shouldNotReceive('setPaths');
-        $fileLoader->shouldNotReceive('load');
-
-        // Get dictionary
-        $dictionary = new Dictionary($locale, $locator, $fileLoader);
-        $data = $dictionary->getDictionary();
+        $fileLoader = Mockery::mock(ArrayFileLoader::class)
+            ->shouldNotReceive('setPaths')
+            ->shouldNotReceive('load')
+            ->getMock();
 
         // Perform assertions
-        $this->assertIsArray($data);
-        $this->assertEquals([], $data);
+        $dictionary = new Dictionary($locale, $locator, $fileLoader);
+        $this->assertEquals([], $dictionary->getDictionary());
     }
 
     /**
@@ -494,41 +490,42 @@ class DictionaryTest extends TestCase
         $localeDependent = Mockery::mock(Locale::class);
         $locale = Mockery::mock(Locale::class);
 
-        $localeDependent->shouldReceive('getDependentLocales')->andReturn([$locale]);
-        $localeDependent->shouldReceive('getDependentLocalesIdentifier')->andReturn(['aa_bb']);
-        $localeDependent->shouldReceive('getIdentifier')->andReturn('ff_FF');
+        $localeDependent->shouldReceive('getDependentLocales')->andReturn([$locale])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn(['aa_bb'])
+            ->shouldReceive('getIdentifier')->andReturn('ff_FF')
+            ->getMock();
 
-        $locale->shouldReceive('getDependentLocales')->andReturn([$localeDependent]);
-        $locale->shouldReceive('getDependentLocalesIdentifier')->andReturn(['ff_FF']);
-        $locale->shouldReceive('getIdentifier')->andReturn('aa_bb');
+        $locale->shouldReceive('getDependentLocales')->andReturn([$localeDependent])
+            ->shouldReceive('getDependentLocalesIdentifier')->andReturn(['ff_FF'])
+            ->shouldReceive('getIdentifier')->andReturn('aa_bb')
+            ->getMock();
 
         // Prepare first mock Resource - File `Foo/Bar/File1.php`
-        $file1 = Mockery::mock(Resource::class);
-        $file1->shouldReceive('getExtension')->andReturn('php');
-        $file1->shouldReceive('__toString')->andReturn('Foo/Bar/File1.php');
+        $file1 = Mockery::mock(Resource::class)
+            ->shouldReceive('getExtension')->andReturn('php')
+            ->shouldReceive('__toString')->andReturn('Foo/Bar/File1.php')
+            ->getMock();
 
         // Prepare mock Locator - Return no file on ff_FF
-        $locator = Mockery::mock(ResourceLocator::class);
-        $locator->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([$file1]);
-        $locator->shouldReceive('listResources')->never()->with('locale://ff_FF', true, false);
+        $locator = Mockery::mock(ResourceLocator::class)
+            ->shouldReceive('listResources')->once()->with('locale://aa_bb', true, false)->andReturn([$file1])
+            ->shouldReceive('listResources')->never()->with('locale://ff_FF', true, false)
+            ->getMock();
 
         // Prepare mock FileLoader - No files, so loader shouldn't load anything
-        $fileLoader = Mockery::mock(ArrayFileLoader::class);
-        $fileLoader->shouldReceive('setPaths')->once()->with(['Foo/Bar/File1.php']);
-        $fileLoader->shouldReceive('load')->once()->andReturn($aa_AA_FILE);
-
-        // Get dictionary
-        $dictionary = new Dictionary($locale, $locator, $fileLoader);
+        $fileLoader = Mockery::mock(ArrayFileLoader::class)
+            ->shouldReceive('setPaths')->once()->with(['Foo/Bar/File1.php'])
+            ->shouldReceive('load')->once()->andReturn($aa_AA_FILE)
+            ->getMock();
 
         // Expect exception
-        $this->expectException(\LogicException::class);
-        $data = $dictionary->getDictionary();
+        $dictionary = new Dictionary($locale, $locator, $fileLoader);
+        $this->expectException(LogicException::class);
+        $dictionary->getDictionary();
     }
 
     /**
      * Integration test with default.
-     *
-     * @ depends testConstructor
      */
     public function testGetDictionary_withRealLocale(): void
     {
@@ -541,15 +538,9 @@ class DictionaryTest extends TestCase
             'BAR' => 'Bar', // ...but zzz/bar.php will be loaded LAST because of alphabetical order !
         ];
 
-        $data = $dictionary->getDictionary();
-
-        $this->assertIsArray($data);
-        $this->assertEquals($expectedResult, $data);
+        $this->assertEquals($expectedResult, $dictionary->getDictionary());
     }
 
-    /**
-     * @ depends testConstructor
-     */
     public function testGetDictionary_withRealLocale_withDependentLocaleDataOnBoth(): void
     {
         // Set expectations
@@ -567,19 +558,11 @@ class DictionaryTest extends TestCase
             'Bar'  => 'Foo',
         ];
 
-        // Get dictionary
         $locale = new Locale('fr_FR');
         $dictionary = new Dictionary($locale, $this->locator);
-        $data = $dictionary->getDictionary();
-
-        // Perform assertions
-        $this->assertIsArray($data);
-        $this->assertEquals($expectedResult, $data);
+        $this->assertEquals($expectedResult, $dictionary->getDictionary());
     }
 
-    /**
-     * @ depends testConstructor
-     */
     public function testGetDictionary_forFlat(): void
     {
         // Set expectations
@@ -595,14 +578,9 @@ class DictionaryTest extends TestCase
             'Bar'               => 'Foo',
         ];
 
-        // Get dictionary
         $locale = new Locale('fr_FR');
         $dictionary = new Dictionary($locale, $this->locator);
-        $data = $dictionary->getFlattenDictionary();
-
-        // Perform assertions
-        $this->assertIsArray($data);
-        $this->assertEquals($expectedResult, $data);
+        $this->assertEquals($expectedResult, $dictionary->getFlattenDictionary());
     }
 
     public function testGetDictionary_withRealLocale_withThirdDependentLocale(): void
@@ -623,13 +601,8 @@ class DictionaryTest extends TestCase
             'Bar'  => 'Foo',
         ];
 
-        // Get dictionary
         $locale = new Locale('fr_CA');
         $dictionary = new Dictionary($locale, $this->locator);
-        $data = $dictionary->getDictionary();
-
-        // Perform assertions
-        $this->assertIsArray($data);
-        $this->assertEquals($expectedResult, $data);
+        $this->assertEquals($expectedResult, $dictionary->getDictionary());
     }
 }

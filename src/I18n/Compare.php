@@ -27,11 +27,17 @@ class Compare
      * @param DictionaryInterface $rightDictionary
      * @param bool                $undot           If true, return the dot notation associative array. If false, returns the normal multidimensional associative array [Default: true]
      *
-     * @return string[]
+     * @return mixed[]
      */
-    public static function dictionaries(DictionaryInterface $leftDictionary, DictionaryInterface $rightDictionary, bool $undot = false): array
-    {
-        $diff = array_diff_assoc($leftDictionary->getFlattenDictionary(), $rightDictionary->getFlattenDictionary());
+    public static function dictionaries(
+        DictionaryInterface $leftDictionary,
+        DictionaryInterface $rightDictionary,
+        bool $undot = false
+    ): array {
+        $diff = array_diff_assoc(
+            $leftDictionary->getFlattenDictionary(),
+            $rightDictionary->getFlattenDictionary()
+        );
 
         if ($undot) {
             return self::undot($diff);
@@ -50,9 +56,14 @@ class Compare
      *
      * @return string[] List of keys
      */
-    public static function dictionariesKeys(DictionaryInterface $leftDictionary, DictionaryInterface $rightDictionary): array
-    {
-        $diff = array_diff_key($leftDictionary->getFlattenDictionary(), $rightDictionary->getFlattenDictionary());
+    public static function dictionariesKeys(
+        DictionaryInterface $leftDictionary,
+        DictionaryInterface $rightDictionary
+    ): array {
+        $diff = array_diff_key(
+            $leftDictionary->getFlattenDictionary(),
+            $rightDictionary->getFlattenDictionary()
+        );
 
         return array_keys($diff);
     }
@@ -69,9 +80,15 @@ class Compare
      *
      * @return string[]
      */
-    public static function dictionariesValues(DictionaryInterface $leftDictionary, DictionaryInterface $rightDictionary, bool $undot = false): array
-    {
-        $diff = array_intersect_assoc($leftDictionary->getFlattenDictionary(), $rightDictionary->getFlattenDictionary());
+    public static function dictionariesValues(
+        DictionaryInterface $leftDictionary,
+        DictionaryInterface $rightDictionary,
+        bool $undot = false
+    ): array {
+        $diff = array_intersect_assoc(
+            $leftDictionary->getFlattenDictionary(),
+            $rightDictionary->getFlattenDictionary()
+        );
 
         if ($undot) {
             return self::undot($diff);

@@ -29,7 +29,7 @@ abstract class FileRepositoryLoader
      *
      * @param string|string[] $paths
      */
-    public function __construct(string|array $paths)
+    public function __construct(string|array $paths = [])
     {
         $this->setPaths($paths);
     }

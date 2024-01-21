@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,9 +12,11 @@
 
 namespace UserFrosting\Tests\I18n\Rules;
 
+use UserFrosting\I18n\PluralRules\Rule13;
+
 class Rule13Test extends RuleBase
 {
-    protected $ruleToTest = "\UserFrosting\I18n\PluralRules\Rule13";
+    protected string $ruleToTest = Rule13::class;
 
     /**
      * Families: Semitic (Maltese)
@@ -20,8 +24,10 @@ class Rule13Test extends RuleBase
      * 2 - is 0 or ends in 01-10: 0, 2, 3, ... 9, 10, 101, 102, ...
      * 3 - ends in 11-19: 11, 12, ... 18, 19, 111, 112, ...
      * 4 - everything else: 20, 21, ...
+     *
+     * {@inheritDoc}
      */
-    public static function ruleProvider()
+    public static function ruleProvider(): array
     {
         return [
             [0, 2],

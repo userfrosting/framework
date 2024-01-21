@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,9 +12,11 @@
 
 namespace UserFrosting\Tests\I18n\Rules;
 
+use UserFrosting\I18n\PluralRules\Rule12;
+
 class Rule12Test extends RuleBase
 {
-    protected $ruleToTest = "\UserFrosting\I18n\PluralRules\Rule12";
+    protected string $ruleToTest = Rule12::class;
 
     /**
      * Families: Semitic (Arabic).
@@ -23,8 +27,10 @@ class Rule12Test extends RuleBase
      * 4 - ends in 11-99: 11, ... 99, 111, 112, ...
      * 5 - everything else: 100, 101, 102, 200, 201, 202, ...
      * 6 - 0
+     *
+     * {@inheritDoc}
      */
-    public static function ruleProvider()
+    public static function ruleProvider(): array
     {
         return [
             [0, 6],

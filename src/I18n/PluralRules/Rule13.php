@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -19,7 +21,7 @@ namespace UserFrosting\I18n\PluralRules;
  *
  * @see https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals#Plural_rule_13_(4_forms)
  */
-class Rule13 implements RuleInterface
+final class Rule13 implements RuleInterface
 {
     public static function getRule(int $number): int
     {

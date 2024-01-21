@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,16 +12,20 @@
 
 namespace UserFrosting\Tests\I18n\Rules;
 
+use UserFrosting\I18n\PluralRules\Rule1;
+
 class Rule1Test extends RuleBase
 {
-    protected $ruleToTest = "\UserFrosting\I18n\PluralRules\Rule1";
+    protected string $ruleToTest = Rule1::class;
 
     /**
      * Families: Germanic (Danish, Dutch, English, Faroese, Frisian, German, Norwegian, Swedish), Finno-Ugric (Estonian, Finnish, Hungarian), Language isolate (Basque), Latin/Greek (Greek), Semitic (Hebrew), Romanic (Italian, Portuguese, Spanish, Catalan)
      * 1 - 1
      * 2 - everything else: 0, 2, 3, ...
+     *
+     * {@inheritDoc}
      */
-    public static function ruleProvider()
+    public static function ruleProvider(): array
     {
         return [
             [0, 2],

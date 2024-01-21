@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -15,13 +17,15 @@ use UserFrosting\I18n\PluralRules\RuleInterface;
 
 abstract class RuleBase extends TestCase
 {
-    /** @var string Rule number to test. Reference to instance of \UserFrosting\I18n\PluralRules\RuleInterface */
-    protected $ruleToTest;
+    /**
+     * @var string Rule number to test. Reference to instance of \UserFrosting\I18n\PluralRules\RuleInterface
+     **/
+    protected string $ruleToTest;
 
     /**
      * Test rule class implement the right interface.
      */
-    public function testRuleClass()
+    public function testRuleClass(): void
     {
         $this->assertInstanceOf(RuleInterface::class, new $this->ruleToTest());
     }
@@ -32,7 +36,7 @@ abstract class RuleBase extends TestCase
      * @param int $number         Input number
      * @param int $expectedResult Expected result
      */
-    public function testRule($number, $expectedResult)
+    public function testRule(int $number, int $expectedResult): void
     {
         $rule = $this->ruleToTest;
         $result = $rule::getRule($number);
@@ -42,7 +46,7 @@ abstract class RuleBase extends TestCase
     /**
      * Data provider for `testRule`.
      *
-     * @return array
+     * @return array<int, array<int, int>>
      */
-    abstract public static function ruleProvider();
+    abstract public static function ruleProvider(): array;
 }

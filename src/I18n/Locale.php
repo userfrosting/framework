@@ -20,17 +20,12 @@ use UserFrosting\Support\Repository\Loader\YamlFileLoader;
 class Locale implements LocaleInterface
 {
     /**
-     * @var string The locale identifier, ie "en_US" or "fr_FR".
-     */
-    protected string $identifier = '';
-
-    /**
      * @var string The locale config file path.
      */
     protected string $configFile = '';
 
     /**
-     * @var string[][]|string[] Locale config data, loaded from the locale YAML file.
+     * @var mixed[] Locale config data, loaded from the locale YAML file.
      */
     protected array $config;
 
@@ -40,12 +35,9 @@ class Locale implements LocaleInterface
      * @param string      $identifier The locale identifier (ie. "en_US")
      * @param string|null $configFile The path to the locale config file
      */
-    public function __construct(string $identifier, ?string $configFile = null)
+    public function __construct(protected string $identifier, ?string $configFile = null)
     {
-        $this->identifier = $identifier;
-        $this->configFile = (isset($configFile)) ? $configFile : "locale://$identifier/locale.yaml";
-
-        // Load locale config
+        $this->configFile = $configFile ?? "locale://$identifier/locale.yaml";
         $this->loadConfig();
     }
 
@@ -102,7 +94,7 @@ class Locale implements LocaleInterface
     /**
      * Return the raw configuration data.
      *
-     * @return string[][]|string[]
+     * @return mixed[]
      */
     public function getConfig(): array
     {

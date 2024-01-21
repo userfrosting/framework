@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,15 +12,19 @@
 
 namespace UserFrosting\Tests\I18n\Rules;
 
+use UserFrosting\I18n\PluralRules\Rule0;
+
 class Rule0Test extends RuleBase
 {
-    protected $ruleToTest = "\UserFrosting\I18n\PluralRules\Rule0";
+    protected string $ruleToTest = Rule0::class;
 
     /**
      * Families: Asian (Chinese, Japanese, Korean, Vietnamese), Persian, Turkic/Altaic (Turkish), Thai, Lao
      * 1 - everything: 0, 1, 2, ...
+     *
+     * {@inheritDoc}
      */
-    public static function ruleProvider()
+    public static function ruleProvider(): array
     {
         return [
             [0, 1],

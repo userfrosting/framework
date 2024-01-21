@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,9 +12,11 @@
 
 namespace UserFrosting\Tests\I18n\Rules;
 
+use UserFrosting\I18n\PluralRules\Rule10;
+
 class Rule10Test extends RuleBase
 {
-    protected $ruleToTest = "\UserFrosting\I18n\PluralRules\Rule10";
+    protected string $ruleToTest = Rule10::class;
 
     /**
      * Families: Slavic (Slovenian, Sorbian)
@@ -20,8 +24,10 @@ class Rule10Test extends RuleBase
      * 2 - ends in 02: 2, 102, 202, ...
      * 3 - ends in 03-04: 3, 4, 103, 104, 203, 204, ...
      * 4 - everything else: 0, 5, 6, 7, 8, 9, 10, 11, ...
+     *
+     * {@inheritDoc}
      */
-    public static function ruleProvider()
+    public static function ruleProvider(): array
     {
         return [
             [0, 4],

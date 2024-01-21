@@ -33,11 +33,6 @@ class Translator
     protected string $defaultPluralKey = 'plural';
 
     /**
-     * @var DictionaryInterface
-     */
-    protected DictionaryInterface $dictionary;
-
-    /**
      * @var array<int,class-string> Rules class list.
      */
     protected array $rulesClass = [
@@ -64,10 +59,9 @@ class Translator
      *
      * @param DictionaryInterface $dictionary
      */
-    public function __construct(DictionaryInterface $dictionary)
+    public function __construct(protected DictionaryInterface $dictionary)
     {
         // Make sure dictionary is loaded
-        $this->dictionary = $dictionary;
         $this->dictionary->getDictionary();
 
         // Prepare Twig Environment

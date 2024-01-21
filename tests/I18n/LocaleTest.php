@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -12,84 +14,56 @@ namespace UserFrosting\Tests\I18n;
 
 use PHPUnit\Framework\TestCase;
 use UserFrosting\I18n\Locale;
-use UserFrosting\I18n\LocaleInterface;
 use UserFrosting\Support\Exception\FileNotFoundException;
+use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
+use UserFrosting\UniformResourceLocator\ResourceStream;
 
 class LocaleTest extends TestCase
 {
-    /** @var string */
-    protected $basePath;
+    /**
+     * @var string
+     **/
+    protected string $basePath;
 
-    /** @var ResourceLocator */
-    protected $locator;
+    /**
+     * @var ResourceLocator
+     **/
+    protected ResourceLocator $locator;
 
     public function setUp(): void
     {
         $this->basePath = __DIR__.'/data/sprinkles';
         $this->locator = new ResourceLocator($this->basePath);
-        $this->locator->registerStream('locale');
+        $this->locator->addStream(new ResourceStream('locale'));
 
         // Add locations one at a time to simulate how they are added in SprinkleManager
-        $this->locator->registerLocation('core');
-        $this->locator->registerLocation('account');
-        $this->locator->registerLocation('fr_CA');
-    }
-
-    public function testConstructor(): Locale
-    {
-        $locale = new Locale('fr_FR');
-        $this->assertInstanceOf(LocaleInterface::class, $locale);
-
-        return $locale;
+        $this->locator->addLocation(new ResourceLocation('core'))
+                      ->addLocation(new ResourceLocation('account'))
+                      ->addLocation(new ResourceLocation('fr_CA'));
     }
 
     public function testConstructorWithNotFoundPath(): void
     {
         $this->expectException(FileNotFoundException::class);
-        new Locale('fr_FR', 'locale://fr_FR/dontexist.yaml');
+        new Locale('fr_FR', 'locale://fr_FR/doNotExist.yaml');
     }
 
-    /**
-     * @depends testConstructor
-     */
-    public function testGetConfigFile(Locale $locale): void
-    {
-        $data = $locale->getConfigFile();
-        $this->assertIsString($data);
-
-        $this->assertSame('locale://fr_FR/locale.yaml', $data);
-    }
-
-    /**
-     * @depends testGetConfigFile
-     */
-    public function testConstructorWithNotPath(): void
+    public function testGetConfigFile(): void
     {
         $locale = new Locale('fr_FR');
-        $this->assertInstanceOf(LocaleInterface::class, $locale);
         $this->assertSame('locale://fr_FR/locale.yaml', $locale->getConfigFile());
     }
 
-    /**
-     * @depends testConstructor
-     */
-    public function testGetIdentifier(Locale $locale): void
+    public function testGetIdentifier(): void
     {
-        $data = $locale->getIdentifier();
-        $this->assertIsString($data);
-
-        $this->assertSame('fr_FR', $data);
+        $locale = new Locale('fr_FR');
+        $this->assertSame('fr_FR', $locale->getIdentifier());
     }
 
-    /**
-     * @depends testConstructor
-     */
-    public function testGetConfig(Locale $locale): void
+    public function testGetConfig(): void
     {
-        $data = $locale->getConfig();
-        $this->assertIsArray($data);
-
+        $locale = new Locale('fr_FR');
         $this->assertSame([
             'name'           => 'French',
             'regional'       => 'Français',
@@ -101,138 +75,76 @@ class LocaleTest extends TestCase
             'parents'     => [
                 'en_US',
             ],
-        ], $data);
+        ], $locale->getConfig());
     }
 
-    /**
-     * @depends testConstructor
-     * @depends testGetConfig
-     */
-    public function testGetAuthors(Locale $locale): void
+    public function testGetAuthors(): void
     {
+        $locale = new Locale('fr_FR');
         $data = $locale->getAuthors();
-        $this->assertIsArray($data);
-
         $this->assertSame([
             'Foo Bar',
             'Bar Foo', // Not available in `core` version
         ], $data);
-
         $this->assertSame($locale->getConfig()['authors'], $data);
     }
 
-    /**
-     * @depends testConstructor
-     * @depends testGetConfig
-     */
-    public function testGetDetails(Locale $locale): void
+    public function testGetDetails(): void
     {
-        //getName
-        $this->assertIsString($locale->getName());
+        $locale = new Locale('fr_FR');
         $this->assertSame('French', $locale->getName());
-
-        //getRegionalName
-        $this->assertIsString($locale->getRegionalName());
         $this->assertSame('Français', $locale->getRegionalName());
-
-        //getDependentLocalesIdentifier
-        $this->assertIsArray($locale->getDependentLocalesIdentifier());
         $this->assertSame(['en_US'], $locale->getDependentLocalesIdentifier());
     }
 
-    /**
-     * @depends testGetDetails
-     */
     public function testGetLocalizedNameWithNoLocalizedConfig(): void
     {
         $locale = new Locale('es_ES');
         $this->assertSame('Spanish', $locale->getRegionalName());
     }
 
-    /**
-     * @depends testConstructor
-     * @depends testGetConfig
-     */
-    public function testGetPluralRule(Locale $locale): void
+    public function testGetPluralRule(): void
     {
-        $this->assertIsInt($locale->getPluralRule());
+        $locale = new Locale('fr_FR');
         $this->assertSame(2, $locale->getPluralRule());
     }
 
-    /**
-     * @depends testConstructorWithNotPath
-     * @depends testGetPluralRule
-     */
     public function testGetPluralRuleWithNoRule(): void
     {
         $locale = new Locale('es_ES');
-        $this->assertIsInt($locale->getPluralRule());
         $this->assertSame(1, $locale->getPluralRule());
     }
 
-    /**
-     * @depends testGetDetails
-     * @depends testGetAuthors
-     */
     public function testGetDetailsWithInheritance(): void
     {
         $locale = new Locale('fr_CA');
-
-        //getName
-        $this->assertIsString($locale->getName());
         $this->assertSame('French Canadian', $locale->getName());
-
-        //getRegionalName
-        $this->assertIsString($locale->getRegionalName());
         $this->assertSame('Français Canadien', $locale->getRegionalName());
-
-        //getDependentLocalesIdentifier
-        $this->assertIsArray($locale->getDependentLocalesIdentifier());
         $this->assertSame(['fr_FR'], $locale->getDependentLocalesIdentifier());
-
-        //getAuthors
         $this->assertSame(['Foo Bar', 'Bar Foo'], $locale->getAuthors());
     }
 
-    /**
-     * @depends testConstructorWithNotPath
-     * @depends testGetPluralRule
-     */
     public function testGetPluralRuleWithInheritance(): void
     {
         $locale = new Locale('fr_CA');
-        $this->assertIsInt($locale->getPluralRule());
         $this->assertSame(2, $locale->getPluralRule());
     }
 
-    /**
-     * @depends testConstructor
-     * @depends testGetDetails
-     */
-    public function testGetDependentLocales(Locale $locale): void
+    public function testGetDependentLocales(): void
     {
-        $result = $locale->getDependentLocales();
-        $this->assertIsArray($result);
-        $this->assertInstanceOf(LocaleInterface::class, $result[0]);
+        $locale = new Locale('fr_FR');
+        $this->assertSame('en_US', $locale->getDependentLocales()[0]->getIdentifier());
     }
 
-    /**
-     * @depends testGetDependentLocales
-     */
     public function testGetDependentLocalesWithNullParent(): void
     {
         $locale = new Locale('es_ES');
-
-        $result = $locale->getDependentLocales();
-        $this->assertIsArray($result);
-        $this->assertEmpty($result);
+        $this->assertEmpty($locale->getDependentLocales());
     }
 
     public function testConstructorWithCustomFile(): void
     {
         $locale = new Locale('de_DE', 'locale://de_DE/foo.yaml');
-        $this->assertInstanceOf(LocaleInterface::class, $locale);
-
         $this->assertSame([], $locale->getAuthors());
         $this->assertSame('locale://de_DE/foo.yaml', $locale->getConfigFile());
         $this->assertSame('de_DE', $locale->getIdentifier());
@@ -252,19 +164,17 @@ class LocaleTest extends TestCase
     public function testWithSharedLocation(string $path): void
     {
         $locator = new ResourceLocator(__DIR__);
-        $locator->registerSharedStream('locale', $path);
+        $locator->addStream(new ResourceStream('locale', $path, shared: true));
 
         $locale = new Locale('fr_FR');
-        $this->assertInstanceOf(LocaleInterface::class, $locale);
         $this->assertSame('Tomato', $locale->getName());
 
         $locale = new Locale('en_US');
-        $this->assertInstanceOf(LocaleInterface::class, $locale);
         $this->assertSame('English', $locale->getName());
     }
 
     /**
-     * @return string[]
+     * @return string[][]
      */
     public static function locationProvider(): array
     {

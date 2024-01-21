@@ -24,7 +24,7 @@ interface DictionaryInterface extends Repository
     /**
      * Returns all loaded locale Key => Translation data dictionary.
      *
-     * @return (string|string[])[] The locale dictionary
+     * @return mixed[] The locale dictionary
      */
     public function getDictionary(): array;
 

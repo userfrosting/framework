@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,17 +12,21 @@
 
 namespace UserFrosting\Tests\I18n\Rules;
 
+use UserFrosting\I18n\PluralRules\Rule14;
+
 class Rule14Test extends RuleBase
 {
-    protected $ruleToTest = "\UserFrosting\I18n\PluralRules\Rule14";
+    protected string $ruleToTest = Rule14::class;
 
     /**
      * Families: Slavic (Macedonian)
      * 1 - ends in 1: 1, 11, 21, ...
      * 2 - ends in 2: 2, 12, 22, ...
      * 3 - everything else: 0, 3, 4, ... 10, 13, 14, ... 20, 23, ...
+     *
+     * {@inheritDoc}
      */
-    public static function ruleProvider()
+    public static function ruleProvider(): array
     {
         return [
             [0, 3],

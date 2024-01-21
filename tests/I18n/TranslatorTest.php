@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -15,47 +17,36 @@ use PHPUnit\Framework\TestCase;
 use UserFrosting\I18n\Dictionary;
 use UserFrosting\I18n\Locale;
 use UserFrosting\I18n\Translator;
+use UserFrosting\UniformResourceLocator\ResourceLocation;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
+use UserFrosting\UniformResourceLocator\ResourceStream;
 
 class TranslatorTest extends TestCase
 {
-    /** @var string Test locale file location */
-    protected $basePath = __DIR__.'/data/sprinkles';
+    /**
+     * @var string Test locale file location
+     **/
+    protected string $basePath = __DIR__.'/data/sprinkles';
 
-    /** @var ResourceLocator */
-    protected $locator;
+    /**
+     * @var ResourceLocator
+     **/
+    protected ResourceLocator $locator;
 
     public function setUp(): void
     {
         $this->locator = new ResourceLocator($this->basePath);
 
         // Register stream
-        $this->locator->registerStream('locale');
+        $this->locator->addStream(new ResourceStream('locale'));
 
         // Add them one at a time to simulate how they are added in SprinkleManager
-        $this->locator->registerLocation('core');
-        $this->locator->registerLocation('account');
-        $this->locator->registerLocation('admin'); // Simulate non existing sprinkle
-        $this->locator->registerLocation('fr_CA'); // Simulate the fr_CA locale !
-        $this->locator->registerLocation('test');
+        $this->locator->addLocation(new ResourceLocation('core'))
+                      ->addLocation(new ResourceLocation('account'))
+                      ->addLocation(new ResourceLocation('admin')) // Simulate non existing sprinkle
+                      ->addLocation(new ResourceLocation('fr_CA')) // Simulate the fr_CA locale !
+                      ->addLocation(new ResourceLocation('test'));
     }
-
-    /**
-     * Test paths for a single locale.
-     */
-    /*public function testGetAvailableLocales()
-    {
-        $translator = new Translator($this->locator);
-
-        $locales = $translator->getAvailableLocales();
-
-        // Assert
-        $this->assertEquals([
-            'en_US',
-            'fr_CA',
-            'fr_FR',
-        ], $locales);
-    }*/
 
     /**
      * Test locale with a plural option.
@@ -100,7 +91,7 @@ class TranslatorTest extends TestCase
 
     /**
      * @depends testGetPluralForm
-     * Test locale wihtout a plural rule.
+     * Test locale without a plural rule.
      */
     public function testGetPluralFormWithNoDefineRule(): void
     {
@@ -133,7 +124,7 @@ class TranslatorTest extends TestCase
      * @param string       $expectedResultEnglish
      * @param string       $expectedResultFrench
      */
-    public function testTranslate(string $key, $placeholders, string $expectedResultEnglish, string $expectedResultFrench): void
+    public function testTranslate(string $key, array|int $placeholders, string $expectedResultEnglish, string $expectedResultFrench): void
     {
         $translator = $this->getTranslator();
         $this->assertEquals($expectedResultEnglish, $translator->translate($key, $placeholders));
@@ -269,19 +260,19 @@ class TranslatorTest extends TestCase
                 'type'   => '&CAR.EV',
             ], 'I have 3 electric cars', 'Le chat a 3 voitures électriques'],
 
-            // Test pluralisation with custom plural key
+            // Test pluralization with custom plural key
             ['X_HUNGRY_CATS', ['num' => 0], '0 hungry cats', '0 chat affamé'],
             ['X_HUNGRY_CATS', ['num' => 1], '1 hungry cat', '1 chat affamé'],
             ['X_HUNGRY_CATS', ['num' => 2], '2 hungry cats', '2 chats affamés'],
             ['X_HUNGRY_CATS', ['num' => 5], '5 hungry cats', '5 chats affamés'],
 
-            // Custom key can also be omited in the placeholder if it's the only placeholder even with custom plural key
+            // Custom key can also be omitted in the placeholder if it's the only placeholder even with custom plural key
             ['X_HUNGRY_CATS', 5, '5 hungry cats', '5 chats affamés'],
 
-            // Test missing pluralisation and placeholder (default to 1)
+            // Test missing pluralization and placeholder (default to 1)
             ['X_HUNGRY_CATS', [], '1 hungry cat', '1 chat affamé'],
 
-            // Test basic placeholder remplacement using int as placeholder value (So they don't try to translate "min" and "max")
+            // Test basic placeholder replacement using int as placeholder value (So they don't try to translate "min" and "max")
             // We don't want to end up with "Votre test doit être entre minimum et 200 patates"
             ['TEST_LIMIT', ['min' => 4, 'max' => 200], 'Your test must be between 4 and 200 potatoes.', 'Votre test doit être entre 4 et 200 patates.'],
 
@@ -292,7 +283,7 @@ class TranslatorTest extends TestCase
             ['X_RULES', 1, '1 rule', '1 règle'],
             ['X_RULES', 2, '2 rule', '2 règle'],
 
-            // Test missing all ruless, but still have 0. Will return the "zero" form.
+            // Test missing all rules, but still have 0. Will return the "zero" form.
             ['X_BANANAS', 1, 'no bananas', 'aucune banane'],
             ['X_BANANAS', 2, 'no bananas', 'aucune banane'],
 
@@ -373,7 +364,7 @@ class TranslatorTest extends TestCase
      * @param string[]|int $placeholders
      * @param string       $expectedResult
      */
-    public function testTwigFilters(string $key, $placeholders, string $expectedResult): void
+    public function testTwigFilters(string $key, array|int $placeholders, string $expectedResult): void
     {
         $translator = $this->getTranslator();
         $this->assertEquals($translator->translate($key, $placeholders), $expectedResult);

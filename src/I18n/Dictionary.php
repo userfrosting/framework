@@ -30,24 +30,14 @@ class Dictionary extends Repository implements DictionaryInterface
     protected string $uri = 'locale://';
 
     /**
-     * @var LocaleInterface
-     */
-    protected LocaleInterface $locale;
-
-    /**
-     * @var ResourceLocatorInterface
-     */
-    protected ResourceLocatorInterface $locator;
-
-    /**
      * @var FileRepositoryLoader
      */
     protected FileRepositoryLoader $fileLoader;
 
     /**
-     * @var string[]|string[][] Locale "Key => translation" data matrix cache
+     * @var mixed[] Locale "Key => translation" data matrix cache
      */
-    protected $items = []; // @phpstan-ignore-line Overwrite Laravel phpdoc
+    protected $items = [];
 
     /**
      * @param LocaleInterface           $locale
@@ -55,13 +45,11 @@ class Dictionary extends Repository implements DictionaryInterface
      * @param FileRepositoryLoader|null $fileLoader File loader used to load each dictionary files (default to Array Loader)
      */
     public function __construct(
-        LocaleInterface $locale,
-        ResourceLocatorInterface $locator,
+        protected LocaleInterface $locale,
+        protected ResourceLocatorInterface $locator,
         ?FileRepositoryLoader $fileLoader = null
     ) {
-        $this->locale = $locale;
-        $this->locator = $locator;
-        $this->fileLoader = is_null($fileLoader) ? new ArrayFileLoader([]) : $fileLoader;
+        $this->fileLoader = $fileLoader ?? new ArrayFileLoader();
 
         parent::__construct();
     }
@@ -117,7 +105,7 @@ class Dictionary extends Repository implements DictionaryInterface
     /**
      * Load the dictionary from file.
      *
-     * @return string[]|string[][] The locale dictionary
+     * @return mixed[] The locale dictionary
      */
     protected function loadDictionary(): array
     {

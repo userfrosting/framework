@@ -41,7 +41,7 @@ interface LocaleInterface
     /**
      * Return the raw configuration data.
      *
-     * @return string[][]|string[]
+     * @return mixed[]
      */
     public function getConfig(): array;
 

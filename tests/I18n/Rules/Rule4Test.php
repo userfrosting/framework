@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -10,9 +12,11 @@
 
 namespace UserFrosting\Tests\I18n\Rules;
 
+use UserFrosting\I18n\PluralRules\Rule4;
+
 class Rule4Test extends RuleBase
 {
-    protected $ruleToTest = "\UserFrosting\I18n\PluralRules\Rule4";
+    protected string $ruleToTest = Rule4::class;
 
     /**
      * Families: Celtic (Scottish Gaelic)
@@ -20,8 +24,10 @@ class Rule4Test extends RuleBase
      * 2 - is 2 or 12: 2, 12
      * 3 - others between 3 and 19: 3, 4, ... 10, 13, ... 18, 19
      * 4 - everything else: 0, 20, 21, ...
+     *
+     * {@inheritDoc}
      */
-    public static function ruleProvider()
+    public static function ruleProvider(): array
     {
         return [
             [0, 4],
