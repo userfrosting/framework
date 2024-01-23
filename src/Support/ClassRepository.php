@@ -37,7 +37,7 @@ abstract class ClassRepository implements ClassRepositoryInterface
     /**
      * Returns the same list as all, but as a list of class names.
      *
-     * @return string[] A list class FQN.
+     * @return class-string[] A list class FQN.
      */
     public function list(): array
     {
@@ -49,7 +49,7 @@ abstract class ClassRepository implements ClassRepositoryInterface
     /**
      * Return the requested class instance from the repository.
      *
-     * @param string $class Class FQN.
+     * @param class-string $class Class FQN.
      *
      * @return T
      */
@@ -69,7 +69,7 @@ abstract class ClassRepository implements ClassRepositoryInterface
     /**
      * Validate if a specific class exist.
      *
-     * @param string $class Class FQN.
+     * @param class-string $class Class FQN.
      *
      * @return bool
      */
