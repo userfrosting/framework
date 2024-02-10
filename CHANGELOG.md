@@ -31,7 +31,7 @@ Complete refactoring of Fortress. Mostly enforcing strict types, updating PHPDoc
 
 - `UserFrosting\Fortress\RequestSchema\RequestSchemaInterface` now extends `\Illuminate\Contracts\Config\Repository`. The interface itself is otherwise unchanged.
 
-- `UserFrosting\Fortress\RequestDataTransformer` is ***deprecated*** and replaced by `\UserFrosting\Fortress\Transformer\RequestDataTransformer`. `\UserFrosting\Fortress\RequestDataTransformerInterface` is also ***deprecated*** and replaced by `\UserFrosting\Fortress\Transformer\RequestDataTransformerInterface`. When using the new class, instead of passing the schema in the constructor, you pass it directly to `transform()` or `transformField()`. For example : 
+- `UserFrosting\Fortress\RequestDataTransformer` is ***deprecated*** and replaced by `\UserFrosting\Fortress\Transformer\RequestDataTransformer` (*notice the difference in the namespace!*). `\UserFrosting\Fortress\RequestDataTransformerInterface` is also ***deprecated*** and replaced by `\UserFrosting\Fortress\Transformer\RequestDataTransformerInterface`. When using the new class, instead of passing the schema in the constructor, you pass it directly to `transform()` or `transformField()`. For example : 
   ```php
   // Before
   $transformer = new \UserFrosting\Fortress\RequestDataTransformer($schema);
@@ -42,7 +42,7 @@ Complete refactoring of Fortress. Mostly enforcing strict types, updating PHPDoc
   $result = $transformer->transform($schema, $data, 'skip');
   ```
 
-- `\UserFrosting\Fortress\ServerSideValidator` is ***deprecated*** and replaced by `\UserFrosting\Fortress\Validator\ServerSideValidator`. `\UserFrosting\Fortress\ServerSideValidatorInterface` is also ***deprecated*** and replaced by `\UserFrosting\Fortress\Validator\ServerSideValidatorInterface`. When using the new class, instead of passing the schema in the constructor, you pass it directly to `validate()`. For example : 
+- `\UserFrosting\Fortress\ServerSideValidator` is ***deprecated*** and replaced by `\UserFrosting\Fortress\Validator\ServerSideValidator` (*notice the difference in the namespace!*). `\UserFrosting\Fortress\ServerSideValidatorInterface` is also ***deprecated*** and replaced by `\UserFrosting\Fortress\Validator\ServerSideValidatorInterface`. When using the new class, instead of passing the schema in the constructor, you pass it directly to `validate()`. For example : 
   ```php
   // Before
   $validator = new \UserFrosting\Fortress\ServerSideValidator($schema, $this->translator);

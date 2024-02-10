@@ -25,7 +25,7 @@ class FileTagSet extends TagSet
      *
      * @var TaggableFileStore
      */
-    // @phpstan-ignore-next-line
+    // @phpstan-ignore-next-line - This is the correct type
     protected $store;
 
     /**
