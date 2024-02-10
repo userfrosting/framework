@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -37,10 +39,10 @@ interface RequestDataTransformerInterface
     /**
      * Transform a raw field value.
      *
-     * @param string         $name  The name of the field to transform, as specified in the schema.
-     * @param mixed[]|string $value The value to be transformed.
+     * @param string $name  The name of the field to transform, as specified in the schema.
+     * @param mixed  $value The value to be transformed.
      *
-     * @return mixed[]|string The transformed value.
+     * @return mixed The transformed value.
      */
-    public function transformField(RequestSchemaInterface $schema, string $name, array|string $value): array|string;
+    public function transformField(RequestSchemaInterface $schema, string $name, mixed $value): mixed;
 }

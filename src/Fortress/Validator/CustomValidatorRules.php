@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -29,7 +31,7 @@ class CustomValidatorRules
         $targetValue = $params[0];
         $caseSensitive = is_bool($params[1]) ? $params[1] : false;
 
-        if (!$caseSensitive) {
+        if (is_string($value) && !$caseSensitive) {
             $value = strtolower($value);
             $targetValue = strtolower($targetValue);
         }

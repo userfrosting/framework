@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -65,12 +67,13 @@ class RequestDataTransformerTest extends TestCase
         $result = $this->transformer->transform($schema, $rawInput, 'skip');
 
         // Assert
+        // N.B.: 'admin' is not in the schema, so it should have be removed
         $transformedData = [
             'email'       => 'david@owlfancy.com',
             'description' => 'Some stuff to describe',
         ];
 
-        $this->assertEquals($transformedData, $result);
+        $this->assertSame($transformedData, $result);
     }
 
     public function testBasicWithOnUnexpectedVarAllow(): void
@@ -98,7 +101,7 @@ class RequestDataTransformerTest extends TestCase
             'description' => 'Some stuff to describe',
         ];
 
-        $this->assertEquals($transformedData, $result);
+        $this->assertSame($transformedData, $result);
     }
 
     public function testBasicWithOnUnexpectedVarError(): void
@@ -138,11 +141,11 @@ class RequestDataTransformerTest extends TestCase
 
         // Assert
         $transformedData = [
-            'email'        => 'david@owlfancy.com',
             'display_name' => 'THE GREATEST',
+            'email'        => 'david@owlfancy.com',
         ];
 
-        $this->assertEquals($transformedData, $result);
+        $this->assertSame($transformedData, $result);
     }
 
     /**
@@ -159,11 +162,11 @@ class RequestDataTransformerTest extends TestCase
 
         // Assert
         $transformedData = [
-            'email'        => 'david@owlfancy.com',
             'display_name' => '&#60;b&#62;My Super-Important Name&#60;/b&#62;',
+            'email'        => 'david@owlfancy.com',
         ];
 
-        $this->assertEquals($transformedData, $result);
+        $this->assertSame($transformedData, $result);
     }
 
     /**
@@ -180,11 +183,11 @@ class RequestDataTransformerTest extends TestCase
 
         // Assert
         $transformedData = [
-            'email'        => 'david@owlfancy.com',
             'display_name' => ['&#60;b&#62;My Super-Important Name&#60;/b&#62;'],
+            'email'        => 'david@owlfancy.com',
         ];
 
-        $this->assertEquals($transformedData, $result);
+        $this->assertSame($transformedData, $result);
     }
 
     /**
@@ -201,11 +204,11 @@ class RequestDataTransformerTest extends TestCase
 
         // Assert
         $transformedData = [
-            'email'     => 'david@owlfancy.com',
             'user_name' => 'My Super-Important Name',
+            'email'     => 'david@owlfancy.com',
         ];
 
-        $this->assertEquals($transformedData, $result);
+        $this->assertSame($transformedData, $result);
     }
 
     /**
@@ -225,11 +228,11 @@ class RequestDataTransformerTest extends TestCase
 
         // Assert
         $transformedData = [
-            'email'     => 'david@owlfancy.com',
             'user_name' => ['My Super-Important Name', 'My Less-Important Name'],
+            'email'     => 'david@owlfancy.com',
         ];
 
-        $this->assertEquals($transformedData, $result);
+        $this->assertSame($transformedData, $result);
     }
 
     /**
@@ -246,11 +249,11 @@ class RequestDataTransformerTest extends TestCase
 
         // Assert
         $transformedData = [
-            'email'   => 'david@owlfancy.com',
             'puppies' => '<b>0</b>',
+            'email'   => 'david@owlfancy.com',
         ];
 
-        $this->assertEquals($transformedData, $result);
+        $this->assertSame($transformedData, $result);
     }
 
     public function testPurifyWithArrayValue(): void
@@ -267,11 +270,11 @@ class RequestDataTransformerTest extends TestCase
 
         // Assert
         $transformedData = [
-            'email'   => 'david@owlfancy.com',
             'puppies' => ['<b>0</b>', ''],
+            'email'   => 'david@owlfancy.com',
         ];
 
-        $this->assertEquals($transformedData, $result);
+        $this->assertSame($transformedData, $result);
     }
 
     /**
@@ -288,10 +291,10 @@ class RequestDataTransformerTest extends TestCase
 
         // Assert
         $transformedData = [
-            'email'   => 'david@owlfancy.com',
             'kitties' => '<b>My Super-Important Test</b>',
+            'email'   => 'david@owlfancy.com',
         ];
 
-        $this->assertEquals($transformedData, $result);
+        $this->assertSame($transformedData, $result);
     }
 }

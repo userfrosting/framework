@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * UserFrosting Framework (http://www.userfrosting.com)
  *
@@ -40,8 +42,11 @@ final class RequestDataTransformer implements RequestDataTransformerInterface
     /**
      * {@inheritdoc}
      */
-    public function transform(RequestSchemaInterface $schema, array $data, string $onUnexpectedVar = 'skip'): array
-    {
+    public function transform(
+        RequestSchemaInterface $schema,
+        array $data,
+        string $onUnexpectedVar = 'skip'
+    ): array {
         // Get schema fields
         $schemaFields = $schema->all();
 
@@ -72,7 +77,7 @@ final class RequestDataTransformer implements RequestDataTransformerInterface
     /**
      * {@inheritdoc}
      */
-    public function transformField(RequestSchemaInterface $schema, string $name, array|string $value): array|string
+    public function transformField(RequestSchemaInterface $schema, string $name, mixed $value): mixed
     {
         $schemaFields = $schema->all();
 
