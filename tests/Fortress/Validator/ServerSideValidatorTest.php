@@ -120,8 +120,26 @@ class ServerSideValidatorTest extends TestCase
                 'validators' => [
                     'equals' => [
                         'value'         => 8,
-                        'caseSensitive' => false,
+                        'caseSensitive' => true,
                         'message'       => 'Voles must be equal to {{value}}.',
+                    ],
+                ],
+            ],
+            'screech' => [
+                'validators' => [
+                    'equals' => [
+                        'value'         => 'Whoooo',
+                        'caseSensitive' => true,
+                        'message'       => 'Screech must be equal to {{value}}.',
+                    ],
+                ],
+            ],
+            'genus' => [
+                'validators' => [
+                    'equals' => [
+                        'value'         => 'Myodes',
+                        'caseSensitive' => false,
+                        'message'       => 'Genus must be equal to {{value}}.',
                     ],
                 ],
             ],
@@ -129,15 +147,21 @@ class ServerSideValidatorTest extends TestCase
 
         // Check passing validation
         $this->assertEmpty($this->validator->validate($schema, [
-            'voles' => 8,
+            'voles'   => 8,
+            'screech' => 'Whoooo',
+            'genus'   => 'Myodes',
         ]));
 
         // Check failing validation
         $errors = $this->validator->validate($schema, [
-            'voles' => 3,
+            'voles'   => 3,
+            'screech' => 'whooOO', // Case sensitive
+            'genus'   => 'myodes', // Will validate, as not case sensitive
         ]);
         $this->assertNotEmpty($errors);
         $this->assertSame(['Voles must be equal to 8.'], $errors['voles']);
+        $this->assertSame(['Screech must be equal to Whoooo.'], $errors['screech']);
+        $this->assertArrayNotHasKey('genus', $errors);
     }
 
     public function testValidateInteger(): void
@@ -422,19 +446,43 @@ class ServerSideValidatorTest extends TestCase
                     ],
                 ],
             ],
+            'screech' => [
+                'validators' => [
+                    'equals' => [
+                        'value'         => 'Whoooo',
+                        'caseSensitive' => true,
+                        'message'       => 'Screech must be equal to {{value}}.',
+                    ],
+                ],
+            ],
+            'genus' => [
+                'validators' => [
+                    'equals' => [
+                        'value'         => 'Myodes',
+                        'caseSensitive' => false,
+                        'message'       => 'Genus must be equal to {{value}}.',
+                    ],
+                ],
+            ],
         ]);
 
         // Check passing validation
         $this->assertEmpty($this->validator->validate($schema, [
-            'voles' => 8,
+            'voles'   => 8,
+            'screech' => 'Whoooo',
+            'genus'   => 'Myodes',
         ]));
 
         // Check failing validation
         $errors = $this->validator->validate($schema, [
-            'voles' => 0,
+            'voles'   => 0,
+            'screech' => 'whooOO', // Is case sensitive
+            'genus'   => 'myodes', // Is not case sensitive, so will validate
         ]);
         $this->assertNotEmpty($errors);
         $this->assertSame(['Voles must be not be equal to 0.'], $errors['voles']);
+        $this->assertSame(['Screech must be equal to Whoooo.'], $errors['screech']);
+        $this->assertArrayNotHasKey('genus', $errors);
     }
 
     public function testValidateNotMatches(): void
