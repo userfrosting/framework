@@ -163,7 +163,7 @@ class SprinkleManager
 
         // Class must be an instance of SprinkleRecipe
         if (!$instance instanceof SprinkleRecipe) {
-            throw new BadInstanceOfException("Class $class is not a valid SprinkleRecipe");
+            throw new BadInstanceOfException("Class $class is not a valid instance of " . SprinkleRecipe::class);
         }
 
         return $instance;
