@@ -35,7 +35,7 @@ class ResourceLocationTest extends TestCase
         $this->assertSame('/foo/', $location->getPath());
     }
 
-    public function testResourceLocationWithSupressesRightSlashe(): void
+    public function testResourceLocationWithSuppressesRightSlash(): void
     {
         $location = new ResourceLocation('bar', '/foo/');
         $this->assertSame('bar', $location->getName());
@@ -49,6 +49,9 @@ class ResourceLocationTest extends TestCase
         $this->assertSame('bar/', $location->getPath());
     }
 
+    /**
+     * @deprecated
+     */
     public function testResourceLocationSlug(): void
     {
         $location = new ResourceLocation('Core Sprinkle');

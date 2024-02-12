@@ -262,6 +262,25 @@ class ResourceLocatorTest extends TestCase
     /**
      * @depends testRegisterLocation
      */
+    public function testGetLocation(): void
+    {
+        $locator = new ResourceLocator();
+        $locator->addLocation(new ResourceLocation('bar', '/foo'));
+        $locator->addLocation(new ResourceLocation('foo', '/bar'));
+
+        $location = $locator->getLocation('bar');
+        $this->assertEquals('/foo/', $location->getPath());
+
+        $location = $locator->getLocation('foo');
+        $this->assertEquals('/bar/', $location->getPath());
+
+        $this->expectException(LocationNotFoundException::class);
+        $locator->getLocation('foobar');
+    }
+
+    /**
+     * @depends testRegisterLocation
+     */
     public function testGetLocations(): void
     {
         $locator = new ResourceLocator();
@@ -272,6 +291,18 @@ class ResourceLocatorTest extends TestCase
         $this->assertCount(2, $locations);
         $this->assertContainsOnlyInstancesOf(ResourceLocationInterface::class, $locations);
         $this->assertEquals('/foo/', $locations['bar']->getPath());
+    }
+
+    /**
+     * @depends testRegisterLocation
+     * @see https://github.com/userfrosting/UserFrosting/issues/1243
+     */
+    public function testGetLocationsForSameName(): void
+    {
+        $locator = new ResourceLocator();
+        $locator->addLocation(new ResourceLocation('My Name', '/foo'));
+        $this->expectException(InvalidArgumentException::class);
+        $locator->addLocation(new ResourceLocation('My Name', '/bar'));
     }
 
     /**
@@ -296,10 +327,15 @@ class ResourceLocatorTest extends TestCase
         $locator->addLocation(new ResourceLocation('bar', '/foo/'));
         $locator->addLocation(new ResourceLocation('foo', '/bar'));
 
+        $this->assertCount(2, $locator->getLocations());
+        // Remove on location
         $locator->removeLocation('bar');
         $this->assertCount(1, $locator->getLocations());
         $this->assertFalse($locator->locationExist('bar'));
         $this->assertTrue($locator->locationExist('foo'));
+        // Remove the second location
+        $locator->removeLocation('foo');
+        $this->assertCount(0, $locator->getLocations());
     }
 
     /**

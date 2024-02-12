@@ -110,13 +110,6 @@ $stream = new ResourceStream('config', 'data/config/');
 $locator->addStream($stream); 
 ```
 
-**Creating a new Stream**:
-```
-$locator->registerStream('config', 'data/config/');
-```
-
-> _N.B.: Registering a stream object should always be preferred._
-
 ### Shared Stream
 
 A shared stream can also be defined, outside any location. The scheme can overlap the non-shared version. In this case, the stream path (i.e. `config/`) is relative to **the locator** base path and the `shared` argument set to true.
@@ -127,18 +120,11 @@ $stream = new ResourceStream('config', 'storage/config/', shared: true);
 $locator->addStream($stream); 
 ```
 
-**Creating a new Stream**:
-```
-$locator->registerStream('config', 'storage/config/', shared: true);
-```
-
-> _N.B.: Registering a stream object should always be preferred._
-
 ## Adding Locations
 
 Similar to streams, a location can either be created or an existing one can be registered with the locator.
 
-Each location has a name (for easier management) and a path. For example, to register a **Floor 1** location pointing to `floors/1/` directory, as well as a **Floor 2** location pointing to `floors/2/` directory : 
+Each location has a unique name and a path. For example, to register a **Floor 1** location pointing to `floors/1/` directory, as well as a **Floor 2** location pointing to `floors/2/` directory : 
 
 **Registering a ResourceLocation object**:
 ```
@@ -283,7 +269,7 @@ The locator also provides methods to control registered locations. Each location
 | `getLocations(): ResourceLocationInterface[]`          | Returns an array of [location objects](#Location-object) registered on the locator.                                                                                  |
 | `listLocations(): string[]`                            | List all available location registered with the locator as an associative array (`name => path`).                                                                    |
 | `locationExist(string $name): bool`                    | Returns true or false if the specified location name is registered.                                                                                                  |
-| `removeLocation(string $name): static`                 | Unregister the location associated with the specified scheme.                                                                                                        |
+| `removeLocation(string $name): static`                 | Unregister the location associated with the specified name.                                                                                                        |
 
 See the [API Documentation](api/) for more information.
 

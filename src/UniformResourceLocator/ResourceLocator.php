@@ -236,7 +236,13 @@ class ResourceLocator implements ResourceLocatorInterface
      */
     public function addLocation(ResourceLocationInterface $location): static
     {
-        $this->locations[$location->getName()] = $location;
+        // Make sure name doesn't already exist
+        $name = $location->getName();
+        if ($this->locationExist($name)) {
+            throw new InvalidArgumentException("Location with name {$name} is already registered.");
+        }
+
+        $this->locations[$name] = $location;
 
         return $this;
     }

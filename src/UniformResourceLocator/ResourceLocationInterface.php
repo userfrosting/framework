@@ -36,6 +36,8 @@ interface ResourceLocationInterface
      * Return identifier slug for Location.
      *
      * @return string
+     *
+     * @deprecated 5.1
      */
     public function getSlug(): string;
 }

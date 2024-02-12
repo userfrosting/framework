@@ -97,6 +97,10 @@ Complete refactoring of Fortress. Mostly enforcing strict types, updating PHPDoc
 - Translator is not optional anymore. `setTranslator` method has been removed.
 - `addValidationErrors` is deprecated (N.B.: It can't accept the new `\UserFrosting\Fortress\Validator\ServerSideValidatorInterface`)
 
+### UniformResourceLocator
+- Two locations cannot have the same name anymore. An `InvalidArgumentException` will be thrown otherwise. (Ref [userfrosting/UserFrosting#1243](https://github.com/userfrosting/UserFrosting/issues/1243)).
+- [*DEPRECATION*] Location's `getSlug` is deprecated (redundant with the name and not really used).
+
 ## [5.0.0](https://github.com/userfrosting/framework/compare/4.6.1...5.0.0)
 With version 5, this repo can be used as a bare bone Slim & Symfony Console application. It include the necessary routing class, [PHP-DI](https://php-di.org) as the Dependency Injection Container, a PSR EventDispatcher, etc. SprinkleManager has also been moved from Core/System Sprinkle and completely rewritten. 
 
