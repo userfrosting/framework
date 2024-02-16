@@ -814,6 +814,9 @@ class ServerSideValidatorTest extends TestCase
             'user_name' => '',
         ]));
 
+        // Check with missing data
+        $this->assertEmpty($this->validator->validate($schema, []));
+
         // Check failing validations - Code not allowed
         $errors = $this->validator->validate($schema, [
             'user_name' => "<script>alert('I got you');</script>",
@@ -834,6 +837,33 @@ class ServerSideValidatorTest extends TestCase
         ]);
         $this->assertNotEmpty($errors);
         $this->assertSame(["Sorry buddy, that's not a valid username."], $errors['user_name']);
+    }
+
+    /**
+     * Test specific bug: When required validator rule is defined, username
+     * validator is still called, even if there's no data. This is not the case
+     * without "required". In this case, `validateUsername` should be ignored,
+     * or accept a null value.
+     */
+    public function testValidateUsernameForMissingData(): void
+    {
+        // Arrange
+        $schema = new RequestSchema([
+            'user_name' => [
+                'validators' => [
+                    'required' => [
+                        'message' => 'Username required',
+                    ],
+                    'username' => [
+                        'message' => "Sorry buddy, that's not a valid username.",
+                    ],
+                ],
+            ],
+        ]);
+
+        $errors = $this->validator->validate($schema, []);
+        $this->assertNotEmpty($errors);
+        $this->assertSame(['Username required', "Sorry buddy, that's not a valid username."], $errors['user_name']);
     }
 
     public function testDomainRulesClientOnly(): void

@@ -94,6 +94,6 @@ class CustomValidatorRules
      */
     public static function validateUsername(string $field, mixed $value): bool
     {
-        return preg_match('/^([a-z0-9\.\-_])+$/i', $value) === 1;
+        return preg_match('/^([a-z0-9\.\-_])+$/i', strval($value)) === 1;
     }
 }
