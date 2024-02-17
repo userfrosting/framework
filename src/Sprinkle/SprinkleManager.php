@@ -39,9 +39,9 @@ class SprinkleManager
     /**
      * Load sprinkles on construction.
      *
-     * @param class-string<SprinkleRecipe> $mainSprinkle
+     * @param class-string<SprinkleRecipe>|SprinkleRecipe $mainSprinkle
      */
-    public function __construct(string $mainSprinkle)
+    public function __construct(string|SprinkleRecipe $mainSprinkle)
     {
         $this->mainSprinkle = $this->validateClassIsRecipe($mainSprinkle);
         $this->loadSprinkles();
@@ -145,15 +145,19 @@ class SprinkleManager
      * Instantiate a class string into an instance of SprinkleRecipe.
      * Provides flexibility, allowing string and object to be referenced.
      *
-     * @param class-string $class
+     * @param class-string|SprinkleRecipe $class
      *
      * @throws BadClassNameException  If $class is not found
      * @throws BadInstanceOfException If $class doesn't implement SprinkleRecipe interface.
      *
      * @return SprinkleRecipe
      */
-    protected function validateClassIsRecipe(string $class): SprinkleRecipe
+    protected function validateClassIsRecipe(string|SprinkleRecipe $class): SprinkleRecipe
     {
+        if (!is_string($class)) {
+            return $class;
+        }
+
         if (!class_exists($class)) {
             throw new BadClassNameException("Sprinkle recipe class `$class` not found.");
         }

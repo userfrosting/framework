@@ -16,6 +16,7 @@ use DI\Container;
 use DI\ContainerBuilder;
 use UserFrosting\ServicesProvider\FrameworkService;
 use UserFrosting\Sprinkle\SprinkleManager;
+use UserFrosting\Sprinkle\SprinkleRecipe;
 
 /**
  * Base class for UserFrosting application.
@@ -35,9 +36,9 @@ abstract class Cupcake
     /**
      * Constructor.
      *
-     * @param class-string<\UserFrosting\Sprinkle\SprinkleRecipe> $mainSprinkle
+     * @param class-string<SprinkleRecipe>|SprinkleRecipe $mainSprinkle
      */
-    public function __construct(protected string $mainSprinkle)
+    public function __construct(protected string|SprinkleRecipe $mainSprinkle)
     {
         $this->init();
     }
@@ -87,7 +88,7 @@ abstract class Cupcake
      */
     public function getMainSprinkle(): string
     {
-        return $this->mainSprinkle;
+        return ($this->mainSprinkle instanceof SprinkleRecipe) ? $this->mainSprinkle::class : $this->mainSprinkle;
     }
 
     /**

@@ -39,6 +39,24 @@ class SprinkleManagerTest extends TestCase
     }
 
     /**
+     * getSprinkles|getMainSprinkle
+     */
+    public function testGetSprinklesWithObject(): void
+    {
+        $core = new CoreStub();
+        $manager = new SprinkleManager($core);
+        $sprinkles = $manager->getSprinkles();
+
+        $this->assertCount(1, $sprinkles);
+        $this->assertContainsOnlyInstancesOf(CoreStub::class, $sprinkles);
+        $this->assertSame('Test Sprinkle', $sprinkles[CoreStub::class]->getName());
+
+        // Test getMainSprinkle while at it
+        $this->assertInstanceOf(CoreStub::class, $manager->getMainSprinkle());
+        $this->assertSame('Test Sprinkle', $manager->getMainSprinkle()->getName());
+    }
+
+    /**
      * @depends testGetSprinklesWithNoDependent
      */
     public function testGetSprinklesWithNoDependentAndObject(): void
