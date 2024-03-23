@@ -1,4 +1,4 @@
-Copyright (c) 2019 by Alexander Weissman (https://alexanderweissman.com) & Louis Charette
+Copyright (c) 2013-2024 by Alexander Weissman, Louis Charette, Jordan Mele
 
 UserFrosting is 100% free and open-source.
 
