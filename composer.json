@@ -1,0 +1,67 @@
+{
+    "name": "userfrosting/framework",
+    "type": "library",
+    "description": "Framework for UserFrosting",
+    "keywords": ["userfrosting", "Framework"],
+    "homepage": "https://github.com/userfrosting/framework",
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name": "Alexander Weissman",
+            "homepage": "https://alexanderweissman.com"
+        },
+        {
+            "name": "Louis Charette",
+            "homepage": "https://bbqsoftwares.com"
+        },
+        {
+            "name": "Jordan Mele",
+            "email": "SiliconSolder@outlook.com.au",
+            "homepage": "https://blog.djmm.me"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "^10.0",
+        "illuminate/filesystem": "^10.0",
+        "illuminate/config": "^10.0",
+        "illuminate/session": "^10.0",
+        "illuminate/cache": "^10.0",
+        "illuminate/container": "^10.0",
+        "illuminate/redis": "^10.0",
+        "jackiedo/dotenv-editor": "^2.1",
+        "symfony/console": "^6.4",
+        "symfony/yaml": ">=4.4",
+        "ezyang/htmlpurifier": "^4.7.0",
+        "vlucas/valitron": "^1.2.3",
+        "predis/predis": "^2.2",
+        "twig/twig": "^3.3",
+        "slim/slim": "^4.14",
+        "slim/psr7": "^1.4",
+        "php-di/php-di": "^7.0",
+        "php-di/slim-bridge": "^3.2",
+        "psr/event-dispatcher": "^1.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "phpunit/phpunit": "^10.5",
+        "phpstan/phpstan": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-mockery": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "phpstan/phpstan-strict-rules": "^1.0",
+        "slam/phpstan-extensions": "^6.0",
+        "mockery/mockery": "^1.2",
+        "onspli/phpdoc-markdown": "^0.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "UserFrosting\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "UserFrosting\\Tests\\": "tests"
+        }
+    }
+}

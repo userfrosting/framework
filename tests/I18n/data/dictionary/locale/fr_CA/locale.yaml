@@ -1,0 +1,8 @@
+name: French Canadian
+regional: Français Canadien
+authors:
+  - Foo Bar
+  - Bar Foo
+plural_rule: 2
+parents:
+  - fr_FR

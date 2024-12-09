@@ -1,0 +1,13 @@
+# Code stuff
+vendor
+composer.lock
+.php-cs-fixer.cache
+_meta
+.phpunit.cache
+.phpdoc
+
+# OS
+.DS_Store
+
+# Testing artifacts
+tests/Cache/store
